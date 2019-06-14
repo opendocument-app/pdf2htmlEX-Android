@@ -8,14 +8,10 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
   if (NOT ${EXTERNAL_PROJECT_NAME}_FOUND AND NOT LIBNAME_FOUND)
     message(STATUS "External project ${EXTERNAL_PROJECT_NAME} not found, will have to be built.")
 
-    set(options PKG_CONFIG_FORCE_STATIC)
+    set(options)
     set(oneValueArgs URL URL_HASH)
     set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
     cmake_parse_arguments(EPCM "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
-
-    if (EPCM_PKG_CONFIG_FORCE_STATIC)
-      message(FATAL_ERROR "PKG_CONFIG_FORCE_STATIC NOT IMPLEMENTED FOR ExternalProjectCMake!")
-    endif (EPCM_PKG_CONFIG_FORCE_STATIC)
 
     FilterDependsList(EPCM_DEPENDS)
 

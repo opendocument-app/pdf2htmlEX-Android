@@ -6,10 +6,6 @@ ELSE()
   SET(FONTFORGE_CONFIGURE_ARGUMENTS "--disable-programs")
 ENDIF ()
 
-if (NOT BUILD_SHARED_LIBS)
-  SET(FONTFORGE_STATIC PKG_CONFIG_FORCE_STATIC)
-endif (NOT BUILD_SHARED_LIBS)
-
 ExternalProjectAutotools(libfontforge
   DEPENDS libxml-2.0 libjpeg glib-2.0 freetype
 
