@@ -5,6 +5,8 @@
  *      Author: duanyao
  */
 
+#include <cairo/cairo.h>
+
 #include "GfxFont.h"
 
 #include "util/math.h"

@@ -205,8 +205,8 @@ string HTMLRenderer::dump_type3_font (GfxFont * font, FontInfo & info)
     auto used_map = preprocessor.get_code_map(hash_ref(font->getID()));
 
     //calculate transformed metrics
-    double * font_bbox = font->getFontBBox();
-    double * font_matrix = font->getFontMatrix();
+    const double * font_bbox = font->getFontBBox();
+    const double * font_matrix = font->getFontMatrix();
     double transformed_bbox[4];
     memcpy(transformed_bbox, font_bbox, 4 * sizeof(double));
     /*
@@ -515,7 +515,7 @@ void HTMLRenderer::embed_font(const string & filepath, GfxFont * font, FontInfo 
                 {
                     if(nameset.insert(string(cn)).second)
                     {
-                        cur_mapping2[i] = cn;    
+                        cur_mapping2[i] = const_cast<char*>(cn);    
                     }
                     else
                     {
@@ -634,7 +634,7 @@ void HTMLRenderer::embed_font(const string & filepath, GfxFont * font, FontInfo 
             Unicode u, *pu=&u;
             if(info.use_tounicode)
             {
-                int n = ctu ? (ctu->mapToUnicode(cur_code, &pu)) : 0;
+                int n = ctu ? (const_cast<CharCodeToUnicode *>(ctu)->mapToUnicode(cur_code, &pu)) : 0;
                 u = check_unicode(pu, n, cur_code, font);
             }
             else
@@ -755,8 +755,9 @@ void HTMLRenderer::embed_font(const string & filepath, GfxFont * font, FontInfo 
             cerr << "space width: " << info.space_width << endl;
         }
 
-        if(ctu)
-            ctu->decRefCnt();
+        // @TODO: fix
+        // if(ctu)
+        //     ctu->decRefCnt();
     }
 
     /*

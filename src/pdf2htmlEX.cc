@@ -17,6 +17,7 @@
 
 #include <poppler-config.h>
 #include <goo/GooString.h>
+#include <goo/gmem.h>
 
 #include <Object.h>
 #include <PDFDoc.h>
@@ -438,8 +439,10 @@ int main(int argc, char **argv)
     delete globalParams;
 
     // check for memory leaks
-    Object::memCheck(stderr);
-    gMemReport(stderr);
+    //@TODO: check for memleaks
+    // ::memCheck gone in poppler-0.69.0
+    // Object::memCheck(stderr);
+    // gMemReport(stderr);
 
     exit(finished ? (EXIT_SUCCESS) : (EXIT_FAILURE));
 

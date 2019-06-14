@@ -309,7 +309,7 @@ void ffw_cidflatten(void)
         fprintf(stderr, "Cannot flatten a non-CID font\n");
         return;
     }
-    SFFlatten(cur_fv->sf->cidmaster);
+    SFFlatten(&(cur_fv->sf->cidmaster));
 }
 
 /*
