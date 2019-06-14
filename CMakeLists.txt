@@ -7,6 +7,8 @@ cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 
 option(ENABLE_SVG "Enable SVG support, for generating SVG background images and converting Type 3 fonts" ON)
 
+include(${CMAKE_SOURCE_DIR}/3rdparty/Toolchain.cmake)
+
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 set(PDF2HTMLEX_VERSION "0.15.0")
@@ -16,7 +18,7 @@ add_custom_target(dist
         | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 
 
 pkg_check_modules(POPPLER REQUIRED poppler>=0.25.0)
@@ -25,15 +27,15 @@ link_directories(${POPPLER_LIBRARY_DIRS})
 set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${POPPLER_LIBRARIES})
 
 if(ENABLE_SVG)
-    pkg_check_modules(CAIRO REQUIRED cairo>=1.10.0)
-    message("Trying to locate cairo-svg...")
-    find_path(CAIRO_SVG_INCLUDE_PATH cairo-svg.h PATHS ${CAIRO_INCLUDE_DIRS} NO_DEFAULT_PATH)
-    if(CAIRO_SVG_INCLUDE_PATH)
-        include_directories(${CAIRO_INCLUDE_DIRS})
-        link_directories(${CAIRO_LIBRARY_DIRS})
-        set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${CAIRO_LIBRARIES})
+  pkg_check_modules(CAIRO REQUIRED cairo>=1.10.0)
+  message("Trying to locate cairo-svg...")
+  find_path(CAIRO_SVG_INCLUDE_PATH cairo-svg.h PATHS ${CAIRO_INCLUDE_DIRS} NO_DEFAULT_PATH)
+  if(CAIRO_SVG_INCLUDE_PATH)
+  include_directories(${CAIRO_INCLUDE_DIRS})
+  link_directories(${CAIRO_LIBRARY_DIRS})
+  set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${CAIRO_LIBRARIES})
         set(ENABLE_SVG 1)
-        set(CAIROOUTPUTDEV_PATH 3rdparty/poppler/git)
+        set(CAIROOUTPUTDEV_PATH ${CMAKE_SOURCE_DIR}/3rdparty/poppler/poppler-0.70.1)
         include_directories(${CAIROOUTPUTDEV_PATH})
         set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
             ${CAIROOUTPUTDEV_PATH}/CairoFontEngine.h
@@ -59,6 +61,7 @@ include_directories(${FONTFORGE_INCLUDE_DIRS})
 link_directories(${FONTFORGE_LIBRARY_DIRS})
 set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${FONTFORGE_LIBRARIES})
 
+if (NOT ANDROID)
 # debug build flags (overwrite default cmake debug flags)
 set(CMAKE_C_FLAGS_DEBUG "-ggdb -pg")
 set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -pg")
@@ -83,6 +86,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 else()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -pthread")
 endif()
+endif (NOT ANDROID)
 
 # check the C++11 features we need
 include(CheckCXXSourceCompiles)
