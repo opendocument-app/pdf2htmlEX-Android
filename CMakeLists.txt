@@ -26,14 +26,15 @@ include_directories(${POPPLER_INCLUDE_DIRS})
 link_directories(${POPPLER_LIBRARY_DIRS})
 set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${POPPLER_LIBRARIES})
 
+pkg_check_modules(CAIRO REQUIRED cairo>=1.10.0)
+include_directories(${CAIRO_INCLUDE_DIRS})
+link_directories(${CAIRO_LIBRARY_DIRS})
+set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${CAIRO_LIBRARIES})
+
 if(ENABLE_SVG)
-  pkg_check_modules(CAIRO REQUIRED cairo>=1.10.0)
   message("Trying to locate cairo-svg...")
-  find_path(CAIRO_SVG_INCLUDE_PATH cairo-svg.h PATHS ${CAIRO_INCLUDE_DIRS} NO_DEFAULT_PATH)
+  find_path(CAIRO_SVG_INCLUDE_PATH cairo-svg.h PATHS ${CAIRO_INCLUDE_DIRS} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
   if(CAIRO_SVG_INCLUDE_PATH)
-  include_directories(${CAIRO_INCLUDE_DIRS})
-  link_directories(${CAIRO_LIBRARY_DIRS})
-  set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${CAIRO_LIBRARIES})
         set(ENABLE_SVG 1)
         set(CAIROOUTPUTDEV_PATH ${CMAKE_SOURCE_DIR}/3rdparty/poppler/poppler-0.70.1)
         include_directories(${CAIROOUTPUTDEV_PATH})
@@ -49,10 +50,7 @@ if(ENABLE_SVG)
         message(FATAL_ERROR "Error: no SVG support found in Cairo")
     endif()
 
-    find_package(Freetype REQUIRED)
-    include_directories(${FREETYPE_INCLUDE_DIRS})
-    link_directories(${FREETYPE_LIBRARY_DIRS})
-    set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${FREETYPE_LIBRARIES})
+  pkg_check_modules(freetype REQUIRED)
 endif()
 
 # fontforge starts using pkg-config 'correctly' since 2.0.0
@@ -176,6 +174,10 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
     )
 
 add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
+
+if (freetype_FOUND)
+  target_link_libraries(pdf2htmlEX freetype)
+endif(freetype_FOUND)
 target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
 
 add_custom_target(pdf2htmlEX_resources ALL DEPENDS
