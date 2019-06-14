@@ -24,4 +24,8 @@ SET(BUILD_ALL_3RDPARTY_UTILS_TO_CHECK_FOR_MISSING_SYMBOLS_IN_INCLUDED_LIBRARIES 
 
 # List of root level packages that we want installed.
 # Defined dependencies will be picked up too.
-# @TODO: add packages
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/cairo.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/libfontforge.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/poppler.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/freetype.cmake)
