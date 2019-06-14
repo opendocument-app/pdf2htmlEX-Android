@@ -1,17 +1,4 @@
-# File include from two places:
-# Main CMakeLists.txt
-# library builder 3rdparty/CMakeLists.txt
-
-# @TODO: move THIRDPARTY_PREFIX and others to separate file, so Toolchain.cmake could be only for 3rdparty builder
 if (ANDROID)
-  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/${CMAKE_BUILD_TYPE}-${ANDROID_ABI})
-
-  SET(THIRDPARTY_PKG_CONFIG_LIBDIR ${THIRDPARTY_PREFIX}/lib/pkgconfig)
-  SET(THIRDPARTY_PKG_CONFIG_EXECUTABLE ${THIRDPARTY_PREFIX}/bin/pkg-config)
-
-  SET(PKG_CONFIG_EXECUTABLE ${THIRDPARTY_PKG_CONFIG_EXECUTABLE})
-  SET(CMAKE_FIND_ROOT_PATH ${THIRDPARTY_PREFIX} ${CMAKE_FIND_ROOT_PATH})
-
   # /home/vilius/ndk/19.2.5345600/toolchains/llvm/prebuilt/linux-x86_64
   # @TODO: there should be a var from NDK to get this
   SET(TOOLCHAIN ${ANDROID_NDK}/toolchains/llvm/prebuilt/${ANDROID_NDK_HOST_SYSTEM_NAME})

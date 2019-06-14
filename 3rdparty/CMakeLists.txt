@@ -9,7 +9,7 @@ message(STATUS "Running 3rdparty library build")
 include(ExternalProject)
 find_package(PkgConfig REQUIRED)
 
-# Include toolchain config
+include(${CMAKE_CURRENT_SOURCE_DIR}/ThirdPartyConfig.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/Toolchain.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPHelpers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPAutotools.cmake)

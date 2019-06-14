@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 
 option(ENABLE_SVG "Enable SVG support, for generating SVG background images and converting Type 3 fonts" ON)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/Toolchain.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/ThirdPartyConfig.cmake)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
