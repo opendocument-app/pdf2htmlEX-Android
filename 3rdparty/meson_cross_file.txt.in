@@ -1,0 +1,22 @@
+[binaries]
+c = '@MESON_CC@'
+cpp = '@MESON_CPP@'
+ar = '@MESON_AR@'
+ld = '@CMAKE_LINKER@'
+strip = '@CMAKE_STRIP@'
+pkgconfig = '@PKG_CONFIG_EXECUTABLE@'
+
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+#this describes android
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[paths]
+prefix = '@THIRDPARTY_PREFIX@'
+libdir = 'lib/'
+bindir = 'bin'

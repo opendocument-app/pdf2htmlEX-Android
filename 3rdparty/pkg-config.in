@@ -1,0 +1,2 @@
+#!/bin/sh
+PKG_CONFIG_LIBDIR=@THIRDPARTY_PKG_CONFIG_LIBDIR@ pkg-config $@
