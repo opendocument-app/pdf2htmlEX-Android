@@ -15,9 +15,17 @@ function(FilterDependsList DEPENDS_LIST)
       if (TARGET ${DEPENDENCY})
         message(STATUS "${DEPENDENCY} found as a target")
         list(APPEND RESULT ${DEPENDENCY})
-      # Hardcoded skip for iconv, because it does not have pkg-config.pc
-      # If iconv target not found, just assume it's either built already or not needed due to ANDROID-28+
-      elseif(NOT "${DEPENDENCY}" STREQUAL "iconv")
+
+      elseif("${DEPENDENCY}" STREQUAL "iconv")
+        # iconv does not have pkg-config.pc. Just check if the it exists.
+        # ANDROID-28+ has it built in, no need.
+        if (NOT (ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28))
+          if (NOT EXISTS ${THIRDPARTY_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}iconv${CMAKE_STATIC_LIBRARY_SUFFIX})
+            message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
+          endif()
+        endif()
+
+      else()
         pkg_check_modules(LIBNAME REQUIRED ${DEPENDENCY})
       endif()
     endforeach(DEPENDENCY IN ITEMS ${INPUT})
