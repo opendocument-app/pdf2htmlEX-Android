@@ -34,6 +34,7 @@ ExternalProjectCMake(poppler
       UPDATE_COMMAND
         ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixPopplerSource.sh
         ${CMAKE_CURRENT_BINARY_DIR}/poppler-prefix/src/poppler/
+        ${THIRDPARTY_PREFIX}
       LOG_UPDATE 1
 
       # Fontforge uses libopenjp2 lcms2
