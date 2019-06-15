@@ -25,6 +25,13 @@ function(FilterDependsList DEPENDS_LIST)
           endif()
         endif()
 
+      elseif("${DEPENDENCY}" STREQUAL "gettext")
+        # gettext does not have pkg-config.pc. Just check if the it exists.
+        # libintl.a is the interesting part.
+        if (NOT EXISTS ${THIRDPARTY_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}intl${CMAKE_STATIC_LIBRARY_SUFFIX})
+          message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
+        endif()
+
       else()
         pkg_check_modules(LIBNAME REQUIRED ${DEPENDENCY})
       endif()
