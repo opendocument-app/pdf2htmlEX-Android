@@ -13,6 +13,8 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
     set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
     cmake_parse_arguments(EPCM "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
+    CheckIfTarballCachedLocally(EPCM_URL)
+
     FilterDependsList(EPCM_DEPENDS)
 
     #@TODO: check how to set CFLAGS and other ENV vars

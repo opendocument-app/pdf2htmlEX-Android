@@ -10,6 +10,8 @@ function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
     set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_LDFLAGS)
     cmake_parse_arguments(EPA "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
+    CheckIfTarballCachedLocally(EPA_URL)
+
     FilterDependsList(EPA_DEPENDS)
 
     SET(EPA_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${TOOLCHAIN_ENV})

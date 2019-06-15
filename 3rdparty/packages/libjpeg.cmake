@@ -3,7 +3,6 @@ include_guard(GLOBAL)
 ExternalProjectAutotools(libjpeg
   # DEPENDS zlib
   URL https://www.ijg.org/files/jpegsrc.v9c.tar.gz
-  #URL ${TARBALL_STORAGE}/jpegsrc.v9c.tar.gz
   URL_HASH SHA256=650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122
 )
 

@@ -12,7 +12,6 @@ include_guard(GLOBAL)
 ExternalProjectCMake(libtiff-4
   DEPENDS zlib libjpeg
   URL http://download.osgeo.org/libtiff/tiff-4.0.10.tar.gz
-  #URL ${TARBALL_STORAGE}/tiff-4.0.10.tar.gz
   URL_HASH SHA256=2c52d11ccaf767457db0c46795d9c7d1a8d8f76f68b0b800a3dfe45786b996e4
   EXTRA_ARGUMENTS
     # Modify libtiff-4.pc to depend on zlib and libjpeg

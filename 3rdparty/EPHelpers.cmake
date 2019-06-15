@@ -29,3 +29,16 @@ function(FilterDependsList DEPENDS_LIST)
 
   SET(${DEPENDS_LIST} ${RESULT} PARENT_SCOPE)
 endfunction(FilterDependsList)
+
+function(CheckIfTarballCachedLocally URL)
+  # Expand URL variable twice, to get the INPUT value
+  SET(INPUT ${${URL}})
+
+  get_filename_component(FILENAME ${INPUT} NAME)
+
+  SET(CACHED_FILENAME ${TARBALL_STORAGE}${FILENAME})
+  if (EXISTS ${TARBALL_STORAGE}${FILENAME})
+    SET(${URL} ${TARBALL_STORAGE}${FILENAME} PARENT_SCOPE)
+  endif()
+
+endfunction(CheckIfTarballCachedLocally)

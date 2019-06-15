@@ -14,6 +14,8 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       message(FATAL_ERROR "PKG_CONFIG_FORCE_STATIC NOT IMPLEMENTED FOR ExternalProjectMeson!")
     endif (EPM_PKG_CONFIG_FORCE_STATIC)
 
+    CheckIfTarballCachedLocally(EPM_URL)
+
     FilterDependsList(EPM_DEPENDS)
 
     if (CMAKE_BUILD_TYPE STREQUAL Debug)

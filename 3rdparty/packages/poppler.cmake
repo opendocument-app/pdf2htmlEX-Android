@@ -23,7 +23,6 @@ ExternalProjectCMake(poppler
   DEPENDS freetype libjpeg libopenjp2 glib-2.0 cairo libtiff-4 lcms2
 
   URL https://poppler.freedesktop.org/poppler-0.70.1.tar.xz
-  #URL ${TARBALL_STORAGE}/poppler-0.70.1.tar.xz
   URL_HASH SHA256=66972047d9ef8162cc8c389d7e7698291dfc9f2b3e4ea9a9f08ae604107451bd
 
   CONFIGURE_ARGUMENTS -DENABLE_XPDF_HEADERS=ON
