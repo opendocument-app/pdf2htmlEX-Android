@@ -221,6 +221,10 @@ set(PDF2HTMLEX_RESOURCE
 install (FILES ${PDF2HTMLEX_RESOURCE} DESTINATION share/pdf2htmlEX)
 install (FILES pdf2htmlEX.1 DESTINATION share/man/man1)
 
+if (ANDROID)
+  SET(CMAKE_INSTALL_PREFIX "built")
+endif()
+
 ## tests:
 
 set(PDF2HTMLEX_PATH ${CMAKE_BINARY_DIR}/pdf2htmlEX)
