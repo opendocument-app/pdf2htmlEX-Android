@@ -3,7 +3,7 @@ include(ProcessorCount)
 function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
   pkg_check_modules(LIBNAME QUIET ${EXTERNAL_PROJECT_NAME})
   if (NOT LIBNAME_FOUND)
-    message("External project ${EXTERNAL_PROJECT_NAME} not found, will have to be built.")
+    message(STATUS "External project ${EXTERNAL_PROJECT_NAME} not found, will have to be built.")
 
     set(options)
     set(oneValueArgs URL URL_HASH)

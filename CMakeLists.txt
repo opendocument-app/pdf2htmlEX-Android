@@ -175,9 +175,9 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
 
 add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
 
-if (freetype_FOUND)
+if(ENABLE_SVG)
   target_link_libraries(pdf2htmlEX freetype)
-endif(freetype_FOUND)
+endif()
 target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
 
 add_custom_target(pdf2htmlEX_resources ALL DEPENDS
