@@ -53,8 +53,9 @@ cd $LIB
 ./gradlew assemble
 for build_type in $THIRD_PARTY_DIR/built/cmake/*; do
   for build_type_and_abi in $build_type/*; do
-  echo "Building LIB: $build_type_and_abi"
-  cmake --build $build_type_and_abi
+    echo "Building LIB: $build_type_and_abi"
+    cmake --build $build_type_and_abi
+  done
 done
 
 cd $APP
