@@ -10,11 +10,11 @@ include_guard(GLOBAL)
 # These packages are: libopenjp2 and poppler
 
 ExternalProjectCMake(libtiff-4
-  DEPENDS zlib libjpeg
+  DEPENDS libjpeg
   URL http://download.osgeo.org/libtiff/tiff-4.0.10.tar.gz
   URL_HASH SHA256=2c52d11ccaf767457db0c46795d9c7d1a8d8f76f68b0b800a3dfe45786b996e4
   EXTRA_ARGUMENTS
-    # Modify libtiff-4.pc to depend on zlib and libjpeg
+    # Modify libtiff-4.pc to depend on libjpeg
     TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixLibtiffInstall.sh ${THIRDPARTY_PREFIX}
     LOG_TEST 1
 )

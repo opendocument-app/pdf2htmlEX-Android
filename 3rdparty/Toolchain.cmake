@@ -81,3 +81,5 @@ endif (BUILD_SHARED_LIBS)
 # Provide a meson cross compile file
 SET(MESON_CROSS_COMPILE_FILE ${THIRDPARTY_PREFIX}/meson_cross_file.txt)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/meson_cross_file.txt.in ${MESON_CROSS_COMPILE_FILE} @ONLY)
+
+configure_file(${CMAKE_CURRENT_LIST_DIR}/packages/zlib.pc.in ${THIRDPARTY_PKG_CONFIG_LIBDIR}/zlib.pc @ONLY)
