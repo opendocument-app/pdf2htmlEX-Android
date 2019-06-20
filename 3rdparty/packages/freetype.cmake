@@ -6,7 +6,7 @@ ExternalProjectCMake(freetype
   URL_HASH SHA256=fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06
 
   # Freetype needs some "patching" after the install for Cairo to pick it up properly.
-  # All three patched documented in /3rdparty/FixFreetypeInstall.sh
+  # All three patched documented in the script.
   EXTRA_ARGUMENTS
     TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFreetypeInstall.sh ${THIRDPARTY_PREFIX}
     LOG_TEST 1

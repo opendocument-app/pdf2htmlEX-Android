@@ -69,5 +69,5 @@ for build_type in $APP/app/.externalNativeBuild/cmake/*; do
     tar -cf $build_type_and_abi/pdf2htmlEX.tar --directory $build_type_and_abi built
     tar --list -f $build_type_and_abi/pdf2htmlEX.tar
     echo "$build_type_and_abi/pdf2htmlEX.tar is ready!"
-    done
+  done
 done
