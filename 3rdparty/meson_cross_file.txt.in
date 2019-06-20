@@ -6,6 +6,7 @@ ar = '@CMAKE_AR@'
 ld = '@CMAKE_LINKER@'
 strip = '@CMAKE_STRIP@'
 pkgconfig = '@PKG_CONFIG_EXECUTABLE@'
+llvm-config = '@MESON_LLVM-CONFIG'
 
 [properties]
 needs_exe_wrapper = true

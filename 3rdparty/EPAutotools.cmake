@@ -16,7 +16,10 @@ function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
     FilterDependsList(EPA_DEPENDS)
 
     set(EPA_TOOLCHAIN_ENV
+      AS=${AS}
       AR=${CMAKE_AR}
+      CC=${CC}
+      CXX=${CXX}
       LD=${CMAKE_LINKER}
       NM=${CMAKE_NM}
       OBJDUMP=${CMAKE_OBJDUMP}
@@ -31,26 +34,12 @@ function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
       LDFLAGS=${LDFLAGS}
     )
 
-    IF(ANDROID)
-      LIST(APPEND EPA_TOOLCHAIN_ENV
-        AS=${ANDROID_TOOLCHAIN_ROOT}/bin/${CMAKE_LIBRARY_ARCHITECTURE}-as
-        CC=${ANDROID_TOOLCHAIN_ROOT}/bin/${CMAKE_LIBRARY_ARCHITECTURE}${ANDROID_NATIVE_API_LEVEL}-clang
-        CXX=${ANDROID_TOOLCHAIN_ROOT}/bin/${CMAKE_LIBRARY_ARCHITECTURE}${ANDROID_NATIVE_API_LEVEL}-clang++
-      )
-    else()
-      LIST(APPEND EPA_TOOLCHAIN_ENV
-        CC=${CMAKE_C_COMPILER}
-        CXX=${CMAKE_CXX_COMPILER}
-        #AS= @TODO: set AS binary
-      )
-    endif()
-
     SET(EPA_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${EPA_TOOLCHAIN_ENV}
       ./configure --prefix=${THIRDPARTY_PREFIX})
 
-    if (ANDROID)
-      list(APPEND EPA_CONFIGURE_COMMAND --host ${CMAKE_LIBRARY_ARCHITECTURE})
-    endif(ANDROID)
+    if (HOST_TRIPLE)
+      list(APPEND EPA_CONFIGURE_COMMAND --host ${HOST_TRIPLE})
+    endif(HOST_TRIPLE)
     
     if (NOT BUILD_SHARED_LIBS)
       list(APPEND EPA_CONFIGURE_COMMAND --disable-shared)
