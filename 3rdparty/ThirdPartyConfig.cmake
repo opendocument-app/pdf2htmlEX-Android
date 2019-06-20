@@ -6,6 +6,9 @@ SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/prefix)
 
 if (ANDROID)
   SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/${CMAKE_BUILD_TYPE}-${ANDROID_ABI})
+else()
+  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/prefix)
+  message(WARNING "Not really tested on NOT ANDROID... Comment this out and proceed with caution.")
 endif()
 
 SET(THIRDPARTY_PKG_CONFIG_LIBDIR ${THIRDPARTY_PREFIX}/lib/pkgconfig)
