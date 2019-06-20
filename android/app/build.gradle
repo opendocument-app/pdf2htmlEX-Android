@@ -17,7 +17,7 @@ android {
                 //arguments "-DCMAKE_VERBOSE_MAKEFILE=ON"
                 // arguments "-DCMAKE_FIND_ROOT_PATH=/home/vilius/unifiedSPB/pdf2htmlEX/3rdparty/built"
                 // @TODO: try other ABIs
-                abiFilters "x86_64"
+                abiFilters ["arm64-v8a", "x86", "x86_64"]
             }
         }
     }
