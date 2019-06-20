@@ -10,7 +10,14 @@ include(ExternalProject)
 find_package(PkgConfig REQUIRED)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/ThirdPartyConfig.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/Toolchain.cmake)
+
+# Generate pkg-config wrapper
+if(BUILD_SHARED_LIBS)
+  configure_file(${CMAKE_CURRENT_LIST_DIR}/pkg-config.in ${THIRDPARTY_PKG_CONFIG_EXECUTABLE} @ONLY)
+else()
+  configure_file(${CMAKE_CURRENT_LIST_DIR}/pkg-config-static.in ${THIRDPARTY_PKG_CONFIG_EXECUTABLE} @ONLY)
+endif()
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPHelpers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPAutotools.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPCMake.cmake)

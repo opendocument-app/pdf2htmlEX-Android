@@ -1,4 +1,37 @@
-#@TODO: unhardcode host_machine strings in cross_file
+include(CompilerFlags.cmake)
+
+if (ANDROID)
+  SET(MESON_CC ${ANDROID_TOOLCHAIN_ROOT}/bin/${CMAKE_LIBRARY_ARCHITECTURE}${ANDROID_NATIVE_API_LEVEL}-clang)
+  SET(MESON_CPP ${ANDROID_TOOLCHAIN_ROOT}/bin/${CMAKE_LIBRARY_ARCHITECTURE}${ANDROID_NATIVE_API_LEVEL}-clang++)
+
+  if(ANDROID_ABI STREQUAL armeabi-v7a)
+    SET(MESON_SYSTEM "android-arm")
+    SET(MESON_CPU_FAMILY "arm")
+    SET(MESON_CPU "armv7-a")
+  elseif(ANDROID_ABI STREQUAL arm64-v8a)
+    SET(MESON_SYSTEM "android-aarch64")
+    SET(MESON_CPU_FAMILY "aarch64")
+    SET(MESON_CPU "aarch64")
+  elseif(ANDROID_ABI STREQUAL x86)
+    SET(MESON_SYSTEM "android-x86")
+    SET(MESON_CPU_FAMILY "x86")
+    SET(MESON_CPU "i686")
+  elseif(ANDROID_ABI STREQUAL x86_64)
+    SET(MESON_SYSTEM "android-x86_64")
+    SET(MESON_CPU_FAMILY "x86_64")
+    SET(MESON_CPU "x86_64")
+  else()
+    message(FATAL_ERROR "Invalid Android ABI: ${ANDROID_ABI}.")
+  endif()
+  set(MESON_ENDIAN "little")
+
+  SET(MESON_CROSS_COMPILE_FILE ${THIRDPARTY_PREFIX}/meson_cross_file.txt)
+endif()
+
+# Provide a meson cross compile file
+if (MESON_CROSS_COMPILE_FILE AND NOT EXISTS ${MESON_CROSS_COMPILE_FILE})
+  configure_file(${CMAKE_CURRENT_LIST_DIR}/meson_cross_file.txt.in ${MESON_CROSS_COMPILE_FILE} @ONLY)
+endif()
 
 function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
   pkg_check_modules(LIBNAME QUIET ${EXTERNAL_PROJECT_NAME})
@@ -60,8 +93,6 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       LIST(APPEND EPM_CONFIGURE_COMMAND -Ddefault_library=static)
     endif (NOT BUILD_SHARED_LIBS)
 
-    LIST(APPEND EPM_CONFIGURE_COMMAND ${EPM_CONFIGURE_ARGUMENTS})
-
     SET(NINJA_WRAPPER ${CMAKE_COMMAND} -E env ${MESON_ENV}
       ninja -C ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME}-build)
 
@@ -70,7 +101,7 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       URL ${EPM_URL}
       URL_HASH ${EPM_URL_HASH}
 
-      CONFIGURE_COMMAND ${EPM_CONFIGURE_COMMAND}
+      CONFIGURE_COMMAND ${EPM_CONFIGURE_COMMAND} ${EPM_CONFIGURE_ARGUMENTS}
       BUILD_COMMAND ${NINJA_WRAPPER}
       INSTALL_COMMAND ${NINJA_WRAPPER} install
 
