@@ -51,9 +51,9 @@ function(CheckIfTarballCachedLocally URL)
 
   get_filename_component(FILENAME ${INPUT} NAME)
 
-  SET(CACHED_FILENAME ${TARBALL_STORAGE}${FILENAME})
-  if (EXISTS ${TARBALL_STORAGE}${FILENAME})
-    SET(${URL} ${TARBALL_STORAGE}${FILENAME} PARENT_SCOPE)
+  SET(CACHED_FILENAME ${TARBALL_STORAGE}/${FILENAME})
+  if (EXISTS ${CACHED_FILENAME})
+    SET(${URL} ${CACHED_FILENAME} PARENT_SCOPE)
   endif()
 
 endfunction(CheckIfTarballCachedLocally)
