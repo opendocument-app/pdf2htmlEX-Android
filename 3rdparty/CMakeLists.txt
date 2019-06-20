@@ -19,8 +19,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/EPMeson.cmake)
 # Path to manually downloaded tarballs
 SET(TARBALL_STORAGE ${CMAKE_CURRENT_SOURCE_DIR}/tarballs/)
 
-#@TODO: OPTION() not SET()
-SET(BUILD_ALL_3RDPARTY_UTILS_TO_CHECK_FOR_MISSING_SYMBOLS_IN_INCLUDED_LIBRARIES 0)
+option(BUILD_3RDPARTY_BINARIES "Build all 3rd party binaries to catch missing symbols earlier" OFF)
 
 # List of root level packages that we want installed.
 # Defined dependencies will be picked up too.
