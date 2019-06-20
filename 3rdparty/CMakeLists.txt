@@ -16,8 +16,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/EPAutotools.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPCMake.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPMeson.cmake)
 
-# Path to manually downloaded tarballs
-SET(TARBALL_STORAGE ${CMAKE_CURRENT_SOURCE_DIR}/tarballs/)
+SET(TARBALL_STORAGE ${CMAKE_CURRENT_SOURCE_DIR}/tarballs/ CACHE PATH "Path to manually downloaded tarballs. Used to look up before downloading from the internet.")
 
 option(BUILD_3RDPARTY_BINARIES "Build all 3rd party binaries to catch missing symbols earlier" OFF)
 
