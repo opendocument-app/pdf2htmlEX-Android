@@ -1,6 +1,7 @@
 include_guard(GLOBAL)
 
 ExternalProjectCMake(freetype
+  DEPENDS zlib
   URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
   URL_HASH SHA256=fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06
 
