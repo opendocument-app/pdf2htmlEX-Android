@@ -1,3 +1,5 @@
+message(FATAL_ERROR "Do not build this. Use NOOP libintl")
+
 include_guard(GLOBAL)
 
 # gettext doesn't provide pkg-config .pc
