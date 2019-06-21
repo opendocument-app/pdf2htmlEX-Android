@@ -50,3 +50,10 @@ sed -i "/macro_optional_find_package(Cairo \${CAIRO_VERSION})/a if(CAIRO_FOUND)\
 echo "After paching:"
 
 grep 'macro_optional_find_package(Cairo' $CMAKELISTS -A 3
+
+# https://gitlab.freedesktop.org/poppler/poppler/commit/842a75d8d6cc0105da6c0b5dbb0997b79ba63246
+# Poppler-0.74.0 fixed HAVE_FSEEKO detection issue that happens prior to Android-24
+# Patch that file until we upgrade to Poppler-0.74.0+
+THIS_FILE=$(readlink -f "$0")
+BASEDIR=$(dirname "$THIS_FILE")
+patch $POPPLER_SRC/ConfigureChecks.cmake < ${BASEDIR}/poppler-android-23.patch
