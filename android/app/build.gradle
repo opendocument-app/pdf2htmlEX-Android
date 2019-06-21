@@ -7,7 +7,7 @@ android {
         // x86_64 min level 21
         // x86 min level 16
         // libfontforge/gutils/fsys.c uses getpwent, which is avail from api 26
-        minSdkVersion 25
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
