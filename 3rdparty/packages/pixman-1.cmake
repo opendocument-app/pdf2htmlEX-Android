@@ -15,12 +15,15 @@ if (NOT BUILD_SHARED_LIBS)
   )
 endif (NOT BUILD_SHARED_LIBS)
 
+# Build errors for armeabi-v7a SIMD and Neon asm code.
+if(ANDROID_ABI STREQUAL armeabi-v7a)
+  SET(ARM32_CONFIG CONFIGURE_ARGUMENTS -Dneon=disabled -Darm-simd=disabled)
+endif()
+
 ExternalProjectMeson(pixman-1
   DEPENDS libpng glib-2.0
   URL https://cairographics.org/releases/pixman-0.38.4.tar.gz
   URL_HASH SHA256=da66d6fd6e40aee70f7bd02e4f8f76fc3f006ec879d346bae6a723025cfbdde7
-  CONFIGURE_ARGUMENTS
-    #@TODO: enable for arm64. these fail only for 32 bit arm.
-    -Dneon=disabled -Darm-simd=disabled
+  ${ARM32_CONFIG}
   ${PIXMAN_SHARED_ARGUMENT}
 )
