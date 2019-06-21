@@ -45,7 +45,7 @@ done
 # cut off the last \;
 PIXMAN_LIBS=${PIXMAN_LIBS%\;*}
 
-sed -i "/macro_optional_find_package(Cairo \${CAIRO_VERSION})/a if(CAIRO_FOUND)\n  SET(TIFF_LIBRARIES \"\${TIFF_LIBRARIES};$PIXMAN_LIBS\")\nendif(CAIRO_FOUND)" $CMAKELISTS
+sed -i "/set(poppler_LIBS \${FREETYPE_LIBRARIES})/a if(CAIRO_FOUND)\n set(poppler_LIBS \${poppler_LIBS} $PIXMAN_LIBS)\n endif()" $CMAKELISTS
 
 echo "After paching:"
 
