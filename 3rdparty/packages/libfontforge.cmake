@@ -7,7 +7,7 @@ ELSE()
 ENDIF ()
 
 ExternalProjectAutotools(libfontforge
-  DEPENDS libxml-2.0 libjpeg glib-2.0 freetype zlib
+  DEPENDS libxml-2.0 libjpeg glib-2.0 freetype zlib libintl iconv
 
   URL https://github.com/fontforge/fontforge/releases/download/20190413/fontforge-20190413.tar.gz
   URL_HASH SHA256=6762a045aba3d6ff1a7b856ae2e1e900a08a8925ccac5ebf24de91692b206617
