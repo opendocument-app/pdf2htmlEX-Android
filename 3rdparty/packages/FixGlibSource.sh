@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SRC=$1/meson.build
-THIRDPARTY_LIBDIR=$2/lib
-THIRDPARTY_LIBDIR_SLASH_ESCAPED="${THIRDPARTY_LIBDIR//\//\\\/}\/"
+MESON_BUILD_FILE=$1/meson.build
+ANDROID_ABI_LEVEL=$2
 
-ANDROID_ABI_LEVEL=$3
+sed -i "s/cc.find_library('iconv')/dependency('iconv')/g" $MESON_BUILD_FILE
 
-echo "Before patching: "
-grep "find_library('iconv'" $SRC
-sed -i "s/find_library('iconv')/find_library('iconv', dirs: '${THIRDPARTY_LIBDIR_SLASH_ESCAPED}')/g" $SRC
-
-echo ""
-echo "After patching: "
-grep "find_library('iconv'" $SRC
-
+sed -i "s/cc.find_library('intl'/dependency('intl'/g" $MESON_BUILD_FILE
 
 if [ "${ANDROID_ABI_LEVEL}" -lt "21" ]; then
-  echo "Patching $SRC to not use stpcpy. Meson detects it, however it is not avail."
-  sed -i "s/glib_conf.set('HAVE_STPCPY', 1)/#glib_conf.set('HAVE_STPCPY', 1)/g" $SRC
+  echo "Patching $MESON_BUILD_FILE to not use stpcpy. Meson detects it, however it is not avail."
+  sed -i "s/glib_conf.set('HAVE_STPCPY', 1)/#glib_conf.set('HAVE_STPCPY', 1)/g" $MESON_BUILD_FILE
 fi

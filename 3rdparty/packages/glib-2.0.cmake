@@ -10,6 +10,5 @@ ExternalProjectMeson(glib-2.0
   UPDATE_COMMAND
     ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixGlibSource.sh
     ${CMAKE_CURRENT_BINARY_DIR}/glib-2.0-prefix/src/glib-2.0/
-    ${THIRDPARTY_PREFIX}
     ${ANDROID_NATIVE_API_LEVEL}
 )
