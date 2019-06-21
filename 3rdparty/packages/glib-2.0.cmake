@@ -14,7 +14,6 @@ ExternalProjectMeson(glib-2.0
 
   EXTRA_ARGUMENTS
   UPDATE_COMMAND
-    #@TODO: attempt to libiconv.pc (pkg-config) so that this hack would not be needed
     ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixGlibSource.sh
     ${CMAKE_CURRENT_BINARY_DIR}/glib-2.0-prefix/src/glib-2.0/
     ${THIRDPARTY_PREFIX}
