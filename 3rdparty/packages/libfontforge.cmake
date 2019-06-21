@@ -6,6 +6,17 @@ ELSE()
   SET(FONTFORGE_BUILD_PROGRAMS_ARGUMENT --disable-programs)
 ENDIF ()
 
+# Upstream fontforge builds only on Android-26+
+# Apply patches, if ANDROID is earlier than 26
+if (ANDROID AND NOT ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 26)
+  SET(FONTFORGE_PATCH_FOR_ANDROID_BEFORE_26
+    UPDATE_COMMAND
+      ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFontforgeSource.sh
+      ${CMAKE_CURRENT_BINARY_DIR}/libfontforge-prefix/src/libfontforge/
+    LOG_UPDATE 1
+  )
+endif()
+
 ExternalProjectAutotools(libfontforge
   DEPENDS libxml-2.0 libjpeg glib-2.0 freetype zlib libintl iconv
 
@@ -22,10 +33,12 @@ ExternalProjectAutotools(libfontforge
     # fontforge does not pick up libpng too
     --without-libpng
 
+  EXTRA_ARGUMENTS
+    ${FONTFORGE_PATCH_FOR_ANDROID_BEFORE_26}
+
   # Fontforge uses libxml-2.0 gio-2.0
   # But does not declare them in libfontforge.pc
   # Fix after install
-  EXTRA_ARGUMENTS
     TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFontforgeInstall.sh ${THIRDPARTY_PREFIX}
     LOG_TEST 1
 
