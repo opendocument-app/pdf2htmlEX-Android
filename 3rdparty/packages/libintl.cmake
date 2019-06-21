@@ -1,11 +1,6 @@
 include_guard(GLOBAL)
 
 ExternalProjectMeson(libintl
-  URL https://github.com/frida/proxy-libintl/archive/0.1.tar.gz
-  URL_HASH SHA256=202d90855943091b11ac91863ff5884f0eaf80318a32dc8504fcfdafc65992ed
-
-  EXTRA_ARGUMENTS
-  # Delete libintl.so.
-  TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixLibintlInstall.sh ${THIRDPARTY_PREFIX}
-  LOG_TEST 1
+  URL https://github.com/ViliusSutkus/proxy-libintl/archive/0.2.tar.gz
+  URL_HASH SHA256=9467f672d2e18d61fb14cbfb08d4afcc1f88c0ec372cac79bc19e848e8d66ba7
 )
