@@ -61,13 +61,16 @@ done
 cd $APP
 ./gradlew assemble
 for build_type in $APP/app/.externalNativeBuild/cmake/*; do
+  build_type_string=$(basename ${build_type})
   for build_type_and_abi in $build_type/*; do
+    abi_string=$(basename ${build_type_and_abi})
     cmake --build $build_type_and_abi --target install
 
     mkdir $build_type_and_abi/built/sample_pdfs
     cp -v $BASEDIR/test/browser_tests/*.pdf $build_type_and_abi/built/sample_pdfs/
-    tar -cf $build_type_and_abi/pdf2htmlEX.tar --directory $build_type_and_abi built
-    tar --list -f $build_type_and_abi/pdf2htmlEX.tar
-    echo "$build_type_and_abi/pdf2htmlEX.tar is ready!"
+    FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
+    tar -cf $FINAL_TAR --directory $build_type_and_abi built
+    tar --list -f $FINAL_TAR
+    echo "$FINAL_TAR is ready!"
   done
 done
