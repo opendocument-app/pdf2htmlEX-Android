@@ -59,7 +59,24 @@ include_directories(${FONTFORGE_INCLUDE_DIRS})
 link_directories(${FONTFORGE_LIBRARY_DIRS})
 set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${FONTFORGE_LIBRARIES})
 
-if (NOT ANDROID)
+if (ANDROID)
+  if(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
+    STRING(REPLACE "-g " " " CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+    STRING(REPLACE "-g " " " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+  endif()
+
+  # -flto does not work with -Os on Android
+  # https://github.com/android-ndk/ndk/issues/721
+  STRING(REPLACE "-Os " "-O2 " CMAKE_C_FLAGS_MINSIZEREL ${CMAKE_C_FLAGS_MINSIZEREL})
+  STRING(REPLACE "-Os " "-O2 " CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL})
+
+  STRING(APPEND CMAKE_C_FLAGS_MINSIZEREL " -flto=full ")
+  STRING(APPEND CMAKE_CXX_FLAGS_MINSIZEREL " -flto=full ")
+  STRING(APPEND CMAKE_EXE_LINKER_FLAGS_MINSIZEREL " -flto=full ")
+  STRING(APPEND CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL " -flto=full ")
+  STRING(APPEND CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL " -flto=full ")
+  STRING(APPEND CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL " -flto=full ")
+else()
 # debug build flags (overwrite default cmake debug flags)
 set(CMAKE_C_FLAGS_DEBUG "-ggdb -pg")
 set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -pg")
@@ -84,7 +101,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 else()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -pthread")
 endif()
-endif (NOT ANDROID)
+
+endif()
 
 # check the C++11 features we need
 include(CheckCXXSourceCompiles)
