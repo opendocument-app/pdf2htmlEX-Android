@@ -6,15 +6,23 @@ ELSE()
   SET(FONTFORGE_BUILD_PROGRAMS_ARGUMENT --disable-programs)
 ENDIF ()
 
-# Upstream fontforge builds only on Android-26+
-# Apply patches, if ANDROID is earlier than 26
-if (ANDROID AND NOT ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 26)
-  SET(FONTFORGE_PATCH_FOR_ANDROID_BEFORE_26
-    UPDATE_COMMAND
-      ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFontforgeSource.sh
-      ${CMAKE_CURRENT_BINARY_DIR}/libfontforge-prefix/src/libfontforge/
-    LOG_UPDATE 1
-  )
+if (ANDROID)
+  # Upstream fontforge builds only on Android-26+
+  # Apply patches, if ANDROID is earlier than 26
+  if (NOT ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 26)
+    SET(FONTFORGE_PATCH_FOR_ANDROID_BEFORE_26
+      UPDATE_COMMAND
+        ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFontforgeSource.sh
+        ${CMAKE_CURRENT_BINARY_DIR}/libfontforge-prefix/src/libfontforge/
+      LOG_UPDATE 1
+    )
+  endif()
+
+  # Android-23 fails to build scripting.c, which can be disabled by --disable-native-scripting .
+  # Fontforgeexe fails to build too, without native scripting. Disable it too.
+  if (NOT ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 24)
+    SET(FONTFORGE_BUILD_PROGRAMS_ARGUMENT --disable-native-scripting --disable-programs)
+  endif()
 endif()
 
 ExternalProjectAutotools(libfontforge
