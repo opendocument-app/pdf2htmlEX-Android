@@ -83,10 +83,9 @@ for build_type in $APP/app/.externalNativeBuild/cmake/*; do
   for build_type_and_abi in $build_type/*; do
     abi_string=$(basename ${build_type_and_abi})
 
-    COMPILED_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
-    PACKED_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX-compressed
-    upx --ultra-brute --8mib-ram -o $PACKED_BINARY $COMPILED_BINARY
-    upx -t $PACKED_BINARY
+    FINAL_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
+    upx --ultra-brute --8mib-ram -o $FINAL_BINARY
+    upx -t $FINAL_BINARY
 
     FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
     if [ -f "${FINAL_TAR}" ]; then
