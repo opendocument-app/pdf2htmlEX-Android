@@ -11,8 +11,7 @@ android {
         // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                //arguments "-DCMAKE_VERBOSE_MAKEFILE=ON"
-                // arguments "-DCMAKE_FIND_ROOT_PATH=/home/vilius/unifiedSPB/pdf2htmlEX/3rdparty/built"
+                arguments '-DCMAKE_BUILD_TYPE=MinSizeRel', '-DBUILD_3RDPARTY_BINARIES=OFF'
             }
         }
     }
