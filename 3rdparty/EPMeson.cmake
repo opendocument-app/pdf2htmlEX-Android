@@ -71,6 +71,10 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
     STRING(REPLACE "-fno-addrsig" " " MESON_CFLAGS ${MESON_CFLAGS})
     STRING(REPLACE "-fno-addrsig" " " MESON_CXXFLAGS ${MESON_CXXFLAGS})
 
+    # Fails to build with march=armv7-a during configure stage
+    STRING(REPLACE "-march=armv7-a" "" MESON_CFLAGS ${MESON_CFLAGS})
+    STRING(REPLACE "-march=armv7-a" "" MESON_CXXFLAGS ${MESON_CXXFLAGS})
+
     SET(MESON_ENV
       # https://github.com/mesonbuild/meson/issues/217
       # find_library is now cc.find_library and now uses the linker to check if a particular library is available (similar to how AC_CHECK_LIB does it). This means you can set the LIBRARY_PATH env variable (when using gcc/clang and the LIBPATH env variable when using MSVC) to point to your "library providing" root. It also accepts a colon-separated list of directories. This is how almost everyone does non-default-linker-search-path library searching and linking.
