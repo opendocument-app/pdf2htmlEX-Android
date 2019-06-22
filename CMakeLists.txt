@@ -50,7 +50,7 @@ if(ENABLE_SVG)
         message(FATAL_ERROR "Error: no SVG support found in Cairo")
     endif()
 
-  pkg_check_modules(freetype REQUIRED)
+  pkg_check_modules(freetype REQUIRED freetype)
 endif()
 
 # fontforge starts using pkg-config 'correctly' since 2.0.0
