@@ -70,24 +70,45 @@ for build_type in $APP/app/.externalNativeBuild/cmake/*; do
       mkdir $build_type_and_abi/built/sample_pdfs
     fi
     cp -v $BASEDIR/test/browser_tests/*.pdf $build_type_and_abi/built/sample_pdfs/
-    FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
-    tar -cf $FINAL_TAR --directory $build_type_and_abi built
-    tar --list -f $FINAL_TAR
-    echo "$FINAL_TAR is ready!"
   done
 done
 
 echo ""
 echo ""
 
-# Print a list of available .tar's, because the previous messages will be lost behind a wall of text
+# Pack pdf2htmlEX binaries with UPX
+
 for build_type in $APP/app/.externalNativeBuild/cmake/*; do
   build_type_string=$(basename ${build_type})
   for build_type_and_abi in $build_type/*; do
     abi_string=$(basename ${build_type_and_abi})
+
+    COMPILED_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
+    PACKED_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX-compressed
+    upx --ultra-brute --8mib-ram -o $PACKED_BINARY $COMPILED_BINARY
+    upx -t $PACKED_BINARY
+
     FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
     if [ -f "${FINAL_TAR}" ]; then
       echo "$FINAL_TAR is ready!"
     fi
+
+    ls -lha $build_type_and_abi/built/bin/pdf2htmlEX
+  done
+done
+
+echo ""
+echo ""
+
+# Compress binaries and other files into .tar's
+for build_type in $APP/app/.externalNativeBuild/cmake/*; do
+  build_type_string=$(basename ${build_type})
+  for build_type_and_abi in $build_type/*; do
+    abi_string=$(basename ${build_type_and_abi})
+
+    FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
+    tar -cf $FINAL_TAR --directory $build_type_and_abi built
+    tar --list -f $FINAL_TAR
+    echo "$FINAL_TAR is ready!"
   done
 done
