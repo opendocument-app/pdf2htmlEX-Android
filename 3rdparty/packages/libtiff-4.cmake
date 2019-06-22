@@ -1,5 +1,7 @@
 include_guard(GLOBAL)
 
+message(FATAL_ERROR "libtiff-4 disabled, space saving")
+
 # CMAKE issue 8905: FindTIFF should link to jpeg library
 # https://gitlab.kitware.com/cmake/cmake/issues/8905
 # https://cmake.org/Bug/view.php?id=8905

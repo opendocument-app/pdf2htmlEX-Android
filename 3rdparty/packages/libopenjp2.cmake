@@ -1,5 +1,7 @@
 include_guard(GLOBAL)
 
+message(FATAL_ERROR "libopenjp2 disabled, space saving")
+
 ExternalProjectCMake(libopenjp2
   DEPENDS libpng libtiff-4 lcms2
   URL https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz

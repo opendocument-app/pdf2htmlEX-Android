@@ -20,13 +20,16 @@ ELSE()
 ENDIF ()
 
 ExternalProjectCMake(poppler
-  DEPENDS freetype libjpeg libopenjp2 glib-2.0 cairo libtiff-4 lcms2
+  DEPENDS cairo freetype glib-2.0 libpng libjpeg
+  # DEPENDS libtiff-4
 
   URL https://poppler.freedesktop.org/poppler-0.70.1.tar.xz
   URL_HASH SHA256=66972047d9ef8162cc8c389d7e7698291dfc9f2b3e4ea9a9f08ae604107451bd
 
   CONFIGURE_ARGUMENTS -DENABLE_XPDF_HEADERS=ON
     -DBUILD_GTK_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DENABLE_QT5=OFF
+    -DENABLE_LIBOPENJPEG=none # requires libopenjp2
+    -DENABLE_CMS=none # requires lcms2
     ${POPPLER_CONFIGURE_ARGUMENTS}
 
     EXTRA_ARGUMENTS
@@ -40,6 +43,6 @@ ExternalProjectCMake(poppler
       # Fontforge uses libopenjp2 lcms2
       # But does not declare them in poppler.pc
       # Fix after install
-      TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixPopplerInstall.sh ${THIRDPARTY_PREFIX}
-      LOG_TEST 1
+      # TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixPopplerInstall.sh ${THIRDPARTY_PREFIX}
+      # LOG_TEST 1
 )
