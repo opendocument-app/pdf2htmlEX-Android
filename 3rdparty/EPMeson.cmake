@@ -63,6 +63,14 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       message(FATAL_ERROR "Unknown build type:" ${CMAKE_BUILD_TYPE})
     endif()
 
+    # Filter out unsupported arguments from FLAGS
+    STRING(REPLACE "-no-canonical-prefixes" " " MESON_CFLAGS ${CFLAGS})
+    STRING(REPLACE "-no-canonical-prefixes" " " MESON_CXXFLAGS ${CXXFLAGS})
+
+    # https://github.com/android-ndk/ndk/issues/884
+    STRING(REPLACE "-fno-addrsig" " " MESON_CFLAGS ${MESON_CFLAGS})
+    STRING(REPLACE "-fno-addrsig" " " MESON_CXXFLAGS ${MESON_CXXFLAGS})
+
     SET(MESON_ENV
       # https://github.com/mesonbuild/meson/issues/217
       # find_library is now cc.find_library and now uses the linker to check if a particular library is available (similar to how AC_CHECK_LIB does it). This means you can set the LIBRARY_PATH env variable (when using gcc/clang and the LIBPATH env variable when using MSVC) to point to your "library providing" root. It also accepts a colon-separated list of directories. This is how almost everyone does non-default-linker-search-path library searching and linking.
@@ -73,6 +81,10 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       # Note that if you have a single prefix with all your dependencies, you might find it easier to append to the environment variables C_INCLUDE_PATH with GCC/Clang and INCLUDE with MSVC to expand the default include path, and LIBRARY_PATH with GCC/Clang and LIB with MSVC to expand the default library search path.
       C_INCLUDE_PATH=${THIRDPARTY_PREFIX}/include
       INCLUDE=${THIRDPARTY_PREFIX}/include
+
+      CFLAGS=${MESON_CFLAGS}
+      CXXFLAGS=${MESON_CXXFLAGS}
+      LDFLAGS=${LDFLAGS}
     )
 
     set(EPM_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${MESON_ENV}
