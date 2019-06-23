@@ -85,8 +85,13 @@ for build_type in $APP/app/.externalNativeBuild/cmake/*; do
     abi_string=$(basename ${build_type_and_abi})
 
     FINAL_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
-    upx --ultra-brute --8mib-ram $FINAL_BINARY
-    upx -t $FINAL_BINARY
+
+    # UPX only works on armeabi-v7a
+    # Other ABIs produce segfaults.
+    if [ "$abi_string" == "armeabi-v7a" ]; then
+      upx --ultra-brute --8mib-ram $FINAL_BINARY
+      upx -t $FINAL_BINARY
+    fi
 
     FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
     if [ -f "${FINAL_TAR}" ]; then
