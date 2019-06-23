@@ -49,6 +49,7 @@ if [ ! -d "$LIB" ]; then
   echo '</manifest>' >> $LIB/lib/src/main/AndroidManifest.xml
 fi
 
+# Build 3rdparty libraries
 cd $LIB
 ./gradlew assemble
 for build_type in $THIRD_PARTY_DIR/built/cmake/*; do
@@ -58,6 +59,7 @@ for build_type in $THIRD_PARTY_DIR/built/cmake/*; do
   done
 done
 
+# Build pdf2htmlEX
 cd $APP
 ./gradlew assemble
 for build_type in $APP/app/.externalNativeBuild/cmake/*; do
@@ -77,14 +79,13 @@ echo ""
 echo ""
 
 # Pack pdf2htmlEX binaries with UPX
-
 for build_type in $APP/app/.externalNativeBuild/cmake/*; do
   build_type_string=$(basename ${build_type})
   for build_type_and_abi in $build_type/*; do
     abi_string=$(basename ${build_type_and_abi})
 
     FINAL_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
-    upx --ultra-brute --8mib-ram -o $FINAL_BINARY
+    upx --ultra-brute --8mib-ram $FINAL_BINARY
     upx -t $FINAL_BINARY
 
     FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
