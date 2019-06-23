@@ -1,4 +1,5 @@
 include(CompilerFlags.cmake)
+include(CompilerBinaries.cmake)
 include(ProcessorCount)
 
 function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)

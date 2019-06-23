@@ -1,4 +1,5 @@
 include(CompilerFlags.cmake)
+include(CompilerBinaries.cmake)
 
 if (ANDROID)
   if(ANDROID_ABI STREQUAL armeabi-v7a)
@@ -62,18 +63,6 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
     else()
       message(FATAL_ERROR "Unknown build type:" ${CMAKE_BUILD_TYPE})
     endif()
-
-    # Filter out unsupported arguments from FLAGS
-    STRING(REPLACE "-no-canonical-prefixes" " " MESON_CFLAGS ${CFLAGS})
-    STRING(REPLACE "-no-canonical-prefixes" " " MESON_CXXFLAGS ${CXXFLAGS})
-
-    # https://github.com/android-ndk/ndk/issues/884
-    STRING(REPLACE "-fno-addrsig" " " MESON_CFLAGS ${MESON_CFLAGS})
-    STRING(REPLACE "-fno-addrsig" " " MESON_CXXFLAGS ${MESON_CXXFLAGS})
-
-    # Fails to build with march=armv7-a during configure stage
-    STRING(REPLACE "-march=armv7-a" "" MESON_CFLAGS ${MESON_CFLAGS})
-    STRING(REPLACE "-march=armv7-a" "" MESON_CXXFLAGS ${MESON_CXXFLAGS})
 
     SET(MESON_ENV
       # https://github.com/mesonbuild/meson/issues/217

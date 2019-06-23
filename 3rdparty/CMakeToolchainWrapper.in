@@ -1,0 +1,2 @@
+include(@CMAKE_TOOLCHAIN_FILE@)
+include(@CompilerFlagsCMAKE_FILE@)

@@ -1,5 +1,15 @@
-# Get Compiler flags from our current CMake environment,
-# Will be passed to Autotools and Meson
+# Process CFLAGS, CXXFLAGS and LDFLAGS
+
+# CMAKE_C_FLAGS and CMAKE_CXX_FLAGS will by used by Autotools, CMake and Meson
+
+# Android toolchain adds debugging symbols even in MinSizeRel, but strips them when packaging APK.
+# APK is not necessary in this use case, just strip -g
+if(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
+  STRING(REPLACE "-g" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+  STRING(REPLACE "-g" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+endif()
+
+# CFLAGS , CXXFLAGS and LDFLAGS will by used by Autotools and Meson
 
 SET(CFLAGS ${CMAKE_C_FLAGS})
 SET(CXXFLAGS ${CMAKE_CXX_FLAGS})
@@ -23,37 +33,9 @@ STRING(APPEND CFLAGS " -I${THIRDPARTY_PREFIX}/include")
 STRING(APPEND CXXFLAGS " -I${THIRDPARTY_PREFIX}/include")
 STRING(APPEND LDFLAGS " -L${THIRDPARTY_PREFIX}/lib")
 
+# march=armv7-a breaks build.
+# Both Autotools and Meson fail, telling that compiler does not work
 if(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
-  STRING(REPLACE "-g " " " CFLAGS ${CFLAGS})
-  STRING(REPLACE "-g " " " CXXFLAGS ${CXXFLAGS})
-endif()
-
-if (ANDROID)
-  if(ANDROID_ABI STREQUAL armeabi-v7a)
-    SET(AS ${ANDROID_TOOLCHAIN_ROOT}/bin/armv7a-linux-androideabi-as)
-    SET(CC ${ANDROID_TOOLCHAIN_ROOT}/bin/armv7a-linux-androideabi${ANDROID_NATIVE_API_LEVEL}-clang)
-    SET(CXX ${ANDROID_TOOLCHAIN_ROOT}/bin/armv7a-linux-androideabi${ANDROID_NATIVE_API_LEVEL}-clang++)
-    SET(HOST_TRIPLE armv7a-linux-androideabi)
-  elseif(ANDROID_ABI STREQUAL arm64-v8a)
-    SET(AS ${ANDROID_TOOLCHAIN_ROOT}/bin/aarch64-linux-android-as)
-    SET(CC ${ANDROID_TOOLCHAIN_ROOT}/bin/aarch64-linux-android${ANDROID_NATIVE_API_LEVEL}-clang)
-    SET(CXX ${ANDROID_TOOLCHAIN_ROOT}/bin/aarch64-linux-android${ANDROID_NATIVE_API_LEVEL}-clang++)
-    SET(HOST_TRIPLE aarch64-linux-android)
-  elseif(ANDROID_ABI STREQUAL x86)
-    SET(AS ${ANDROID_TOOLCHAIN_ROOT}/bin/x86-linux-android-as)
-    SET(CC ${ANDROID_TOOLCHAIN_ROOT}/bin/i686-linux-android${ANDROID_NATIVE_API_LEVEL}-clang)
-    SET(CXX ${ANDROID_TOOLCHAIN_ROOT}/bin/i686-linux-android${ANDROID_NATIVE_API_LEVEL}-clang++)
-    SET(HOST_TRIPLE i686-linux-android)
-  elseif(ANDROID_ABI STREQUAL x86_64)
-    SET(AS ${ANDROID_TOOLCHAIN_ROOT}/bin/x86_64-linux-android-as)
-    SET(CC ${ANDROID_TOOLCHAIN_ROOT}/bin/x86_64-linux-android${ANDROID_NATIVE_API_LEVEL}-clang)
-    SET(CXX ${ANDROID_TOOLCHAIN_ROOT}/bin/x86_64-linux-android${ANDROID_NATIVE_API_LEVEL}-clang++)
-    SET(HOST_TRIPLE x86_64-linux-android)
-  else()
-    message(FATAL_ERROR "Invalid Android ABI: ${ANDROID_ABI}.")
-  endif()
-else()
-  #SET(AS @TODO: set AS binary)
-  SET(CC ${CMAKE_C_COMPILER})
-  SET(CXX ${CMAKE_CXX_COMPILER})
+  STRING(REPLACE "-march=armv7-a" "" CFLAGS "${CFLAGS}")
+  STRING(REPLACE "-march=armv7-a" "" CXXFLAGS "${CXXFLAGS}")
 endif()
