@@ -1,1 +1,12 @@
-rm -rf build pdf2htmlEX.1 share/*.css share/*.js share/*.min.* src/pdf2htmlEX-config.h src/util/css_const.h
+#!/bin/sh
+
+THIS_FILE=$(readlink -f "$0")
+BASEDIR=$(dirname "$THIS_FILE")
+
+rm -r $BASEDIR/build $BASEDIR/pdf2htmlEX.1 $BASEDIR/share/*.css $BASEDIR/share/*.js $BASEDIR/share/*.min.* $BASEDIR/src/pdf2htmlEX-config.h $BASEDIR/src/util/css_const.h
+
+rm -r $BASEDIR/3rdparty/built
+rm -r $BASEDIR/lib-android
+rm -r $BASEDIR/android/app/.externalNativeBuild
+rm -r $BASEDIR/android/app/build
+
