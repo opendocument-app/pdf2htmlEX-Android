@@ -26,10 +26,10 @@ if (ANDROID)
 endif()
 
 ExternalProjectAutotools(libfontforge
-  DEPENDS freetype glib-2.0 iconv libintl libjpeg libxml-2.0 zlib
+  DEPENDS libuninameslist freetype glib-2.0 iconv libintl libjpeg libxml-2.0 zlib
 
-  URL https://github.com/fontforge/fontforge/releases/download/20190413/fontforge-20190413.tar.gz
-  URL_HASH SHA256=6762a045aba3d6ff1a7b856ae2e1e900a08a8925ccac5ebf24de91692b206617
+  URL https://github.com/fontforge/fontforge/releases/download/20190801/fontforge-20190801.tar.gz
+  URL_HASH SHA256=d92075ca783c97dc68433b1ed629b9054a4b4c74ac64c54ced7f691540f70852
   CONFIGURE_ARGUMENTS ${FONTFORGE_BUILD_PROGRAMS_ARGUMENT}
 
     # libfontforge checks for TIFFRewriteField , which was deprecated in libtiff-4
@@ -49,6 +49,4 @@ ExternalProjectAutotools(libfontforge
   # Fix after install
     TEST_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/packages/FixFontforgeInstall.sh ${THIRDPARTY_PREFIX}
     LOG_TEST 1
-
-  ${FONTFORGE_STATIC}
 )

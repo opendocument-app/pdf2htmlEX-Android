@@ -12,13 +12,3 @@ BASEDIR=$(dirname "$THIS_FILE")
 #endif /* __ANDROID_API__ >= 26 */
 patch $1/gutils/fsys.c < ${BASEDIR}/libfontforgeFsys.patch
 
-# Fix sent upstream:
-# https://github.com/fontforge/fontforge/pull/3746
-#
-# android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/langinfo.h:char*
-# if __ANDROID_API__ >= 26
-# char* nl_langinfo(nl_item __item) __INTRODUCED_IN(26);
-# char* nl_langinfo_l(nl_item __item, locale_t __l) __INTRODUCED_IN(26);
-# #endif /* __ANDROID_API__ >= 26 */
-
-patch $1/fontforge/noprefs.c < ${BASEDIR}/libfontforgeNoprefs.patch
