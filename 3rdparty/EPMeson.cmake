@@ -74,10 +74,6 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
       # Note that if you have a single prefix with all your dependencies, you might find it easier to append to the environment variables C_INCLUDE_PATH with GCC/Clang and INCLUDE with MSVC to expand the default include path, and LIBRARY_PATH with GCC/Clang and LIB with MSVC to expand the default library search path.
       C_INCLUDE_PATH=${THIRDPARTY_PREFIX}/include
       INCLUDE=${THIRDPARTY_PREFIX}/include
-
-      CFLAGS=${MESON_CFLAGS}
-      CXXFLAGS=${MESON_CXXFLAGS}
-      LDFLAGS=${LDFLAGS}
     )
 
     set(EPM_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${MESON_ENV}

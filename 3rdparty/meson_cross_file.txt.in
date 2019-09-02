@@ -14,6 +14,10 @@ ranlib = '@CMAKE_RANLIB@'
 
 [properties]
 needs_exe_wrapper = true
+c_args='@CFLAGS@'
+cpp_args='@CXXFLAGS@'
+c_link_args='@LDFLAGS@'
+cpp_link_args='@LDFLAGS@'
 
 [host_machine]
 system = '@MESON_SYSTEM@'
