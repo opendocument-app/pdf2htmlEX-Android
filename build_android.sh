@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -euo pipefail
+shopt -s failglob
 
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
@@ -9,8 +10,9 @@ LIB=$BASEDIR/lib-android
 THIRD_PARTY_DIR=$BASEDIR/3rdparty
 THIRD_PARTY_DIR_SLASH_ESCAPED="${THIRD_PARTY_DIR//\//\\\/}\/"
 
-# Based on Android app generate a project for library
-if [ ! -d "$LIB" ]; then
+# Generate library gradle project based on Android app
+if ! test -d "$LIB"
+then
   echo "Preparing $LIB"
 
   # Copy necessary files from android app to android lib
@@ -52,68 +54,60 @@ fi
 # Build 3rdparty libraries
 cd $LIB
 ./gradlew assemble
-for build_type in $THIRD_PARTY_DIR/built/cmake/*; do
-  for build_type_and_abi in $build_type/*; do
-    echo "Building LIB: $build_type_and_abi"
-    cmake --build $build_type_and_abi
+
+function wait_on_children_processes() {
+  for pid in $pids
+  do
+    if ! wait $pid
+    then
+      echo "Build failed. Waiting for other subprocesses..."
+      wait
+      exit 1
+    fi
   done
+}
+
+pids=
+for build_target in $THIRD_PARTY_DIR/built/cmake/*/*
+do
+  cmake --build $build_target &
+  pids="$pids $!"
 done
+wait_on_children_processes $pids
 
 # Build pdf2htmlEX
 cd $APP
 ./gradlew assemble
-for build_type in $APP/app/.externalNativeBuild/cmake/*; do
-  build_type_string=$(basename ${build_type})
-  for build_type_and_abi in $build_type/*; do
-    abi_string=$(basename ${build_type_and_abi})
-    cmake --build $build_type_and_abi --target install
 
-    if [ ! -d "$build_type_and_abi/built/sample_pdfs" ]; then
-      mkdir $build_type_and_abi/built/sample_pdfs
-    fi
-    cp -v $BASEDIR/test/browser_tests/*.pdf $build_type_and_abi/built/sample_pdfs/
-  done
-done
+pids=
+for build_target in $APP/app/.externalNativeBuild/cmake/*/*
+do
+  (
+    set -euo pipefail
+    cmake --build $build_target --target install
 
-echo ""
-echo ""
-
-# Pack pdf2htmlEX binaries with UPX
-for build_type in $APP/app/.externalNativeBuild/cmake/*; do
-  build_type_string=$(basename ${build_type})
-  for build_type_and_abi in $build_type/*; do
-    abi_string=$(basename ${build_type_and_abi})
-
-    FINAL_BINARY=$build_type_and_abi/built/bin/pdf2htmlEX
+    abi=$(basename $build_target)
+    build_type=$(basename ${build_target%$abi})
 
     # UPX only works on armeabi-v7a
     # Other ABIs produce segfaults.
-    if [ "$abi_string" == "armeabi-v7a" ]; then
-      upx --ultra-brute --8mib-ram $FINAL_BINARY
-      upx -t $FINAL_BINARY
+    if test $abi = "armeabi-v7a"
+    then
+      upx --ultra-brute --8mib-ram $build_target/built/bin/pdf2htmlEX
     fi
 
-    FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
-    if [ -f "${FINAL_TAR}" ]; then
-      echo "$FINAL_TAR is ready!"
-    fi
+    # Compress binaries and other files into .tar's
+    mkdir --parents $build_target/built/sample_pdfs
+    cp $BASEDIR/test/browser_tests/*.pdf $build_target/built/sample_pdfs/
 
-    ls -lha $build_type_and_abi/built/bin/pdf2htmlEX
-  done
+    tar --create --file $build_target/$build_type-$abi-pdf2htmlEX.tar --directory $build_target built
+  ) &
+  pids="$pids $!"
+done
+wait_on_children_processes $pids
+
+for ft in $APP/app/.externalNativeBuild/cmake/*/*/*-pdf2htmlEX.tar
+do
+  echo "$ft is ready!"
 done
 
-echo ""
-echo ""
-
-# Compress binaries and other files into .tar's
-for build_type in $APP/app/.externalNativeBuild/cmake/*; do
-  build_type_string=$(basename ${build_type})
-  for build_type_and_abi in $build_type/*; do
-    abi_string=$(basename ${build_type_and_abi})
-
-    FINAL_TAR=$build_type_and_abi/${build_type_string}-${abi_string}-pdf2htmlEX.tar
-    tar -cf $FINAL_TAR --directory $build_type_and_abi built
-    tar --list -f $FINAL_TAR
-    echo "$FINAL_TAR is ready!"
-  done
-done
