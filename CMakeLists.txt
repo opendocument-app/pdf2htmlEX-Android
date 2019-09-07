@@ -11,7 +11,7 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/ThirdPartyConfig.cmake)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(PDF2HTMLEX_VERSION "0.15.0")
+set(PDF2HTMLEX_VERSION "0.15.1")
 set(ARCHIVE_NAME pdf2htmlex-${PDF2HTMLEX_VERSION})
 add_custom_target(dist
     COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
