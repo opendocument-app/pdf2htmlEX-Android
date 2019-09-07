@@ -3,10 +3,22 @@
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-rm -r $BASEDIR/build $BASEDIR/pdf2htmlEX.1 $BASEDIR/share/*.css $BASEDIR/share/*.js $BASEDIR/share/*.min.* $BASEDIR/src/pdf2htmlEX-config.h $BASEDIR/src/util/css_const.h
+#rm -r $BASEDIR/build/pdf2htmlEX-debug.tar
+#rm -r $BASEDIR/build/pdf2htmlEX-release.tar
 
-rm -r $BASEDIR/3rdparty/built
-rm -r $BASEDIR/lib-android
-rm -r $BASEDIR/android/app/.externalNativeBuild
-rm -r $BASEDIR/android/app/build
+#rm -r $BASEDIR/build/3rdparty
+#rm -r $BASEDIR/build/gradle_3rdparty
+#rm -r $BASEDIR/build/libpdf2htmlex
+#rm -r $BASEDIR/build/gradle_libpdf2htmlex
+
+rm -r $BASEDIR/build
+rm -r $BASEDIR/android-3rdparty
+
+rm -r $BASEDIR/android-libpdf2htmlex/app/build
+rm -r $BASEDIR/android-sample-app/app/.externalNativeBuild
+rm -r $BASEDIR/android-sample-app/app/build
+rm -r $BASEDIR/android-sample-app/app/src/main/jniLibs
+rm -r $BASEDIR/android-sample-app/app/src/main/assets/pdf2htmlEX
+
+rm -r $BASEDIR/pdf2htmlEX.1 $BASEDIR/share/*.css $BASEDIR/share/*.js $BASEDIR/share/*.min.* $BASEDIR/src/pdf2htmlEX-config.h $BASEDIR/src/util/css_const.h
 
