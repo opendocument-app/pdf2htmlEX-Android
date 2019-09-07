@@ -111,7 +111,7 @@ void ffw_finalize(void)
 
 long ffw_get_version(void)
 {
-    return FONTFORGE_VERSION;
+    return strtol(FONTFORGE_VERSION, NULL, 10);
 }
 
 void ffw_new_font()
