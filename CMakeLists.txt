@@ -121,6 +121,7 @@ configure_file (${CMAKE_SOURCE_DIR}/share/pdf2htmlEX.js.in ${CMAKE_SOURCE_DIR}/s
 set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
     src/Param.h
     src/pdf2htmlEX.cc
+    src/public/pdf2htmlEX.h
     src/pdf2htmlEX-config.h
     src/HTMLRenderer/HTMLRenderer.h
     src/HTMLRenderer/draw.cc
@@ -211,6 +212,9 @@ add_custom_command(OUTPUT
 
 install (TARGETS pdf2htmlEX DESTINATION bin)
 
+SET(PUBLIC_HEADERS src/public/pdf2htmlEX.h)
+INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include)
+
 set(PDF2HTMLEX_RESOURCE
     ${CMAKE_SOURCE_DIR}/3rdparty/PDF.js/compatibility.js
     ${CMAKE_SOURCE_DIR}/3rdparty/PDF.js/compatibility.min.js
@@ -247,3 +251,4 @@ configure_file(${CMAKE_SOURCE_DIR}/test/test.py.in ${CMAKE_SOURCE_DIR}/test/test
 include(CTest)
 add_test(test_basic   python ${CMAKE_SOURCE_DIR}/test/test_output.py)
 add_test(test_browser python ${CMAKE_SOURCE_DIR}/test/test_local_browser.py)
+

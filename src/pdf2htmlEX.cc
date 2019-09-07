@@ -41,6 +41,8 @@
 #include "util/mingw.h"
 #endif
 
+#include "public/pdf2htmlEX.h"
+
 using namespace std;
 using namespace pdf2htmlEX;
 
@@ -347,7 +349,7 @@ void check_param()
     }
 }
 
-int main(int argc, char **argv)
+int pdf2htmlEX_main(int argc, char **argv)
 {
     // We need to adjust these directories before parsing the options.
 #if defined(__MINGW32__)
@@ -444,7 +446,5 @@ int main(int argc, char **argv)
     // Object::memCheck(stderr);
     // gMemReport(stderr);
 
-    exit(finished ? (EXIT_SUCCESS) : (EXIT_FAILURE));
-
-    return 0;
+    return finished ? EXIT_SUCCESS : EXIT_FAILURE;
 }
