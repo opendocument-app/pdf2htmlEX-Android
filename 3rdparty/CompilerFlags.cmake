@@ -33,9 +33,16 @@ STRING(APPEND CFLAGS " -I${THIRDPARTY_PREFIX}/include")
 STRING(APPEND CXXFLAGS " -I${THIRDPARTY_PREFIX}/include")
 STRING(APPEND LDFLAGS " -L${THIRDPARTY_PREFIX}/lib")
 
+# Linking shared shared libs against static libs require static libs to have
+# Position Independent Code (PIC)
+# libpdf2htmlEX.so is a shared lib
+STRING(APPEND CFLAGS " -fPIC ")
+STRING(APPEND CXXLAGS " -fPIC ")
+
 # march=armv7-a breaks build.
 # Both Autotools and Meson fail, telling that compiler does not work
 if(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
   STRING(REPLACE "-march=armv7-a" "" CFLAGS "${CFLAGS}")
   STRING(REPLACE "-march=armv7-a" "" CXXFLAGS "${CXXFLAGS}")
 endif()
+
