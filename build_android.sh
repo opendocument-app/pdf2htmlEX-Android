@@ -2,112 +2,156 @@
 set -euo pipefail
 shopt -s failglob
 
+# 'Debug', 'Release' or empty string for both
+BUILD_TYPE=
+
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-APP=$BASEDIR/android
-LIB=$BASEDIR/lib-android
-THIRD_PARTY_DIR=$BASEDIR/3rdparty
-THIRD_PARTY_DIR_SLASH_ESCAPED="${THIRD_PARTY_DIR//\//\\\/}\/"
+ANDROID_3RDPARTY_DIR=$BASEDIR/android-3rdparty
+ANDROID_LIB_DIR=$BASEDIR/android-libpdf2htmlex
+ANDROID_APP_DIR=$BASEDIR/android-sample-app
 
-# Generate library gradle project based on Android app
-if ! test -d "$LIB"
+# This is the .externalNativeBuild
+BUILD_3RDPARTY_DIR=$BASEDIR/build/3rdparty
+BUILD_LIB_DIR=$BASEDIR/build/libpdf2htmlex
+BUILD_APP_DIR=$BASEDIR/build/sample-app
+
+# This is android/app/build
+GRADLE_BUILD_3RDPARTY_DIR=$BASEDIR/build/gradle_3rdparty
+GRADLE_BUILD_LIB_DIR=$BASEDIR/build/gradle_libpdf2htmlex
+GRADLE_BUILD_APP_DIR=$BASEDIR/build/gradle_sample-app
+
+# Use android-libpdf2htmlex as a template for android-3rdparty Android Gradle project
+if ! test -d $ANDROID_3RDPARTY_DIR
 then
-  echo "Preparing $LIB"
+  mkdir $ANDROID_3RDPARTY_DIR --verbose
+  cp --recursive $ANDROID_LIB_DIR/app $ANDROID_3RDPARTY_DIR/app
 
-  # Copy necessary files from android app to android lib
-  mkdir --parents --verbose $LIB/lib/src/main
+  # Prepare build.gradle
+  sed -i "s/path \"..\/..\/CMakeLists.txt\"/path \"..\/..\/3rdparty\/CMakeLists.txt\"/g" $ANDROID_3RDPARTY_DIR/app/build.gradle
 
-  ln --symbolic --verbose $APP/gradle $LIB/gradle
-  ln --symbolic --verbose $APP/build.gradle $LIB/build.gradle
-  ln --symbolic --verbose $APP/gradle.properties $LIB/gradle.properties
-  ln --symbolic --verbose $APP/gradlew $LIB/gradlew
+  sed -i "s/buildStagingDirectory \"..\/..\/build\/libpdf2htmlex\/\"/buildStagingDirectory \"${BUILD_3RDPARTY_DIR//\//\\\/}\/\"/g" $ANDROID_3RDPARTY_DIR/app/build.gradle
 
-  echo "include ':lib'" >> $LIB/settings.gradle
-
-  cp --verbose $APP/app/build.gradle $LIB/lib/build.gradle
-
-  # Change application id
-  sed -i -E 's/applicationId "(.+)"/applicationId "\1.lib"/g' $LIB/lib/build.gradle
-
-  # Change CMakeLists from pdf2htmlEX/CMakeLists.txt to 3rdparty/CMakeLists.txt
-  sed -i "s/path \"..\/..\/CMakeLists.txt\"/path \"${THIRD_PARTY_DIR_SLASH_ESCAPED}CMakeLists.txt\"/g" $LIB/lib/build.gradle
-
-  # Append buildStatingDirectory
-  sed -i "/path \"${THIRD_PARTY_DIR_SLASH_ESCAPED}CMakeLists.txt\"/a buildStagingDirectory \"${THIRD_PARTY_DIR_SLASH_ESCAPED}built\"" $LIB/lib/build.gradle
-
-  # Clear out dependecies
-  sed -i -e '/dependencies/,/}/d' $LIB/lib/build.gradle
-  echo 'dependencies { }' >> $LIB/lib/build.gradle
-
-  # Generate Manifest
-  echo '<?xml version="1.0" encoding="utf-8"?>' > $LIB/lib/src/main/AndroidManifest.xml
-  echo '<manifest xmlns:android="http://schemas.android.com/apk/res/android"' >> $LIB/lib/src/main/AndroidManifest.xml
-
-  # Extract package name
-  grep 'package="' $APP/app/src/main/AndroidManifest.xml |
-    sed -E 's/package="(.+)"/package="\1.lib"/' >> $LIB/lib/src/main/AndroidManifest.xml
-
-  echo '</manifest>' >> $LIB/lib/src/main/AndroidManifest.xml
+  # gradle.properties defines buildDir
+  grep -v 'buildDir=' $ANDROID_LIB_DIR/gradle.properties > $ANDROID_3RDPARTY_DIR/gradle.properties
+  echo "buildDir=$GRADLE_BUILD_3RDPARTY_DIR" >> $ANDROID_3RDPARTY_DIR/gradle.properties
 fi
 
-# Build 3rdparty libraries
-cd $LIB
-./gradlew assemble
+to_symlink="gradle build.gradle gradlew settings.gradle"
+for f in $to_symlink
+do
+  if ! test -e $ANDROID_3RDPARTY_DIR/$f
+  then
+    ln --symbolic $ANDROID_LIB_DIR/$f $ANDROID_3RDPARTY_DIR/$f --verbose
+  fi
+done
 
-function wait_on_children_processes() {
-  for pid in $pids
-  do
-    if ! wait $pid
-    then
-      echo "Build failed. Waiting for other subprocesses..."
-      wait
-      exit 1
-    fi
-  done
-}
+# Build 3rdparty libraries
+cd $ANDROID_3RDPARTY_DIR
+./gradlew assemble$BUILD_TYPE
 
 pids=
-for build_target in $THIRD_PARTY_DIR/built/cmake/*/*
+for build_target in $BUILD_3RDPARTY_DIR/cmake/*/*
 do
   cmake --build $build_target &
   pids="$pids $!"
 done
-wait_on_children_processes $pids
 
-# Build pdf2htmlEX
-cd $APP
-./gradlew assemble
-
-pids=
-for build_target in $APP/app/.externalNativeBuild/cmake/*/*
+for pid in $pids
 do
-  (
-    set -euo pipefail
-    cmake --build $build_target --target install
-
-    abi=$(basename $build_target)
-    build_type=$(basename ${build_target%$abi})
-
-    # UPX only works on armeabi-v7a
-    # Other ABIs produce segfaults.
-    if test $abi = "armeabi-v7a"
-    then
-      upx --ultra-brute --8mib-ram $build_target/built/bin/pdf2htmlEX
-    fi
-
-    # Compress binaries and other files into .tar's
-    mkdir --parents $build_target/built/sample_pdfs
-    cp $BASEDIR/test/browser_tests/*.pdf $build_target/built/sample_pdfs/
-
-    tar --create --file $build_target/$build_type-$abi-pdf2htmlEX.tar --directory $build_target built
-  ) &
-  pids="$pids $!"
+  if ! wait $pid
+  then
+    echo "Build failed. Waiting for other subprocesses..."
+    wait
+    exit 1
+  fi
 done
-wait_on_children_processes $pids
 
-for ft in $APP/app/.externalNativeBuild/cmake/*/*/*-pdf2htmlEX.tar
+# Build libpdf2htmlEX
+cd $ANDROID_LIB_DIR
+./gradlew assemble$BUILD_TYPE
+
+for build_target in $BUILD_LIB_DIR/cmake/*/*
 do
-  echo "$ft is ready!"
+  cmake --build $build_target --target install
+
+  abi=$(basename $build_target)
+  build_type=$(basename ${build_target%$abi})
+
+  # UPX only works on armeabi-v7a
+  # Other ABIs produce segfaults.
+  # Also no point in compressing debug builds.
+  if test $abi = "armeabi-v7a" && test "$build_type" != "debug"
+  then
+    upx --ultra-brute --8mib-ram $build_target/built/lib/libpdf2htmlEX.so
+  fi
 done
+
+# Rename .cmake.in to .cmake and pack it into .tar
+tar --create --file $BASEDIR/build/pdf2htmlEX-release.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+tar --create --file $BASEDIR/build/pdf2htmlEX-debug.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+
+function add_to_tar() {
+  folder=$1
+  prefix_in_tar=$2
+  include_abi=$3
+
+  for build_type_ in $BUILD_LIB_DIR/cmake/*
+  do
+    build_type=$(basename $build_type_)
+    tar_file=$BASEDIR/build/pdf2htmlEX-$build_type.tar
+
+    for build_target in $build_type_/*
+    do
+      abi=$(basename $build_target)
+
+      if $include_abi
+      then
+        prefix_in_tar=$2/$abi
+      fi
+
+      for f in $build_target/built/$folder/*
+      do
+        fname=$(basename $f)
+
+        # Check if this file is the same as those provided by other ABIs
+        if ! $include_abi && ! diff --brief --from-file $BUILD_LIB_DIR/cmake/$build_type/*/built/$folder/$fname
+        then
+          echo "ERROR: Included file $f is not the same in all ABIs!"
+          ls -lha $BUILD_LIB_DIR/cmake/$build_type/*/built/$folder/$fname
+          exit 1
+        fi
+
+        tar --append --file $tar_file --directory=$build_target/built/$folder $fname --transform "s,^,$prefix_in_tar/,"
+      done
+
+      if ! $include_abi
+      then
+        # Do not process other ABIs, everything already included from this one
+        break
+      fi
+    done
+  done
+}
+
+add_to_tar "lib" "jniLibs" true
+add_to_tar "include" "jniLibs/include" false
+add_to_tar "share/pdf2htmlEX" "assets/pdf2htmlEX" false
+
+# Load libpdf2htmlEX into sample android app
+tar_to_load=$BASEDIR/build/pdf2htmlEX-release.tar
+if test "$BUILD_TYPE" = "Debug"
+then
+  tar_to_load=$BASEDIR/build/pdf2htmlEX-debug.tar
+fi
+
+tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main jniLibs
+
+mkdir --parents $ANDROID_APP_DIR/app/src/main/assets
+tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main assets
+
+# Build sample android app
+cd $ANDROID_APP_DIR
+./gradlew assemble$BUILD_TYPE
 

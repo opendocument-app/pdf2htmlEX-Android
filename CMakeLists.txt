@@ -180,7 +180,7 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
     src/TmpFiles.cc
     )
 
-add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
+  add_library(pdf2htmlEX SHARED ${PDF2HTMLEX_SRC})
 
 if(ENABLE_SVG)
   target_link_libraries(pdf2htmlEX freetype)
@@ -210,6 +210,7 @@ add_custom_command(OUTPUT
         ${CMAKE_SOURCE_DIR}/share/fancy.css
     )
 
+install (TARGETS pdf2htmlEX DESTINATION lib)
 install (TARGETS pdf2htmlEX DESTINATION bin)
 
 SET(PUBLIC_HEADERS src/public/pdf2htmlEX.h)

@@ -2,12 +2,10 @@
 # Main CMakeLists.txt
 # library builder 3rdparty/CMakeLists.txt
 
-SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/prefix)
-
 if (ANDROID)
-  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/${CMAKE_BUILD_TYPE}-${ANDROID_ABI})
+  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/../build/3rdparty/${CMAKE_BUILD_TYPE}-${ANDROID_ABI})
 else()
-  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/built/prefix)
+  SET(THIRDPARTY_PREFIX ${CMAKE_CURRENT_LIST_DIR}/../build/3rdparty/prefix)
   message(WARNING "Not really tested on NOT ANDROID... Comment this out and proceed with caution.")
 endif()
 
