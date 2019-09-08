@@ -18,4 +18,5 @@ src/pdf2htmlEX-config.h
 src/util/css_const.h
 test export-ignore
 Testing/*
-lib-android/
+android-3rdparty/
+build
