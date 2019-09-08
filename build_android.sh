@@ -149,10 +149,7 @@ then
   tar_to_load=$BASEDIR/build/pdf2htmlEX-debug.tar
 fi
 
-tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main jniLibs
-
-mkdir --parents $ANDROID_APP_DIR/app/src/main/assets
-tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main assets
+tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main jniLibs assets
 
 # Build sample android app
 cd $ANDROID_APP_DIR
