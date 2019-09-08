@@ -79,13 +79,16 @@ do
   abi=$(basename $build_target)
   build_type=$(basename ${build_target%$abi})
 
+  # ######
+  # UPX disabled because it fails for shared libraries...
+  # ######
   # UPX only works on armeabi-v7a
   # Other ABIs produce segfaults.
   # Also no point in compressing debug builds.
-  if test $abi = "armeabi-v7a" && test "$build_type" != "debug"
-  then
-    upx --ultra-brute --8mib-ram $build_target/built/lib/libpdf2htmlEX.so
-  fi
+  #if test $abi = "armeabi-v7a" && test "$build_type" != "debug"
+  #then
+  #  upx --ultra-brute --8mib-ram $build_target/built/lib/libpdf2htmlEX.so
+  #fi
 done
 
 # Rename .cmake.in to .cmake and pack it into .tar
