@@ -2,8 +2,8 @@ include_guard(GLOBAL)
 
 ExternalProjectCMake(freetype
   DEPENDS zlib
-  URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
-  URL_HASH SHA256=fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06
+  URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.1.tar.xz
+  URL_HASH SHA256=16dbfa488a21fe827dc27eaf708f42f7aa3bb997d745d31a19781628c36ba26f
 
   # Freetype needs some "patching" after the install for Cairo to pick it up properly.
   # All three patched documented in the script.
