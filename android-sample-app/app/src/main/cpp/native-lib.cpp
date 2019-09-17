@@ -32,10 +32,12 @@ JNIEXPORT jint JNICALL
 Java_com_viliussutkus89_pdf2htmlex_android_1sample_1app_MainActivity_call_1pdf2htmlEX(JNIEnv *env,
                                                                                       jobject instance,
                                                                                       jstring dataDir_,
+                                                                                      jstring popplerDir_,
                                                                                       jstring tmpDir_,
                                                                                       jstring inputFile_,
                                                                                       jstring outputFile_) {
     const char *dataDir = env->GetStringUTFChars(dataDir_, 0);
+    const char *popplerDir = env->GetStringUTFChars(popplerDir_, 0);
     const char *tmpDir = env->GetStringUTFChars(tmpDir_, 0);
     const char *inputFile = env->GetStringUTFChars(inputFile_, 0);
     const char *outputFile = env->GetStringUTFChars(outputFile_, 0);
@@ -44,6 +46,7 @@ Java_com_viliussutkus89_pdf2htmlex_android_1sample_1app_MainActivity_call_1pdf2h
     std::vector<const std::string> args = {
         "libpdf2htmlEX.so",
         "--data-dir", dataDir,
+        "--poppler-data-dir", popplerDir,
         "--tmp-dir", tmpDir,
         inputFile, outputFile
     };
@@ -58,6 +61,7 @@ Java_com_viliussutkus89_pdf2htmlex_android_1sample_1app_MainActivity_call_1pdf2h
     delete argv;
 
     env->ReleaseStringUTFChars(dataDir_, dataDir);
+    env->ReleaseStringUTFChars(popplerDir_, popplerDir);
     env->ReleaseStringUTFChars(tmpDir_, tmpDir);
     env->ReleaseStringUTFChars(inputFile_, inputFile);
     env->ReleaseStringUTFChars(outputFile_, outputFile);

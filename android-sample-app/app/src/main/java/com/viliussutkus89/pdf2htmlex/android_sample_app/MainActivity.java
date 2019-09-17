@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     // DataDir is where pdf2htmlEX's share folder contents are
     private File m_pdf2htmlEX_dataDir;
+    // Poppler requires encoding data
+    private File m_poppler_dataDir;
     // tmpDir is where pdf2htmlEX does it's work
     private File m_pdf2htmlEX_tmpDir;
     // cacheDir is where this Android App stores incoming .pdf
@@ -59,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
         if (!m_pdf2htmlEX_dataDir.exists()) {
             ExtractAssets(getFilesDir(), "pdf2htmlEX");
         }
+
+        m_poppler_dataDir = new File(getFilesDir(), "poppler");
+        if (!m_poppler_dataDir.exists()) {
+            ExtractAssets(getFilesDir(), "poppler");
+        }
+
         m_pdf2htmlEX_tmpDir = new File(getCacheDir(), "pdf2htmlEX-tmp");
         m_cacheDir = new File(getCacheDir(), "incoming-pdf");
 
@@ -201,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
         // @TODO: should be in non-GUI thread
         if (0 != call_pdf2htmlEX(m_pdf2htmlEX_dataDir.toString(),
+                m_poppler_dataDir.toString(),
                 m_pdf2htmlEX_tmpDir.toString(),
                 pdf_in_cache.toString(),
                 html.toString()) ){
@@ -250,5 +259,5 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(openPDFIntent, INTENT_SAVE);
     }
 
-    public native int call_pdf2htmlEX(String dataDir, String tmpDir, String inputFile, String outputFile);
+    public native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile);
 }
