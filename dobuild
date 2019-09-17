@@ -161,6 +161,17 @@ function add_to_tar() {
   add_to_tar
 )
 
+(
+  src_type="built"
+  package="poppler-data"
+
+  src_dir=
+  filter="COPYING COPYING.adobe COPYING.gpl2"
+  target_dir="COPYING/poppler-data"
+  same_for_all_abis=true
+  add_to_tar
+)
+
 # Load libpdf2htmlEX into sample android app
 tar_to_load=$BASEDIR/build/pdf2htmlEX-release.tar
 if test "$BUILD_TYPE" = "Debug"

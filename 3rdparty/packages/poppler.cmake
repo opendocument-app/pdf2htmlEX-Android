@@ -20,7 +20,7 @@ ELSE()
 ENDIF ()
 
 ExternalProjectCMake(poppler
-  DEPENDS cairo freetype glib-2.0 libpng libjpeg
+  DEPENDS cairo freetype glib-2.0 libpng libjpeg poppler-data
   # DEPENDS libtiff-4
 
   URL https://poppler.freedesktop.org/poppler-0.70.1.tar.xz
