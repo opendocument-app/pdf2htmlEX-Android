@@ -211,10 +211,9 @@ add_custom_command(OUTPUT
     )
 
 install (TARGETS pdf2htmlEX DESTINATION lib)
-install (TARGETS pdf2htmlEX DESTINATION bin)
 
 SET(PUBLIC_HEADERS src/public/pdf2htmlEX.h)
-INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include)
+INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pdf2htmlEX)
 
 set(PDF2HTMLEX_RESOURCE
     ${CMAKE_SOURCE_DIR}/3rdparty/PDF.js/compatibility.js
@@ -233,7 +232,7 @@ install (FILES ${PDF2HTMLEX_RESOURCE} DESTINATION share/pdf2htmlEX)
 install (FILES pdf2htmlEX.1 DESTINATION share/man/man1)
 
 if (ANDROID)
-  SET(CMAKE_INSTALL_PREFIX "built")
+  SET(CMAKE_INSTALL_PREFIX ${THIRDPARTY_PREFIX})
 endif()
 
 ## tests:
