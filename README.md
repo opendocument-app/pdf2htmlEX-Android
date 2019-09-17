@@ -29,16 +29,16 @@ None of them are shipped on Android devices so they have to be built from source
 
 ExternalProjects can have dependencies. FontForge requires FreeType, libjpeg, zlib, et cetera. Dependencies of dependencies can have dependencies. ExternalProject is a CMake target, thus allowing CMake target dependency resolving.
 
-[CMakeListst.txt](CMakeListst.txt) builds "regular" shared library libpdf2htmlEX.so, 
+[CMakeListst.txt](CMakeListst.txt) builds "regular" shared library libpdf2htmlEX.so.
 
 ### HOWTO build:
 ```sh
-build_android.sh
+./dobuild
 ```
 
-### What does build_android.sh do?
-[android-libpdf2htmlex](android-libpdf2htmlex) is a barebones Android gradle project that builds [CMakeListst.txt](CMakeListst.txt)
-[./build_android.sh](build_android.sh)
+### What does dobuild script do?
+[android-libpdf2htmlex](android-libpdf2htmlex) is a barebones Android gradle project that builds [CMakeLists.txt](CMakeLists.txt)
+[./dobuild](dobuild)
 1) Uses android-libpdf2htmlex to generate a very similar project android-3rdparty which builds [3rdparty/CMakeLists.txt](3rdparty/CMakeLists.txt)
 2) Calls gradle on android-3rdparty and then cmake --build on each ABI (armeabi-v7a, arm64-v8a, x86, x86_64) and build type (debug, release). All 8 CMake calls are in parallel, expect heavy load, because of dependency amount.
 3) Calls gradle and CMake on android-libpdf2htmlex and packages result (libpdf2htmlEX.so, .css files) in pdf2htmlEX-release.tar and pdf2htmlEX-debug.tar
