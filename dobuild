@@ -92,11 +92,15 @@ tar --create --file $BASEDIR/build/pdf2htmlEX-release.tar --directory=$BASEDIR p
 tar --create --file $BASEDIR/build/pdf2htmlEX-debug.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
 
 function add_to_tar() {
-  for build_type in "Debug" "Release"
+  for build_type in "Debug" "Release" "MinSizeRel"
   do
     # deCapitalize Release -> release
     local build_type_lowercase=${build_type,}
     local tar_file=${BASEDIR}/build/pdf2htmlEX-${build_type_lowercase}.tar
+    if test "$build_type" = "MinSizeRel"
+    then
+      local tar_file=${BASEDIR}/build/pdf2htmlEX-release.tar
+    fi
 
     local src_dir_=$src_dir
     if test ${src_type:-"installed"} = "installed"
