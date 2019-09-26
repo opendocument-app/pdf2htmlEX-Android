@@ -1,9 +1,0 @@
-logo memo
-
-convert everything to path
-ungroup everything
-union everything
-crop canvas
-update metadata
-save as optimized svg
-optimize for web using pngnq
