@@ -1,7 +1,5 @@
 include_guard(GLOBAL)
 
-message(FATAL_ERROR "lcms2 disabled, space saving")
-
 ExternalProjectAutotools(lcms2
   DEPENDS libjpeg libtiff-4
   URL https://kent.dl.sourceforge.net/project/lcms/lcms/2.9/lcms2-2.9.tar.gz
