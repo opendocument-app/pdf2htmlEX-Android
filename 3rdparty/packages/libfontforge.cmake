@@ -26,8 +26,7 @@ if (ANDROID)
 endif()
 
 ExternalProjectAutotools(libfontforge
-  DEPENDS libuninameslist freetype glib-2.0 iconv libintl libjpeg libxml-2.0 zlib
-
+  DEPENDS libuninameslist freetype glib-2.0 iconv intl libjpeg libxml-2.0 zlib
   URL https://github.com/fontforge/fontforge/releases/download/20190801/fontforge-20190801.tar.gz
   URL_HASH SHA256=d92075ca783c97dc68433b1ed629b9054a4b4c74ac64c54ced7f691540f70852
   CONFIGURE_ARGUMENTS ${FONTFORGE_BUILD_PROGRAMS_ARGUMENT}
