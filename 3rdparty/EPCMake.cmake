@@ -35,7 +35,7 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
   set(options)
   set(oneValueArgs URL URL_HASH)
   set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
-  cmake_parse_arguments(EPCM "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
+  cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
   FilterDependsList(EP_DEPENDS)
   CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
@@ -44,6 +44,8 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
   endif()
 
   CheckIfTarballCachedLocally(EP_URL)
+  CheckIfSourcePatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
+  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
 
   GetCMakeArguments("EP_CMAKE_ARGUMENTS"
     FORCED_ARGUMENTS "CMAKE_VERBOSE_MAKEFILE" "CMAKE_BUILD_TYPE"
@@ -73,6 +75,8 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
       ${SHARED_LIBS_ARGUMENT}
       ${EP_CONFIGURE_ARGUMENTS}
 
+    ${EP_PATCH_SOURCE_COMMAND}
+    ${EP_PATCH_INSTALL_COMMAND}
     ${EP_EXTRA_ARGUMENTS}
 
     LOG_DOWNLOAD 1

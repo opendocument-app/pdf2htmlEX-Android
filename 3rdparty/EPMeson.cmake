@@ -38,7 +38,7 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
   set(options)
   set(oneValueArgs URL URL_HASH)
   set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
-  cmake_parse_arguments(EPM "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
+  cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
   FilterDependsList(EP_DEPENDS)
   CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
@@ -46,7 +46,9 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
     return()
   endif()
 
-  CheckIfTarballCachedLocally(EPM_URL)
+  CheckIfTarballCachedLocally(EP_URL)
+  CheckIfSourcePatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
+  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
 
   if (CMAKE_BUILD_TYPE STREQUAL Debug)
     set(MESON_BUILD_TYPE debug)
@@ -72,33 +74,35 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
     INCLUDE=${THIRDPARTY_PREFIX}/include
   )
 
-  set(EPM_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${MESON_ENV}
+  set(EP_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${MESON_ENV}
     meson --buildtype ${MESON_BUILD_TYPE}
     ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME}
     ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME}-build
   )
 
   if(MESON_CROSS_COMPILE_FILE)
-    LIST(APPEND EPM_CONFIGURE_COMMAND --cross-file ${MESON_CROSS_COMPILE_FILE})
+    LIST(APPEND EP_CONFIGURE_COMMAND --cross-file ${MESON_CROSS_COMPILE_FILE})
   endif(MESON_CROSS_COMPILE_FILE)
 
   if (NOT BUILD_SHARED_LIBS)
-    LIST(APPEND EPM_CONFIGURE_COMMAND -Ddefault_library=static)
+    LIST(APPEND EP_CONFIGURE_COMMAND -Ddefault_library=static)
   endif (NOT BUILD_SHARED_LIBS)
 
   SET(NINJA_WRAPPER ${CMAKE_COMMAND} -E env ${MESON_ENV}
     ninja -C ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME}-build)
 
   ExternalProject_Add(${EXTERNAL_PROJECT_NAME}
-    ${EPM_DEPENDS}
-    URL ${EPM_URL}
-    URL_HASH ${EPM_URL_HASH}
+    ${EP_DEPENDS}
+    URL ${EP_URL}
+    URL_HASH ${EP_URL_HASH}
 
-    CONFIGURE_COMMAND ${EPM_CONFIGURE_COMMAND} ${EPM_CONFIGURE_ARGUMENTS}
+    CONFIGURE_COMMAND ${EP_CONFIGURE_COMMAND} ${EP_CONFIGURE_ARGUMENTS}
     BUILD_COMMAND ${NINJA_WRAPPER}
     INSTALL_COMMAND ${NINJA_WRAPPER} install
 
-    ${EPM_EXTRA_ARGUMENTS}
+    ${EP_PATCH_SOURCE_COMMAND}
+    ${EP_PATCH_INSTALL_COMMAND}
+    ${EP_EXTRA_ARGUMENTS}
 
     LOG_DOWNLOAD 1
     LOG_CONFIGURE 1
