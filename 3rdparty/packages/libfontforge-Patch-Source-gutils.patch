@@ -1,0 +1,11 @@
+--- gutils/gutils.c	2017-07-22 05:00:39.154250006 -0000
++++ gutils/gutils.c	2019-09-26 20:11:31.526000000 -0000
+@@ -51,7 +51,7 @@
+ 
+ 
+ const char *GetAuthor(void) {
+-#if defined(__MINGW32__)
++#if defined(__MINGW32__) || defined(ANDROID)
+     static char author[200] = { '\0' };
+     if ( author[0] == '\0' ){
+ 	char* name = getenv("USER");
