@@ -39,7 +39,10 @@ function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
   )
 
   SET(EP_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${EP_TOOLCHAIN_ENV}
-    ./configure --prefix=${THIRDPARTY_PREFIX})
+    ./configure
+      --prefix=${THIRDPARTY_PREFIX}
+      --oldincludedir=${THIRDPARTY_PREFIX}/include
+  )
 
   if (HOST_TRIPLE)
     list(APPEND EP_CONFIGURE_COMMAND --host ${HOST_TRIPLE})
