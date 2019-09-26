@@ -1,5 +1,38 @@
+function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
+  if("${PACKAGE_NAME}" STREQUAL "iconv" AND ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28)
+    # ANDROID-28+ has iconv built in.
+    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+    return()
+
+  elseif("${DEPENDENCY}" STREQUAL "libtool")
+    # libtool does not have pkg-config.pc. Check if libltdl.a exists.
+    if (EXISTS ${THIRDPARTY_PREFIX}/lib/libltdl.a)
+      SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+      return()
+    endif()
+  endif()
+
+  # Check pkg-config
+  pkg_check_modules(PKG QUIET ${PACKAGE_NAME})
+  if (PKG_FOUND)
+    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+    return()
+  endif()
+
+  # Try to find package through CMake
+  find_package(${PACKAGE_NAME} QUIET)
+  if (${PACKAGE_NAME}_FOUND)
+    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+    return()
+  endif()
+
+  message("PACKAGE ${PACKAGE_NAME} not built")
+  SET(PACKAGE_FOUND 0 PARENT_SCOPE)
+
+endfunction(CheckIfPackageAlreadyBuilt)
+
 # DEPEND only on those ExternalProjects that we can actually find as targets
-# No target? Check for pkg-config
+# No target? Check if it's already installed
 # Not found? Error!
 function(FilterDependsList DEPENDS_LIST)
   # Expand DEPENDS_LIST variable twice, to get the INPUT value
@@ -16,25 +49,13 @@ function(FilterDependsList DEPENDS_LIST)
         message(STATUS "${DEPENDENCY} found as a target")
         list(APPEND RESULT ${DEPENDENCY})
 
-      elseif("${DEPENDENCY}" STREQUAL "iconv")
-        # iconv does not have pkg-config.pc. Just check if the it exists.
-        # ANDROID-28+ has it built in, no need.
-        if (NOT (ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28))
-          if (NOT EXISTS ${THIRDPARTY_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}iconv${CMAKE_STATIC_LIBRARY_SUFFIX})
-            message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
-          endif()
-        endif()
-
-      elseif("${DEPENDENCY}" STREQUAL "gettext")
-        # gettext does not have pkg-config.pc. Just check if the it exists.
-        # libintl.a is the interesting part.
-        if (NOT EXISTS ${THIRDPARTY_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}intl${CMAKE_STATIC_LIBRARY_SUFFIX})
+      else()
+        CheckIfPackageAlreadyBuilt(${DEPENDENCY})
+        if (NOT PACKAGE_FOUND)
           message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
         endif()
-
-      else()
-        pkg_check_modules(LIBNAME REQUIRED ${DEPENDENCY})
       endif()
+
     endforeach(DEPENDENCY IN ITEMS ${INPUT})
 
     if (RESULT)
@@ -57,3 +78,4 @@ function(CheckIfTarballCachedLocally URL)
   endif()
 
 endfunction(CheckIfTarballCachedLocally)
+

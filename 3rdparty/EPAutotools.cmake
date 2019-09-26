@@ -3,72 +3,71 @@ include(CompilerBinaries.cmake)
 include(ProcessorCount)
 
 function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
-  pkg_check_modules(LIBNAME QUIET ${EXTERNAL_PROJECT_NAME})
-  if (NOT LIBNAME_FOUND)
-    message(STATUS "External project ${EXTERNAL_PROJECT_NAME} not found, will have to be built.")
+  set(options)
+  set(oneValueArgs URL URL_HASH)
+  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
+  cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
-    set(options)
-    set(oneValueArgs URL URL_HASH)
-    set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_LDFLAGS)
-    cmake_parse_arguments(EPA "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
+  FilterDependsList(EP_DEPENDS)
+  CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
+  if (PACKAGE_FOUND)
+    return()
+  endif()
 
-    CheckIfTarballCachedLocally(EPA_URL)
+  CheckIfTarballCachedLocally(EP_URL)
+  set(EP_TOOLCHAIN_ENV
+    AS=${AS}
+    AR=${CMAKE_AR}
+    CC=${CC}
+    CXX=${CXX}
+    LD=${CMAKE_LINKER}
+    NM=${CMAKE_NM}
+    OBJDUMP=${CMAKE_OBJDUMP}
+    RANLIB=${CMAKE_RANLIB}
+    STRIP=${CMAKE_STRIP}
 
-    FilterDependsList(EPA_DEPENDS)
+    PKG_CONFIG_PATH=${THIRDPARTY_PKG_CONFIG_PATH}
+    PKG_CONFIG_LIBDIR=${THIRDPARTY_PKG_CONFIG_LIBDIR}
+    PKG_CONFIG=${THIRDPARTY_PKG_CONFIG_EXECUTABLE}
 
-    set(EPA_TOOLCHAIN_ENV
-      AS=${AS}
-      AR=${CMAKE_AR}
-      CC=${CC}
-      CXX=${CXX}
-      LD=${CMAKE_LINKER}
-      NM=${CMAKE_NM}
-      OBJDUMP=${CMAKE_OBJDUMP}
-      RANLIB=${CMAKE_RANLIB}
-      STRIP=${CMAKE_STRIP}
+    CFLAGS=${CFLAGS}
+    CXXFLAGS=${CXXFLAGS}
+    LDFLAGS=${LDFLAGS}
+  )
 
-      PKG_CONFIG_PATH=${THIRDPARTY_PKG_CONFIG_PATH}
-      PKG_CONFIG_LIBDIR=${THIRDPARTY_PKG_CONFIG_LIBDIR}
-      PKG_CONFIG=${THIRDPARTY_PKG_CONFIG_EXECUTABLE}
+  SET(EP_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${EP_TOOLCHAIN_ENV}
+    ./configure --prefix=${THIRDPARTY_PREFIX})
 
-      CFLAGS=${CFLAGS}
-      CXXFLAGS=${CXXFLAGS}
-      LDFLAGS=${LDFLAGS}
-    )
+  if (HOST_TRIPLE)
+    list(APPEND EP_CONFIGURE_COMMAND --host ${HOST_TRIPLE})
+  endif(HOST_TRIPLE)
 
-    SET(EPA_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${EPA_TOOLCHAIN_ENV}
-      ./configure --prefix=${THIRDPARTY_PREFIX})
+  if (NOT BUILD_SHARED_LIBS)
+    list(APPEND EP_CONFIGURE_COMMAND --disable-shared)
+  endif()
 
-    if (HOST_TRIPLE)
-      list(APPEND EPA_CONFIGURE_COMMAND --host ${HOST_TRIPLE})
-    endif(HOST_TRIPLE)
-    
-    if (NOT BUILD_SHARED_LIBS)
-      list(APPEND EPA_CONFIGURE_COMMAND --disable-shared)
-    endif()
+  ProcessorCount(CPU_COUNT)
+  if (CPU_COUNT)
+    SET(EP_CPU_COUNT -j${CPU_COUNT})
+  endif(CPU_COUNT)
 
-    ProcessorCount(CPU_COUNT)
-    if (CPU_COUNT)
-      SET(EPA_CPU_COUNT --jobs=${CPU_COUNT})
-    endif(CPU_COUNT)
+  ExternalProject_Add(${EXTERNAL_PROJECT_NAME}
+    ${EP_DEPENDS}
 
-    ExternalProject_Add(${EXTERNAL_PROJECT_NAME}
-      ${EPA_DEPENDS}
+    URL ${EP_URL}
+    URL_HASH ${EP_URL_HASH}
 
-      URL ${EPA_URL}
-      URL_HASH ${EPA_URL_HASH}
+    BUILD_IN_SOURCE 1
 
-      BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ${EP_CONFIGURE_COMMAND} ${EP_CONFIGURE_ARGUMENTS}
+    BUILD_COMMAND make ${EP_CPU_COUNT}
 
-      CONFIGURE_COMMAND ${EPA_CONFIGURE_COMMAND} ${EPA_CONFIGURE_ARGUMENTS}
-      BUILD_COMMAND make ${EPA_CPU_COUNT}
+    ${EP_EXTRA_ARGUMENTS}
 
-      ${EPA_EXTRA_ARGUMENTS}
-
-      LOG_DOWNLOAD 1
-      LOG_CONFIGURE 1
-      LOG_BUILD 1
-      LOG_INSTALL 1
-    )
-  endif(NOT LIBNAME_FOUND)
+    LOG_DOWNLOAD 1
+    LOG_CONFIGURE 1
+    LOG_BUILD 1
+    LOG_INSTALL 1
+  )
 endfunction(ExternalProjectAutotools)
+
