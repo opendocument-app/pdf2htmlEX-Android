@@ -5,7 +5,7 @@ include(ProcessorCount)
 function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
   set(options)
   set(oneValueArgs URL URL_HASH)
-  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
+  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS)
   cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
   FilterDependsList(EP_DEPENDS)
@@ -37,6 +37,7 @@ function(ExternalProjectAutotools EXTERNAL_PROJECT_NAME)
     CXXFLAGS=${CXXFLAGS}
     LDFLAGS=${LDFLAGS}
   )
+  LIST(APPEND EP_TOOLCHAIN_ENV ${EXTRA_ENVVARS})
 
   SET(EP_CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${EP_TOOLCHAIN_ENV}
     ./configure
