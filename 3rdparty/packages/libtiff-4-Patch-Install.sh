@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 
-THIRDPARTY_PREFIX=$1
+THIRDPARTY_PREFIX=$2
 THIRDPARTY_PKG_CONFIG_LIBDIR=$THIRDPARTY_PREFIX/lib/pkgconfig
 
 # Libtiff, when built with CMake doesn't include

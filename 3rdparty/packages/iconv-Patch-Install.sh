@@ -4,7 +4,7 @@ set -euo pipefail
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-THIRDPARTY_PREFIX=$1
+THIRDPARTY_PREFIX=$2
 PC_TARGET_DIR=$THIRDPARTY_PREFIX/lib/pkgconfig/
 mkdir --parents "$PC_TARGET_DIR"
 
