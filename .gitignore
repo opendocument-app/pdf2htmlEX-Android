@@ -1,22 +1,3 @@
-CMakeCache.txt
-CMakeFiles/*
-cmake_install.cmake
-CTestTestfile.cmake
-gmon.out
-install_manifest.txt
-Makefile
-pdf2htmlEX
-pdf2htmlEX.1
-*.pyc
-share/base.css
-share/base.min.css
-share/fancy.css
-share/fancy.min.css
-share/pdf2htmlEX.js
-share/pdf2htmlEX.min.js
-src/pdf2htmlEX-config.h
-src/util/css_const.h
-test export-ignore
-Testing/*
-android-3rdparty/
 build
+tarballs/
+CMakeToolchainWrapper.cmake

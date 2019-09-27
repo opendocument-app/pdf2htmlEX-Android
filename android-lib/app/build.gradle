@@ -17,7 +17,7 @@ android {
         debug {
             externalNativeBuild {
                 cmake {
-                  arguments '-DBUILD_3RDPARTY_BINARIES=OFF'
+                  arguments '-DBUILD_3RDPARTY_BINARIES=ON'
                 }
             }
         }
@@ -25,7 +25,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../CMakeLists.txt"
-            buildStagingDirectory "../../build/libpdf2htmlex/"
+            buildStagingDirectory "../../build/"
             version "3.10.2"
         }
     }

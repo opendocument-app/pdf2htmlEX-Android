@@ -8,47 +8,16 @@ BUILD_TYPE=
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-ANDROID_3RDPARTY_DIR=$BASEDIR/android-3rdparty
-ANDROID_LIB_DIR=$BASEDIR/android-libpdf2htmlex
+ANDROID_LIB_DIR=$BASEDIR/android-lib
 ANDROID_APP_DIR=$BASEDIR/android-sample-app
-
-# This is the .externalNativeBuild
-BUILD_3RDPARTY_DIR=$BASEDIR/build/3rdparty
-BUILD_LIB_DIR=$BASEDIR/build/libpdf2htmlex
-
-GRADLE_BUILD_3RDPARTY_DIR=$BASEDIR/build/gradle_3rdparty
-
-# Use android-libpdf2htmlex as a template for android-3rdparty Android Gradle project
-if ! test -d $ANDROID_3RDPARTY_DIR
-then
-  mkdir $ANDROID_3RDPARTY_DIR --verbose
-  cp --recursive $ANDROID_LIB_DIR/app $ANDROID_3RDPARTY_DIR/app
-
-  # Prepare build.gradle
-  sed -i "s/path \"..\/..\/CMakeLists.txt\"/path \"..\/..\/3rdparty\/CMakeLists.txt\"/g" $ANDROID_3RDPARTY_DIR/app/build.gradle
-
-  sed -i "s/buildStagingDirectory \"..\/..\/build\/libpdf2htmlex\/\"/buildStagingDirectory \"${BUILD_3RDPARTY_DIR//\//\\\/}\/\"/g" $ANDROID_3RDPARTY_DIR/app/build.gradle
-
-  # gradle.properties defines buildDir
-  grep -v 'buildDir=' $ANDROID_LIB_DIR/gradle.properties > $ANDROID_3RDPARTY_DIR/gradle.properties
-  echo "buildDir=$GRADLE_BUILD_3RDPARTY_DIR" >> $ANDROID_3RDPARTY_DIR/gradle.properties
-fi
-
-to_symlink="gradle build.gradle gradlew settings.gradle"
-for f in $to_symlink
-do
-  if ! test -e $ANDROID_3RDPARTY_DIR/$f
-  then
-    ln --symbolic $ANDROID_LIB_DIR/$f $ANDROID_3RDPARTY_DIR/$f --verbose
-  fi
-done
+BUILD_DIR=$BASEDIR/build
 
 # Build 3rdparty libraries
-cd $ANDROID_3RDPARTY_DIR
+cd $ANDROID_LIB_DIR
 ./gradlew assemble$BUILD_TYPE
 
 pids=
-for build_target in $BUILD_3RDPARTY_DIR/cmake/*/*
+for build_target in $BUILD_DIR/cmake/*/*
 do
   cmake --build $build_target &
   pids="$pids $!"
@@ -64,50 +33,29 @@ do
   fi
 done
 
-# Build libpdf2htmlEX
-cd $ANDROID_LIB_DIR
-./gradlew assemble$BUILD_TYPE
-
-for build_target in $BUILD_LIB_DIR/cmake/*/*
-do
-  cmake --build $build_target --target install
-
-  abi=$(basename $build_target)
-  build_type=$(basename ${build_target%$abi})
-
-  # ######
-  # UPX disabled because it fails for shared libraries...
-  # ######
-  # UPX only works on armeabi-v7a
-  # Other ABIs produce segfaults.
-  # Also no point in compressing debug builds.
-  #if test $abi = "armeabi-v7a" && test "$build_type" != "debug"
-  #then
-  #  upx --ultra-brute $build_target/built/lib/libpdf2htmlEX.so
-  #fi
-done
-
 # Rename .cmake.in to .cmake and pack it into .tar
-tar --create --file $BASEDIR/build/pdf2htmlEX-release.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
-tar --create --file $BASEDIR/build/pdf2htmlEX-debug.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+tar --create --file $BUILD_DIR/pdf2htmlEX-release.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+tar --create --file $BUILD_DIR/pdf2htmlEX-debug.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+
+exit 0
 
 function add_to_tar() {
   for build_type in "Debug" "Release" "MinSizeRel"
   do
     # deCapitalize Release -> release
     local build_type_lowercase=${build_type,}
-    local tar_file=${BASEDIR}/build/pdf2htmlEX-${build_type_lowercase}.tar
+    local tar_file=$BUILD_DIR/build/pdf2htmlEX-${build_type_lowercase}.tar
     if test "$build_type" = "MinSizeRel"
     then
-      local tar_file=${BASEDIR}/build/pdf2htmlEX-release.tar
+      local tar_file=$BUILD_DIR/pdf2htmlEX-release.tar
     fi
 
     local src_dir_=$src_dir
     if test ${src_type:-"installed"} = "installed"
     then
-      local build_target_location=$BUILD_3RDPARTY_DIR/$build_type
+      local build_target_location=$BUILD_DIR/$build_type
     else
-      local build_target_location=$BUILD_3RDPARTY_DIR/cmake/$build_type_lowercase
+      local build_target_location=$BUILD_DIR/cmake/$build_type_lowercase
       local src_dir_=${package}-prefix/src/$package/$src_dir
     fi
 
@@ -177,8 +125,8 @@ function add_license_to_tar() {
   add_to_tar
 }
 
-tar --append --file $BASEDIR/build/pdf2htmlEX-release.tar --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
-tar --append --file $BASEDIR/build/pdf2htmlEX-debug.tar   --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
+tar --append --file $BUILD_DIR/pdf2htmlEX-release.tar --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
+tar --append --file $BUILD_DIR/pdf2htmlEX-debug.tar   --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
 
 add_license_to_tar "cairo" "COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1"
 add_license_to_tar "freetype" "LICENSE.TXT GPLv2.TXT FTL.TXT" "docs"
@@ -196,10 +144,10 @@ add_license_to_tar "poppler" "COPYING COPYING3"
 add_license_to_tar "poppler-data" "COPYING COPYING.adobe COPYING.gpl2"
 
 # Load libpdf2htmlEX into sample android app
-tar_to_load=$BASEDIR/build/pdf2htmlEX-release.tar
+tar_to_load=$BUILD_DIR/pdf2htmlEX-release.tar
 if test "$BUILD_TYPE" = "Debug"
 then
-  tar_to_load=$BASEDIR/build/pdf2htmlEX-debug.tar
+  tar_to_load=$BUILD_DIR/pdf2htmlEX-debug.tar
 fi
 
 tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main jniLibs assets
