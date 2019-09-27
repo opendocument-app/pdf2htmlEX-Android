@@ -11,5 +11,8 @@ ExternalProjectAutotools(harfbuzz
     --with-glib=yes
     --with-fontconfig=yes
     --with-icu=no
+
+  # libintl, a dependency of glib, is not picked up automatically
+  EXTRA_ENVVARS LIBS=-lintl
 )
 
