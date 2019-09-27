@@ -30,7 +30,5 @@ option(BUILD_3RDPARTY_BINARIES "Build all 3rd party binaries to catch missing sy
 # List of root level packages that we want installed.
 # Defined dependencies will be picked up too.
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/packages/cairo.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/packages/libfontforge.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/packages/poppler.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/packages/freetype.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/pdf2htmlEX.cmake)
+

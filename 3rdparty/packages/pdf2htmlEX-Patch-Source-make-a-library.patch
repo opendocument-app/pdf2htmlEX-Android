@@ -1,0 +1,57 @@
+--- CMakeLists.txt	2019-09-23 04:59:16.521000000 -0000
++++ CMakeLists.txt	2019-09-23 05:04:40.853000000 -0000
+@@ -115,6 +115,7 @@
+     src/Param.h
+     src/pdf2htmlEX.cc
+     src/pdf2htmlEX-config.h
++    src/public/pdf2htmlEX.h
+     src/HTMLRenderer/HTMLRenderer.h
+     src/HTMLRenderer/draw.cc
+     src/HTMLRenderer/general.cc
+@@ -172,7 +173,7 @@
+     src/TmpFiles.cc
+     )
+ 
+-add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
++add_library(pdf2htmlEX SHARED ${PDF2HTMLEX_SRC})
+ target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
+ 
+ add_custom_target(pdf2htmlEX_resources ALL DEPENDS
+@@ -198,7 +199,9 @@
+         ${CMAKE_SOURCE_DIR}/share/fancy.css
+     )
+ 
+-install (TARGETS pdf2htmlEX DESTINATION bin)
++install (TARGETS pdf2htmlEX DESTINATION lib)
++SET(PUBLIC_HEADERS src/public/pdf2htmlEX.h)
++INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pdf2htmlEX)
+ 
+ set(PDF2HTMLEX_RESOURCE
+     ${CMAKE_SOURCE_DIR}/3rdparty/PDF.js/compatibility.js
+--- src/pdf2htmlEX.cc	2019-09-27 09:58:46.787000000 -0000
++++ src/pdf2htmlEX.cc	2019-09-27 09:59:18.711000000 -0000
+@@ -346,7 +346,7 @@
+     }
+ }
+ 
+-int main(int argc, char **argv)
++int pdf2thmlEX_main(int argc, char **argv)
+ {
+     // We need to adjust these directories before parsing the options.
+ #if defined(__MINGW32__)
+@@ -441,7 +441,5 @@
+     Object::memCheck(stderr);
+     gMemReport(stderr);
+ 
+-    exit(finished ? (EXIT_SUCCESS) : (EXIT_FAILURE));
+-
+-    return 0;
++    return finished ? EXIT_SUCCESS : EXIT_FAILURE;
+ }
+--- /dev/null	2019-09-27 07:10:37.101000000 -0000
++++ src/public/pdf2htmlEX.h	2019-09-27 10:03:44.230000000 -0000
+@@ -0,0 +1,4 @@
++#pragma once
++
++extern "C" int pdf2htmlEX_main(int argc, char **argv);
++
