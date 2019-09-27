@@ -6,6 +6,7 @@ Name: harfbuzz
 Description: harfbuzz
 Version: 2.6.1
 
-Requires:
-Libs: -L${libdir} -lharfbuzz
+Requires.private: freetype intl glib-2.0 iconv
+Libs: -L${libdir} -lharfbuzz  -lm
 Cflags: -I${includedir}/harfbuzz
+

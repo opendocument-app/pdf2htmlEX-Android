@@ -1,18 +1,23 @@
 include_guard(GLOBAL)
 
-ExternalProjectAutotools(harfbuzz
+IF (BUILD_3RDPARTY_BINARIES)
+  SET(HARFBUZZ_BUILD_UTILS_ARGUMENT -DHB_BUILD_UTILS=ON)
+ELSE()
+  SET(HARFBUZZ_BUILD_UTILS_ARGUMENT -DHB_BUILD_UTILS=OFF)
+ENDIF ()
+
+ExternalProjectCMake(harfbuzz
   DEPENDS cairo fontconfig freetype glib-2.0
   URL https://github.com/harfbuzz/harfbuzz/releases/download/2.6.1/harfbuzz-2.6.1.tar.xz
   URL_HASH SHA256=c651fb3faaa338aeb280726837c2384064cdc17ef40539228d88a1260960844f
 
   CONFIGURE_ARGUMENTS 
-    --with-cairo=yes
-    --with-freetype=yes
-    --with-glib=yes
-    --with-fontconfig=yes
-    --with-icu=no
+    -DHB_HAVE_FREETYPE=ON
+    -DHB_HAVE_GLIB=ON
+    -DHB_HAVE_ICU=OFF
 
-  # libintl, a dependency of glib, is not picked up automatically
-  EXTRA_ENVVARS LIBS=-lintl
+    -DHB_BUILD_TESTS=OFF
+
+    ${HARFBUZZ_BUILD_UTILS_ARGUMENTS}
 )
 

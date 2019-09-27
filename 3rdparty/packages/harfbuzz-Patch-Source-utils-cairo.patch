@@ -1,0 +1,38 @@
+--- CMakeLists.txt	2019-09-27 13:40:11.127000000 -0000
++++ CMakeLists.txt	2019-09-27 13:39:27.189000000 -0000
+@@ -667,28 +667,24 @@
+ if (HB_BUILD_UTILS)
+   # https://github.com/WebKit/webkit/blob/master/Source/cmake/FindCairo.cmake
+   find_package(PkgConfig)
+-  pkg_check_modules(PC_CAIRO QUIET cairo)
+-
+-  find_path(CAIRO_INCLUDE_DIRS NAMES cairo.h HINTS ${PC_CAIRO_INCLUDEDIR} ${PC_CAIRO_INCLUDE_DIRS} PATH_SUFFIXES cairo)
+-  find_library(CAIRO_LIBRARIESNAMES cairo HINTS ${PC_CAIRO_LIBDIR} ${PC_CAIRO_LIBRARY_DIRS})
++  pkg_check_modules(PC_CAIRO cairo)
+ 
+   add_definitions("-DPACKAGE_NAME=\"HarfBuzz\"")
+   add_definitions("-DPACKAGE_VERSION=\"${HB_VERSION}\"")
+-  include_directories(${CAIRO_INCLUDE_DIRS})
++  include_directories(${PC_CAIRO_INCLUDE_DIRS})
++  link_directories(${PC_CAIRO_LIBRARY_DIRS})
+ 
+   add_executable(hb-view ${HB_VIEW_sources})
+-  target_link_libraries(hb-view harfbuzz ${CAIRO_LIBRARIESNAMES})
++  target_link_libraries(hb-view harfbuzz ${PC_CAIRO_LIBRARIES})
+ 
+   add_executable(hb-shape ${HB_SHAPE_sources})
+-  target_link_libraries(hb-shape harfbuzz)
++  target_link_libraries(hb-shape harfbuzz ${PC_CAIRO_LIBRARIES})
+ 
+   add_executable(hb-subset ${HB_SUBSET_CLI_sources})
+-  target_link_libraries(hb-subset harfbuzz harfbuzz-subset)
++  target_link_libraries(hb-subset harfbuzz harfbuzz-subset ${PC_CAIRO_LIBRARIES})
+ 
+   add_executable(hb-ot-shape-closure ${HB_OT_SHAPE_CLOSURE_sources})
+-  target_link_libraries(hb-ot-shape-closure harfbuzz)
+-
+-  mark_as_advanced(CAIRO_INCLUDE_DIRS CAIRO_LIBRARIESNAMES)
++  target_link_libraries(hb-ot-shape-closure harfbuzz ${PC_CAIRO_LIBRARIES})
+ endif ()
+ 
+ 
