@@ -32,3 +32,20 @@ patch $1/fontforge/http.c $BASEDIR/libfontforge-Patch-Source-http.patch
 # #endif /* __ANDROID_API__ >= 26 */
 patch $1/fontforge/noprefs.c $BASEDIR/libfontforge-Patch-Source-noprefs.patch
 
+# fontforge uses newlocale and localeconv, which are not available on Android pre 21 (Lollipop)
+# locale_t is available, we should not redefine it while using the BAD_LOCALE_HACK in splinefont.h
+
+# From /usr/include/locale.h:
+# #if __ANDROID_API__ >= 21
+# locale_t duplocale(locale_t __l) __INTRODUCED_IN(21);
+# void freelocale(locale_t __l) __INTRODUCED_IN(21);
+# locale_t newlocale(int __category_mask, const char* __locale_name, locale_t __base) __INTRODUCED_IN(21);
+# #endif /* __ANDROID_API__ >= 21 */
+# ...
+# #if __ANDROID_API__ >= 21
+# struct lconv* localeconv(void) __INTRODUCED_IN(21);
+# #endif /* __ANDROID_API__ >= 21 */
+#
+# #define LC_GLOBAL_LOCALE __BIONIC_CAST(reinterpret_cast, locale_t, -1L)
+patch -p0 < $BASEDIR/libfontforge-Patch-Source-localeconv.patch
+
