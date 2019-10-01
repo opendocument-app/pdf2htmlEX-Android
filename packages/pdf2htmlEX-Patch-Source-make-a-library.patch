@@ -35,7 +35,7 @@
  }
  
 -int main(int argc, char **argv)
-+int pdf2thmlEX_main(int argc, char **argv)
++int pdf2htmlEX_main(int argc, char **argv)
  {
      // We need to adjust these directories before parsing the options.
  #if defined(__MINGW32__)
