@@ -33,7 +33,6 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
     return()
   endif()
 
-  message("PACKAGE ${PACKAGE_NAME} not built")
   SET(PACKAGE_FOUND 0 PARENT_SCOPE)
 
 endfunction(CheckIfPackageAlreadyBuilt)
@@ -53,7 +52,6 @@ function(FilterDependsList DEPENDS_LIST)
       include(${PACKAGE_FILE} OPTIONAL)
 
       if (TARGET ${DEPENDENCY})
-        message(STATUS "${DEPENDENCY} found as a target")
         list(APPEND RESULT ${DEPENDENCY})
 
       else()
