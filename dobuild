@@ -127,19 +127,28 @@ tar --append --file $BUILD_DIR/pdf2htmlEX-release.tar --directory=$BASEDIR LICEN
 tar --append --file $BUILD_DIR/pdf2htmlEX-debug.tar   --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
 
 add_license_to_tar "cairo" "COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1"
+add_license_to_tar "fontconfig" "COPYING"
 add_license_to_tar "freetype" "LICENSE.TXT GPLv2.TXT FTL.TXT" "docs"
+add_license_to_tar "fribidi" "COPYING"
 add_license_to_tar "glib-2.0" "COPYING"
-add_license_to_tar "iconv" "COPYING"
+add_license_to_tar "harfbuzz" "COPYING"
+add_license_to_tar "iconv" "COPYING COPYING.LIB"
+add_license_to_tar "intl" "COPYING"
+add_license_to_tar "lcms2" "COPYING"
 add_license_to_tar "libffi" "LICENSE"
 add_license_to_tar "libfontforge" "COPYING.gplv3 LICENSE"
-add_license_to_tar "libintl" "COPYING"
-add_license_to_tar "libjpeg" "README"
+add_license_to_tar "libjpeg" "LICENSE.md README.ijg"
+add_license_to_tar "libopenjp2" "LICENSE"
 add_license_to_tar "libpng" "LICENSE"
+add_license_to_tar "libtiff-4" "LICENSE"
+add_license_to_tar "libtool" "COPYING"
 add_license_to_tar "libuninameslist" "LICENSE"
 add_license_to_tar "libxml-2.0" "Copyright"
+add_license_to_tar "pango" "COPYING"
+add_license_to_tar "pdf2htmlEX" "LICENSE LICENSE_GPLv3"
 add_license_to_tar "pixman-1" "COPYING"
-add_license_to_tar "poppler" "COPYING COPYING3"
 add_license_to_tar "poppler-data" "COPYING COPYING.adobe COPYING.gpl2"
+add_license_to_tar "poppler" "COPYING COPYING3"
 
 # Load libpdf2htmlEX into sample android app
 tar_to_load=$BUILD_DIR/pdf2htmlEX-release.tar
