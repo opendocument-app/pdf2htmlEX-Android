@@ -28,7 +28,7 @@ endfunction(GetCMakeArguments)
 
 if(DEFINED CMAKE_TOOLCHAIN_FILE)
   SET(CompilerFlagsCMAKE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/CompilerFlags.cmake)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMakeToolchainWrapper.in ${CMAKE_CURRENT_SOURCE_DIR}/CMakeToolchainWrapper.cmake @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMakeToolchainWrapper.in ${THIRDPARTY_PREFIX}/CMakeToolchainWrapper.cmake @ONLY)
 endif()
 
 function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
@@ -56,7 +56,7 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
   endif (NOT BUILD_SHARED_LIBS)
 
   if (DEFINED CompilerFlagsCMAKE_FILE)
-    SET(ToolchainWrapper -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CMakeToolchainWrapper.cmake)
+    SET(ToolchainWrapper -DCMAKE_TOOLCHAIN_FILE=${THIRDPARTY_PREFIX}/CMakeToolchainWrapper.cmake)
   endif()
 
   ExternalProject_Add(${EXTERNAL_PROJECT_NAME}
