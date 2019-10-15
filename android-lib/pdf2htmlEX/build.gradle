@@ -31,5 +31,16 @@ android {
     ndkVersion "20.0.5594570"
 }
 
+// Extract shared .so libraries to build directory
+// So that they could be linked against in CMake
+task extractLibtmpfileSoForLinkingInCMake(type: Copy) {
+    from zipTree("${project.rootDir}/pdf2htmlEX/libs/tmpfile-1.0.0.aar")
+    into "${project.buildDir}/tmpfile/"
+    include "jni/**/libtmpfile.so"
+}
+preBuild.dependsOn extractLibtmpfileSoForLinkingInCMake
 
+dependencies {
+    implementation files('libs/tmpfile-1.0.0.aar')
+}
 
