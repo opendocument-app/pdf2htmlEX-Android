@@ -1,5 +1,17 @@
---- CMakeLists.txt	2019-09-23 04:59:16.521000000 -0000
-+++ CMakeLists.txt	2019-09-23 05:04:40.853000000 -0000
+--- CMakeLists.txt	2019-10-15 12:57:08.368000000 -0000
++++ CMakeLists.txt	2019-10-15 12:59:03.582000000 -0000
+@@ -2,9 +2,9 @@
+ # set default build type to Release
+ set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, RelWithDebInfo, MinSizeRel)")
+
+-project(pdf2htmlEX)
++cmake_minimum_required(VERSION 3.6.0 FATAL_ERROR)
++project(pdf2htmlEX VERSION "0.17.0")
+ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+-cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
+
+ option(ENABLE_SVG "Enable SVG support, for generating SVG background images and converting Type 3 fonts" ON)
+
 @@ -115,6 +115,7 @@
      src/Param.h
      src/pdf2htmlEX.cc
@@ -8,26 +20,46 @@
      src/HTMLRenderer/HTMLRenderer.h
      src/HTMLRenderer/draw.cc
      src/HTMLRenderer/general.cc
-@@ -172,7 +173,7 @@
+@@ -172,7 +173,8 @@
      src/TmpFiles.cc
      )
  
 -add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
-+add_library(pdf2htmlEX SHARED ${PDF2HTMLEX_SRC})
++add_library(pdf2htmlEX ${PDF2HTMLEX_SRC})
++set_target_properties(pdf2htmlEX PROPERTIES PUBLIC_HEADER src/public/pdf2htmlEX.h)
  target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
  
  add_custom_target(pdf2htmlEX_resources ALL DEPENDS
-@@ -198,7 +199,9 @@
+@@ -198,7 +200,14 @@
          ${CMAKE_SOURCE_DIR}/share/fancy.css
      )
  
 -install (TARGETS pdf2htmlEX DESTINATION bin)
-+install (TARGETS pdf2htmlEX DESTINATION lib)
-+SET(PUBLIC_HEADERS src/public/pdf2htmlEX.h)
-+INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pdf2htmlEX)
++install (TARGETS pdf2htmlEX
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++  PUBLIC_HEADER DESTINATION include)
++
++configure_file(${CMAKE_CURRENT_LIST_DIR}/pdf2htmlEX.pc.in ${CMAKE_CURRENT_BINARY_DIR}/pdf2htmlEX.pc @ONLY)
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pdf2htmlEX.pc DESTINATION lib/pkgconfig)
  
  set(PDF2HTMLEX_RESOURCE
      ${CMAKE_SOURCE_DIR}/3rdparty/PDF.js/compatibility.js
+--- /dev/null	2019-10-15 11:39:59.142000000 -0000
++++ pdf2htmlEX.pc.in	2019-10-15 19:19:12.108000000 -0000
+@@ -0,0 +1,11 @@
++prefix=@CMAKE_INSTALL_PREFIX@
++libdir=${prefix}/lib
++includedir=${prefix}/include
++
++Name: @PROJECT_NAME@
++Description: @PROJECT_NAME@
++Version: @PROJECT_VERSION@
++
++Requires.private: freetype intl glib-2.0 iconv
++Libs: -L${libdir} -lpdf2htmlEX
++Cflags: -I${includedir}
 --- src/pdf2htmlEX.cc	2019-09-27 09:58:46.787000000 -0000
 +++ src/pdf2htmlEX.cc	2019-09-27 09:59:18.711000000 -0000
 @@ -346,7 +346,7 @@

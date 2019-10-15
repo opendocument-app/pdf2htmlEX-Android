@@ -10,13 +10,6 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
       SET(PACKAGE_FOUND 1 PARENT_SCOPE)
       return()
     endif()
-
-  elseif("${PACKAGE_NAME}" STREQUAL "pdf2htmlEX")
-    # pdf2htmlEX does not have pkg-config.pc. Check if libpdf2htmlEX.so exists.
-    if (EXISTS ${THIRDPARTY_PREFIX}/lib/libpdf2htmlEX.so)
-      SET(PACKAGE_FOUND 1 PARENT_SCOPE)
-      return()
-    endif()
   endif()
 
   # Check pkg-config

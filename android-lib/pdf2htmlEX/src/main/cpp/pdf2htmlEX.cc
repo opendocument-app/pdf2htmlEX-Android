@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <vector>
-//#include "pdf2htmlEX/pdf2htmlEX.h"
+//#include "pdf2htmlEX.h"
 
 // Creating char ** by hand is rather annoying.
 // I'll rather take vector<string> and convert it before calling.
