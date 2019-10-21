@@ -42,5 +42,6 @@ preBuild.dependsOn extractLibtmpfileSoForLinkingInCMake
 
 dependencies {
     implementation files('libs/tmpfile-1.0.0.aar')
+    implementation 'androidx.annotation:annotation:1.1.0'
 }
 
