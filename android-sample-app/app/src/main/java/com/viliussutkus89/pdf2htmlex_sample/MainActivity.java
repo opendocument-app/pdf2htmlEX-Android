@@ -1,4 +1,4 @@
-package com.viliussutkus89.pdf2htmlex.android_sample_app;
+package com.viliussutkus89.pdf2htmlex_sample;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -9,12 +9,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.LiveFolders;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
+
+import com.viliussutkus89.pdf2htmlex.pdf2htmlEX;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -28,25 +28,14 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
-
-    static final String TAG = "ASM";
+    static final String TAG = "P2H";
 
     static final int INTENT_OPEN = 1;
     static final int INTENT_SAVE = 2;
     static final int INTENT_SAVE_RESULT_FILENAME = 3;
 
-    // DataDir is where pdf2htmlEX's share folder contents are
-    private File m_pdf2htmlEX_dataDir;
-    // Poppler requires encoding data
-    private File m_poppler_dataDir;
-    // tmpDir is where pdf2htmlEX does it's work
-    private File m_pdf2htmlEX_tmpDir;
     // cacheDir is where this Android App stores incoming .pdf
-    private File m_cacheDir;
+    private File m_inputDir;
     // outputDir is where produced .html's will be stored
     private File m_outputDir;
 
@@ -57,60 +46,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_pdf2htmlEX_dataDir = new File(getFilesDir(), "pdf2htmlEX");
-        if (!m_pdf2htmlEX_dataDir.exists()) {
-            ExtractAssets(getFilesDir(), "pdf2htmlEX");
-        }
-
-        m_poppler_dataDir = new File(getFilesDir(), "poppler");
-        if (!m_poppler_dataDir.exists()) {
-            ExtractAssets(getFilesDir(), "poppler");
-        }
-
-        m_pdf2htmlEX_tmpDir = new File(getCacheDir(), "pdf2htmlEX-tmp");
-        m_cacheDir = new File(getCacheDir(), "incoming-pdf");
+        m_inputDir = new File(getCacheDir(), "incoming-pdf");
+        m_inputDir.mkdir();
 
         // Must be defined in provider_paths.xml
         m_outputDir = new File(getCacheDir(), "produced-htmls");
-
-        if (!m_pdf2htmlEX_tmpDir.exists()) {
-            m_pdf2htmlEX_tmpDir.mkdir();
-        }
-        if (!m_cacheDir.exists()) {
-            m_cacheDir.mkdir();
-        }
-        if (!m_outputDir.exists()) {
-            m_outputDir.mkdir();
-        }
-    }
-
-    // ExtractAssets adapted from
-    // https://gist.github.com/tylerchesley/6198074
-    private Boolean ExtractAssets(File output_dir, String name) {
-        File output_name = new File(output_dir, name);
-        try {
-            String[] assets = getAssets().list(name);
-            if (0 == assets.length) { // Processing a file
-                InputStream in = getAssets().open(name);
-                OutputStream out = new FileOutputStream(output_name);
-                if (!copyFile(in, out)) {
-                    return false;
-                }
-            } else { // Processing a folder
-                if (!output_name.exists() && !output_name.mkdir()) {
-                    return false;
-                }
-                for (String asset: assets) {
-                    if (!ExtractAssets(output_dir, name + File.separator + asset)) {
-                        return false;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-        return true;
+        m_outputDir.mkdir();
     }
 
     private Boolean copyFile(InputStream input, OutputStream output) {
@@ -162,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+
         if (Activity.RESULT_OK != resultCode || null == resultData) {
             return;
         }
@@ -194,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String filename = getFileName(uri);
-        File pdf_in_cache = new File(m_cacheDir, filename);
+        File pdf_in_cache = new File(m_inputDir, filename);
         try {
             InputStream input = getContentResolver().openInputStream(uri);
             OutputStream output = new FileOutputStream(pdf_in_cache);
@@ -205,14 +148,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        File html = new File(m_outputDir, filename + ".html");
+        Context ctx = getApplicationContext();
+        pdf2htmlEX converter = new pdf2htmlEX(ctx);
 
-        // @TODO: should be in non-GUI thread
-        if (0 != call_pdf2htmlEX(m_pdf2htmlEX_dataDir.toString(),
-                m_poppler_dataDir.toString(),
-                m_pdf2htmlEX_tmpDir.toString(),
-                pdf_in_cache.toString(),
-                html.toString()) ){
+        File html;
+        try {
+            // @TODO: should be in non-GUI thread
+            html = converter.convert(pdf_in_cache);
+        } catch (Exception e) {
+            Toast.makeText(ctx, "Conversion failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            pdf_in_cache.delete();
             return;
         }
 
@@ -220,11 +165,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (html.exists()) {
             if (INTENT_OPEN == requestCode) {
+                File htmlInOutputFolder = new File(m_outputDir, html.getName());
+                html.renameTo(htmlInOutputFolder);
+
                 findViewById(R.id.button_open).setEnabled(true);
 
-                Context ctx = getApplicationContext();
                 String authority = ctx.getPackageName() + ".provider";
-                Uri apkUri = FileProvider.getUriForFile(ctx, authority, html);
+                Uri apkUri = FileProvider.getUriForFile(ctx, authority, htmlInOutputFolder);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
                 intent.setDataAndType(apkUri, "text/html");
@@ -258,6 +205,4 @@ public class MainActivity extends AppCompatActivity {
         openPDFIntent.setType("application/pdf");
         startActivityForResult(openPDFIntent, INTENT_SAVE);
     }
-
-    public native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile);
 }
