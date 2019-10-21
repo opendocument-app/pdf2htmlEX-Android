@@ -1,10 +1,2 @@
 /build
 /release
-/src/main/assets/pdf2htmlEX
-/src/main/assets/poppler
-/src/main/jniLibs/pdf2htmlEX.cmake
-/src/main/jniLibs/include/pdf2htmlEX
-/src/main/jniLibs/armeabi-v7a/libpdf2htmlEX.so
-/src/main/jniLibs/arm64-v8a/libpdf2htmlEX.so
-/src/main/jniLibs/x86/libpdf2htmlEX.so
-/src/main/jniLibs/x86_64/libpdf2htmlEX.so
