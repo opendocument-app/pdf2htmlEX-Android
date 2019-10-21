@@ -29,27 +29,6 @@ void vector_to_char_pp(const std::vector<const std::string> & input, int * argc,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_pdf2htmlex_android_1sample_1app_MainActivity_redirect(JNIEnv *env,
-                                                                            jobject,
-                                                                            jstring stdout_,
-                                                                            jstring stderr_) {
-    const char * stdout_c = env->GetStringUTFChars(stdout_, 0);
-    const char * stderr_c = env->GetStringUTFChars(stderr_, 0);
-
-    freopen(stdout_c, "w", stdout);
-    setvbuf(stdout, 0, _IOLBF, 0);
-    fprintf(stdout, "stdout freopened\n");
-
-    freopen(stderr_c, "w", stderr);
-    setvbuf(stderr, 0, _IONBF, 0);
-    fprintf(stderr, "stderr freopened\n");
-
-    env->ReleaseStringUTFChars(stdout_, stdout_c);
-    env->ReleaseStringUTFChars(stderr_, stderr_c);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
 Java_com_viliussutkus89_pdf2htmlex_android_1sample_1app_MainActivity_setenv(JNIEnv *env,
                                                                             jobject,
                                                                             jstring homedir_,
