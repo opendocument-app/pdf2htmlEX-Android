@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, RelWithDebInfo, MinSizeRel)")
 
-project(ThirdPartyBuilder)
-
-message(STATUS "Running 3rdparty library build")
+project(DependencyBuilder)
 
 include(ExternalProject)
 find_package(PkgConfig REQUIRED)
