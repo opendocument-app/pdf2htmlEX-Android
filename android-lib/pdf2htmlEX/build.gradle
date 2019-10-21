@@ -14,13 +14,6 @@ android {
                 }
             }
         }
-        debug {
-            externalNativeBuild {
-                cmake {
-                  arguments '-DBUILD_3RDPARTY_BINARIES=ON'
-                }
-            }
-        }
     }
     externalNativeBuild {
         cmake {
