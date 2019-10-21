@@ -2,22 +2,16 @@
 set -euo pipefail
 shopt -s failglob
 
-# 'Debug', 'Release' or empty string for both
-BUILD_TYPE=
-
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-ANDROID_LIB_DIR=$BASEDIR/android-lib
-ANDROID_APP_DIR=$BASEDIR/android-sample-app
-BUILD_DIR=$BASEDIR/build
 
-# Build 3rdparty libraries
-cd $ANDROID_LIB_DIR
-./gradlew assemble$BUILD_TYPE
+# Build 3rdparty libraries and upstream pdf2htmlEX
+cd $BASEDIR/dependency-builder
+./gradlew build
 
 pids=
-for build_target in $BUILD_DIR/cmake/*/*
+for build_target in $(find $BASEDIR/dependency-builder/lib/.cxx/cmake -mindepth 2 -maxdepth 2)
 do
   cmake --build $build_target &
   pids="$pids $!"
@@ -33,134 +27,13 @@ do
   fi
 done
 
-# Rename .cmake.in to .cmake and pack it into .tar
-tar --create --file $BUILD_DIR/pdf2htmlEX-release.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
-tar --create --file $BUILD_DIR/pdf2htmlEX-debug.tar --directory=$BASEDIR pdf2htmlEX.cmake.in --transform 's,^pdf2htmlEX.cmake.in$,jniLibs/pdf2htmlEX.cmake,'
+# Build pdf2htmlEX-android
+cd $BASEDIR/android-lib
+./gradlew build #--console plain
 
-function add_to_tar() {
-  for build_type in "Debug" "Release" "MinSizeRel"
-  do
-    # deCapitalize Release -> release
-    local build_type_lowercase=${build_type,}
-    local tar_file=$BUILD_DIR/pdf2htmlEX-${build_type_lowercase}.tar
-    if test "$build_type" = "MinSizeRel"
-    then
-      local tar_file=$BUILD_DIR/pdf2htmlEX-release.tar
-    fi
-
-    local src_dir_=$src_dir
-    if test ${src_type:-"installed"} = "installed"
-    then
-      local build_target_location=$BUILD_DIR/$build_type
-    else
-      local build_target_location=$BUILD_DIR/cmake/$build_type_lowercase
-      local src_dir_=${package}-prefix/src/$package/$src_dir
-    fi
-
-    if test ! -d $build_target_location
-    then
-      continue
-    fi
-
-    for build_target in $(find $build_target_location -mindepth 1 -maxdepth 1)
-    do
-      local abi=$(basename $build_target)
-      local target_dir_=${target_dir/\-ABI\-/$abi}
-
-      tar --append --file $tar_file --directory=$build_target/$src_dir_ $filter --transform "s,^,$target_dir_/,"
-
-      if ${same_for_all_abis:-false}
-      then
-        for f in $filter
-        do
-          diff --brief --from-file "$build_target_location/*/$src_dir_/$f"
-        done
-        break
-      fi
-    done
-  done
-}
-
-(
-  src_dir="lib"
-  filter="libpdf2htmlEX.so"
-  target_dir="jniLibs/-ABI-"
-  add_to_tar
-)
-
-(
-  src_dir="include"
-  filter="pdf2htmlEX"
-  target_dir="jniLibs/include"
-  same_for_all_abis=true
-  add_to_tar
-)
-
-(
-  src_dir="share"
-  filter="pdf2htmlEX"
-  target_dir="assets"
-  same_for_all_abis=true
-  add_to_tar
-)
-
-(
-  src_dir="share"
-  filter="poppler"
-  target_dir="assets"
-  same_for_all_abis=true
-  add_to_tar
-)
-
-# Package licenses
-function add_license_to_tar() {
-  local src_type="built"
-  local package=$1
-  local filter=$2
-  local src_dir=${3:-''}
-  local target_dir=LICENSES/$package
-  local same_for_all_abis=true
-  add_to_tar
-}
-
-tar --append --file $BUILD_DIR/pdf2htmlEX-release.tar --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
-tar --append --file $BUILD_DIR/pdf2htmlEX-debug.tar   --directory=$BASEDIR LICENSE LICENSE_GPLv3 --transform 's,^,LICENSES/pdf2htmlEX/,'
-
-add_license_to_tar "cairo" "COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1"
-add_license_to_tar "fontconfig" "COPYING"
-add_license_to_tar "freetype" "LICENSE.TXT GPLv2.TXT FTL.TXT" "docs"
-add_license_to_tar "fribidi" "COPYING"
-add_license_to_tar "glib-2.0" "COPYING"
-add_license_to_tar "harfbuzz" "COPYING"
-add_license_to_tar "iconv" "COPYING COPYING.LIB"
-add_license_to_tar "intl" "COPYING"
-add_license_to_tar "lcms2" "COPYING"
-add_license_to_tar "libffi" "LICENSE"
-add_license_to_tar "libfontforge" "COPYING.gplv3 LICENSE"
-add_license_to_tar "libjpeg" "LICENSE.md README.ijg"
-add_license_to_tar "libopenjp2" "LICENSE"
-add_license_to_tar "libpng" "LICENSE"
-add_license_to_tar "libtiff-4" "COPYRIGHT"
-add_license_to_tar "libtool" "COPYING"
-add_license_to_tar "libuninameslist" "LICENSE"
-add_license_to_tar "libxml-2.0" "Copyright"
-add_license_to_tar "pango" "COPYING"
-add_license_to_tar "pdf2htmlEX" "LICENSE LICENSE_GPLv3"
-add_license_to_tar "pixman-1" "COPYING"
-add_license_to_tar "poppler-data" "COPYING COPYING.adobe COPYING.gpl2"
-add_license_to_tar "poppler" "COPYING COPYING3"
-
-# Load libpdf2htmlEX into sample android app
-tar_to_load=$BUILD_DIR/pdf2htmlEX-release.tar
-if test "$BUILD_TYPE" = "Debug"
-then
-  tar_to_load=$BUILD_DIR/pdf2htmlEX-debug.tar
-fi
-
-tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main jniLibs assets
-tar --extract --file $tar_to_load --directory=$ANDROID_APP_DIR/app/src/main/assets LICENSES
-
-# Build sample android app
-cd $ANDROID_APP_DIR
-./gradlew assemble$BUILD_TYPE
+# Build sample app, to make sure everything works
+#cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-release.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
+cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-debug.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
+cd $BASEDIR/android-sample-app
+./gradlew build
 
