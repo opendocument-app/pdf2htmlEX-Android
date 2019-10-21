@@ -57,7 +57,7 @@
 +Description: @PROJECT_NAME@
 +Version: @PROJECT_VERSION@
 +
-+Requires.private: freetype intl glib-2.0 iconv
++Requires.private: cairo freetype libfontforge poppler
 +Libs: -L${libdir} -lpdf2htmlEX
 +Cflags: -I${includedir}
 --- src/pdf2htmlEX.cc	2019-09-27 09:58:46.787000000 -0000
