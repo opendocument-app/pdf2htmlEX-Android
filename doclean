@@ -33,5 +33,4 @@ rm_folder_if_exists dependency-builder/lib/.cxx
 rm_folder_if_exists dependency-builder/lib/build
 rm_folder_if_exists dependency-builder/.gradle
 rm_folder_if_exists dependency-builder/build
-rm_folder_if_exists build
 

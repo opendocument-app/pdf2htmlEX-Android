@@ -6,11 +6,11 @@ THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
 # @TODO: issue #1
-touch $BASEDIR/packages/glib-2.0.cmake
+touch $BASEDIR/dependency-builder/lib/src/main/cpp/packages/glib-2.0.cmake
 
 # Build 3rdparty libraries and upstream pdf2htmlEX
 cd $BASEDIR/dependency-builder
-./gradlew build
+./gradlew assembleRelease
 
 pids=
 for build_target in $(find $BASEDIR/dependency-builder/lib/.cxx/cmake -mindepth 2 -maxdepth 2)
@@ -31,11 +31,10 @@ done
 
 # Build pdf2htmlEX-android
 cd $BASEDIR/android-lib
-./gradlew build #--console plain
+./gradlew assembleRelease
 
 # Build sample app, to make sure everything works
-#cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-release.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
-cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-debug.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
+cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-release.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
 cd $BASEDIR/android-sample-app
 ./gradlew build
 
