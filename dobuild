@@ -5,6 +5,8 @@ shopt -s failglob
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
+# @TODO: issue #1
+touch $BASEDIR/packages/glib-2.0.cmake
 
 # Build 3rdparty libraries and upstream pdf2htmlEX
 cd $BASEDIR/dependency-builder
