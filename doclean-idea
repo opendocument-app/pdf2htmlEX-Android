@@ -18,9 +18,9 @@ function rm_file_if_exists() {
   fi
 }
 
-rm_folder_if_exists android-lib/.idea
-rm_file_if_exists android-lib/android-lib.iml
-rm_file_if_exists android-lib/pdf2htmlEX/pdf2htmlEX.iml
+rm_folder_if_exists .idea
+#rm_file_if_exists pdf2htmlEX-Android.iml
+rm_file_if_exists pdf2htmlEX/pdf2htmlEX.iml
 
 rm_folder_if_exists android-sample-app/.idea
 rm_file_if_exists android-sample-app/android-sample-app.iml

@@ -18,10 +18,10 @@ function rm_file_if_exists() {
   fi
 }
 
-rm_folder_if_exists android-lib/pdf2htmlEX/.cxx
-rm_folder_if_exists android-lib/pdf2htmlEX/build
-rm_folder_if_exists android-lib/.gradle
-rm_folder_if_exists android-lib/build
+rm_folder_if_exists pdf2htmlEX/.cxx
+rm_folder_if_exists pdf2htmlEX/build
+rm_folder_if_exists .gradle
+rm_folder_if_exists build
 
 rm_file_if_exists android-sample-app/app/libs/pdf2htmlEX.aar
 rm_folder_if_exists android-sample-app/app/.cxx

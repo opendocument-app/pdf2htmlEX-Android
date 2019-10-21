@@ -9,8 +9,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
   SET(GRADLE_BUILD_TYPE "release")
 endif()
 
-get_filename_component(ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../.." ABSOLUTE)
-SET(PKG_CONFIG_EXECUTABLE ${ROOT_DIR}/dependency-builder/lib/.cxx/cmake/${GRADLE_BUILD_TYPE}/${ANDROID_ABI}/installed/bin/pkg-config)
+get_filename_component(GIT_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../.." ABSOLUTE)
+SET(PKG_CONFIG_EXECUTABLE ${GIT_ROOT_DIR}/dependency-builder/lib/.cxx/cmake/${GRADLE_BUILD_TYPE}/${ANDROID_ABI}/installed/bin/pkg-config)
 
 include(FindPkgConfig)
 pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)

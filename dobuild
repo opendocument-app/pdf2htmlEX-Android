@@ -30,11 +30,11 @@ do
 done
 
 # Build pdf2htmlEX-android
-cd $BASEDIR/android-lib
+cd $BASEDIR
 ./gradlew assembleRelease
 
 # Build sample app, to make sure everything works
-cp $BASEDIR/android-lib/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-release.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
+cp $BASEDIR/pdf2htmlEX/build/outputs/aar/pdf2htmlEX-release.aar $BASEDIR/android-sample-app/app/libs/pdf2htmlEX.aar
 cd $BASEDIR/android-sample-app
 ./gradlew build
 
