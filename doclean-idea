@@ -1,0 +1,28 @@
+#!/bin/sh
+set -euo pipefail
+
+THIS_FILE=$(readlink -f "$0")
+BASEDIR=$(dirname "$THIS_FILE")
+
+function rm_folder_if_exists() {
+  if test -d $BASEDIR/$1
+  then
+    rm -rf $BASEDIR/$1
+  fi
+}
+
+function rm_file_if_exists() {
+  if test -f $BASEDIR/$1
+  then
+    rm $BASEDIR/$1
+  fi
+}
+
+rm_folder_if_exists android-lib/.idea
+rm_file_if_exists android-lib/android-lib.iml
+rm_file_if_exists android-lib/pdf2htmlEX/pdf2htmlEX.iml
+
+rm_folder_if_exists android-sample-app/.idea
+rm_file_if_exists android-sample-app/android-sample-app.iml
+rm_file_if_exists android-sample-app/app/app.iml
+

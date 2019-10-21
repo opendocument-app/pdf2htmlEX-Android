@@ -1,24 +1,37 @@
 #!/bin/sh
+set -euo pipefail
 
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-#rm -r $BASEDIR/build/pdf2htmlEX-debug.tar
-#rm -r $BASEDIR/build/pdf2htmlEX-release.tar
+function rm_folder_if_exists() {
+  if test -d $BASEDIR/$1
+  then
+    rm -rf $BASEDIR/$1
+  fi
+}
 
-#rm -r $BASEDIR/build/3rdparty
-#rm -r $BASEDIR/build/gradle_3rdparty
-#rm -r $BASEDIR/build/libpdf2htmlex
-#rm -r $BASEDIR/build/gradle_libpdf2htmlex
+function rm_file_if_exists() {
+  if test -f $BASEDIR/$1
+  then
+    rm $BASEDIR/$1
+  fi
+}
 
-rm -r $BASEDIR/build
-rm -r $BASEDIR/android-3rdparty
+rm_folder_if_exists android-lib/pdf2htmlEX/.cxx
+rm_folder_if_exists android-lib/pdf2htmlEX/build
+rm_folder_if_exists android-lib/.gradle
+rm_folder_if_exists android-lib/build
 
-rm -r $BASEDIR/android-libpdf2htmlex/app/build
-rm -r $BASEDIR/android-sample-app/app/.externalNativeBuild
-rm -r $BASEDIR/android-sample-app/app/build
-rm -r $BASEDIR/android-sample-app/app/src/main/jniLibs
-rm -r $BASEDIR/android-sample-app/app/src/main/assets/pdf2htmlEX
+rm_file_if_exists android-sample-app/app/libs/pdf2htmlEX.aar
+rm_folder_if_exists android-sample-app/app/.cxx
+rm_folder_if_exists android-sample-app/app/build
+rm_folder_if_exists android-sample-app/.gradle
+rm_folder_if_exists android-sample-app/build
 
-rm -r $BASEDIR/pdf2htmlEX.1 $BASEDIR/share/*.css $BASEDIR/share/*.js $BASEDIR/share/*.min.* $BASEDIR/src/pdf2htmlEX-config.h $BASEDIR/src/util/css_const.h
+rm_folder_if_exists dependency-builder/lib/.cxx
+rm_folder_if_exists dependency-builder/lib/build
+rm_folder_if_exists dependency-builder/.gradle
+rm_folder_if_exists dependency-builder/build
+rm_folder_if_exists build
 
