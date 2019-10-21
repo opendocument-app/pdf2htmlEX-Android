@@ -5,29 +5,8 @@ shopt -s failglob
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-# @TODO: issue #1
-touch $BASEDIR/dependency-builder/lib/src/main/cpp/packages/glib-2.0.cmake
-
 # Build 3rdparty libraries and upstream pdf2htmlEX
-cd $BASEDIR/dependency-builder
-./gradlew assembleRelease
-
-pids=
-for build_target in $(find $BASEDIR/dependency-builder/lib/.cxx/cmake -mindepth 2 -maxdepth 2)
-do
-  cmake --build $build_target &
-  pids="$pids $!"
-done
-
-for pid in $pids
-do
-  if ! wait $pid
-  then
-    echo "Build failed. Waiting for other subprocesses..."
-    wait
-    exit 1
-  fi
-done
+$BASEDIR/dependency-builder/dobuild
 
 # Build pdf2htmlEX-android
 cd $BASEDIR
