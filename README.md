@@ -1,58 +1,64 @@
-# pdf2htmlEX Android port
+# Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
+
 ### Goals:
-* Running on Android as a JNI library
-* No excessive device requirements. NDK supports Android-16 (Jelly Bean) and newer. 
-* Small footprint (Installed App size). Current (0.15.1) sample app with libpdf2htmlEX.so bundled installed on Android-19 armeabi-v7a consumes ~25MB.
+* Providing easy to use interface for downstream users.  
+Library is consumed as .aar file through gradle and used through a Java class, which provides a method to perform conversion.
+* Keeping device requirements low.  
+Current versions of NDK support building for Android-16 (Jelly Bean) and newer.  
+Supported ABIs: armeabi-v7a, arm64-v8a, x86, x86_64.
+* Keeping installed footprint low.  
+Sample application consumes under 30MB.
 
-### Sample app
-* Open PDF, convert to HTML and either open it in browser or save to device.
-* No permissions nagging. App opens and saves user files using native file APIs. Current implementation requires API level 19 (KitKat).
+### Usage:
+Download pdf2htmlEX.aar and place it to libs folder.
+Consume it as a dependency in [build.gradle](android-sample-app/app/build.gradle)
 
-### Tools to build from source:
-* Meson
-* Ninja
-* CMake-3.10.2
-* pkg-config
-* Android NDK
+```gradle
+dependencies {
+  implementation files('libs/pdf2htmlEX.aar')
+}
+```
 
-### Project problem scope:
+Library is interfaced through Java.
+```Java
+import com.viliussutkus89.pdf2htmlex.pdf2htmlEX;
+...
+File inputPdf = new File(getFilesDir(), "my.pdf");
+pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());
+File outputHTML = converter.convert(inputPdf);
+```
+
+Library needs Android Context to obtain path to cache directory and asset files, which are supplied in .aar.
+
+### Problem scope:
 pdf2htmlEX depends on 4 libraries:
 * Cairo
 * FontForge
 * FreeType
 * Poppler
 
-None of them are shipped on Android devices so they have to be built from source.
+These libraries also have dependencies of their own. FontForge requires FreeType, libjpeg, zlib, et cetera.
+Full list of packages and patches to build them is included in [packages](/dependency-builder/lib/src/main/cpp/packages/) folder.
 
-### CMake superbuild pattern (3rdparty/CMakeLists.txt and CMakeListst.txt)
-[3rdparty/CMakeLists.txt](3rdparty/CMakeLists.txt) is a meta project which builds it's [ExternalProject's](https://cmake.org/cmake/help/latest/module/ExternalProject.html) (Cairo, Fontforge, et cetera). Current implementation supports building projects which are based on [Autotools](3rdparty/EPAutotools.cmake), [CMake](3rdparty/EPCMake.cmake) and [Meson](3rdparty/EPMeson.cmake).
+### CMake Superbuild pattern
+[DependencyBuilder](/dependency-builder/lib/src/main/cpp/CMakeLists.txt) is a meta project which builds it's
+[ExternalProjects](https://cmake.org/cmake/help/latest/module/ExternalProject.html) (Cairo, FontForge, et cetera).
+Current implementation supports building projects which are based on [Autotools](/dependency-builder/lib/src/main/cpp/EPAutotools.cmake), [CMake](/dependency-builder/lib/src/main/cpp/EPCMake.cmake) and [Meson](/dependency-builder/lib/src/main/cpp/EPMeson.cmake).
 
-ExternalProjects can have dependencies. FontForge requires FreeType, libjpeg, zlib, et cetera. Dependencies of dependencies can have dependencies. ExternalProject is a CMake target, thus allowing CMake target dependency resolving.
+[pdf2htmlEX-Android](pdf2htmlEX/src/main/cpp/CMakeLists.txt) consumes previously built libraries and provides a Java wrapper to call pdf2htmlEX.
 
-[CMakeListst.txt](CMakeListst.txt) builds "regular" shared library libpdf2htmlEX.so.
+### [Sample application](/android-sample-app)
+Example demonstrates how to convert PDF files to HTML and either open the result in browser or save to storage.
+Storage Access Framework (SAF) is used for file management, it requires API level 19 (KitKat).
 
-### HOWTO build:
+### Tools to build from source:
+* Meson Build system
+* Ninja (build system)
+* pkg-config
+* CMake-3.10.2
+* ndk-20.0.5594570
+
+#### HOWTO build library:
 ```sh
 ./dobuild
 ```
-
-### What does dobuild script do?
-[android-libpdf2htmlex](android-libpdf2htmlex) is a barebones Android gradle project that builds [CMakeLists.txt](CMakeLists.txt)
-[./dobuild](dobuild)
-1) Uses android-libpdf2htmlex to generate a very similar project android-3rdparty which builds [3rdparty/CMakeLists.txt](3rdparty/CMakeLists.txt)
-2) Calls gradle on android-3rdparty and then cmake --build on each ABI (armeabi-v7a, arm64-v8a, x86, x86_64) and build type (debug, release). All 8 CMake calls are in parallel, expect heavy load, because of dependency amount.
-3) Calls gradle and CMake on android-libpdf2htmlex and packages result (libpdf2htmlEX.so, .css files) in pdf2htmlEX-release.tar and pdf2htmlEX-debug.tar
-4) Extracts -release tar into android-sample-app
-5) Calls gradle on android-sample-app
-
-### HOWTO integrate libpdf2htmlEX to my App:
-
-```sh
-tar --extract --file pdf2htmlEX-release.tar --directory=android-sample-app/app/src/main jniLibs assets
-```
-Link your native library against libpdf2htmlEX.so
-```CMake
-include(${CMAKE_SOURCE_DIR}/../jniLibs/pdf2htmlEX.cmake)
-target_link_libraries(native-lib pdf2htmlEX)
-```
-
