@@ -1,3 +1,0 @@
-before_install:
-  - /bin/sh dependency-builder/dobuild
-
