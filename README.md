@@ -23,9 +23,9 @@ Library is interfaced through Java.
 ```Java
 import com.viliussutkus89.pdf2htmlex.pdf2htmlEX;
 ...
-File inputPdf = new File(getFilesDir(), "my.pdf");
+java.io.File inputPdf = new java.io.File(getFilesDir(), "my.pdf");
 pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());
-File outputHTML = converter.convert(inputPdf);
+java.io.File outputHTML = converter.convert(inputPdf);
 ```
 
 Library needs Android Context to obtain path to cache directory and asset files, which are supplied in .aar.
