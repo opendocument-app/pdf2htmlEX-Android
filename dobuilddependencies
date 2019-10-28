@@ -24,7 +24,7 @@ do
   fi
 done
 
-function run_build() {
+run_build() {
   local build_target=$1
   cmake --build $build_target
 
