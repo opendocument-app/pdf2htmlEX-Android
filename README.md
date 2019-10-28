@@ -38,12 +38,12 @@ pdf2htmlEX depends on 4 libraries:
 * Poppler
 
 These libraries also have dependencies of their own. FontForge requires FreeType, libjpeg, zlib, et cetera.
-Full list of packages and patches to build them is included in [packages](/dependency-builder/lib/src/main/cpp/packages/) folder.
+Full list of packages and patches to build them is included in [packages](/dependency-builder/src/main/cpp/packages/) folder.
 
 ### CMake Superbuild pattern
-[DependencyBuilder](/dependency-builder/lib/src/main/cpp/CMakeLists.txt) is a meta project which builds it's
+[DependencyBuilder](/dependency-builder/src/main/cpp/CMakeLists.txt) is a meta project which builds it's
 [ExternalProjects](https://cmake.org/cmake/help/latest/module/ExternalProject.html) (Cairo, FontForge, et cetera).
-Current implementation supports building projects which are based on [Autotools](/dependency-builder/lib/src/main/cpp/EPAutotools.cmake), [CMake](/dependency-builder/lib/src/main/cpp/EPCMake.cmake) and [Meson](/dependency-builder/lib/src/main/cpp/EPMeson.cmake).
+Current implementation supports building projects which are based on [Autotools](/dependency-builder/src/main/cpp/EPAutotools.cmake), [CMake](/dependency-builder/src/main/cpp/EPCMake.cmake) and [Meson](/dependency-builder/src/main/cpp/EPMeson.cmake).
 
 [pdf2htmlEX-Android](pdf2htmlEX/src/main/cpp/CMakeLists.txt) consumes previously built libraries and provides a Java wrapper to call pdf2htmlEX.
 
