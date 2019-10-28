@@ -1,0 +1,15 @@
+language: android
+dist: trusty
+android:
+  components:
+    - build-tools-29.0.2
+    - android-29
+
+install:
+  - echo "y" | sdkmanager "ndk;20.0.5594570" > /dev/null
+  - echo "y" | sdkmanager "cmake;3.10.2.4988404" > /dev/null
+
+script:
+  ./dobuilddependencies
+  ./gradlew assembleRelease
+
