@@ -4,15 +4,15 @@ set -eu
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-# @TODO: issue #1
-touch $BASEDIR/dependency-builder/src/main/cpp/packages/glib-2.0.cmake
+DB=$BASEDIR/dependency-builder
+TARBALL_STORAGE=$DB/src/main/cpp/tarballs
 
-# Build 3rdparty libraries and upstream pdf2htmlEX
-cd $BASEDIR
-./gradlew dependency-builder:assembleRelease
+# @TODO: issue #1
+touch $DB/src/main/cpp/packages/glib-2.0.cmake
 
 PARALLEL=true
 CLEANUP=false
+DOWNLOAD=false
 for i in "$@"
 do
   if test "$i" = "--serial"
@@ -21,8 +21,44 @@ do
   elif test "$i" = "--cleanup"
   then
     CLEANUP=true
+  elif test "$i" = "--download"
+  then
+    DOWNLOAD=true
   fi
 done
+
+if "$DOWNLOAD"
+then
+  pids=
+
+  for package in $(find $DB/src/main/cpp/packages -mindepth 1 -maxdepth 1 -type f -name '*.cmake')
+  do
+    URL=$(awk '/[^#]URL (.*)/{ print $2 }' $package)
+    if test -n "$URL"
+    then
+      FILENAME=$(basename "$URL")
+      if test ! -f "$TARBALL_STORAGE/$FILENAME"
+      then
+        wget --output-document="$TARBALL_STORAGE/$FILENAME" --no-show-progress $URL &
+      fi
+    fi
+  done
+
+  for pid in $pids
+  do
+    if ! wait $pid
+    then
+      echo "download failed. Waiting for other subprocesses..."
+      wait
+      echo "download failed.."
+      exit 1
+    fi
+  done
+fi
+
+# Build 3rdparty libraries and upstream pdf2htmlEX
+cd $BASEDIR
+./gradlew dependency-builder:assembleRelease
 
 run_build() {
   local build_target=$1
@@ -36,7 +72,7 @@ run_build() {
 }
 
 pids=
-for build_target in $(find $BASEDIR/dependency-builder/.cxx/cmake -mindepth 2 -maxdepth 2)
+for build_target in $(find $DB/.cxx/cmake -mindepth 2 -maxdepth 2)
 do
   if "$PARALLEL"
   then
