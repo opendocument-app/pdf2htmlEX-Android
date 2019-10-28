@@ -39,7 +39,7 @@ then
       FILENAME=$(basename "$URL")
       if test ! -f "$TARBALL_STORAGE/$FILENAME"
       then
-        wget --output-document="$TARBALL_STORAGE/$FILENAME" --no-show-progress $URL &
+        wget --output-document="$TARBALL_STORAGE/$FILENAME" $URL &
       fi
     fi
   done
