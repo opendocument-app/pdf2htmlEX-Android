@@ -38,7 +38,6 @@ jobs:
 
     - name: Build dependencies
       run: ./dobuilddependencies
-      shell: sh
 
     - name: Build main library
       run: ./gradlew assembleRelease
