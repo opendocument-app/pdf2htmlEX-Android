@@ -110,7 +110,7 @@ bintray {
 
 publishing{
     publications {
-        bar(MavenPublication) {
+        projectRelease(MavenPublication) {
             artifactId rootProject.name
             artifact "$buildDir/outputs/aar/${rootProject.name}-release.aar"
             artifact sourceJar
