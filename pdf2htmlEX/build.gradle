@@ -28,6 +28,26 @@ task sourceJar(type: Jar) {
     archiveBaseName = rootProject.name
     archiveClassifier = 'sources'
 }
+
+configurations {
+    // * What went wrong:
+    // Could not determine the dependencies of task ':lib:javadoc'.
+    // > Resolving configuration 'implementation' directly is not allowed
+    extendedImplementation.extendsFrom implementation
+}
+
+task javadoc(type: Javadoc) {
+    options.encoding = 'UTF-8'
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.extendedImplementation
+    title = "${rootProject.name} ${project.version} API"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
 // pdf2htmlEX and Poppler have some data that is needed on runtime
 task collectAssetsFromShareFolder {
     doLast {
@@ -59,9 +79,6 @@ dependencies {
 // Extract shared .so libraries to build directory
 // So that they could be linked against in CMake
 task extractLibtmpfileSoForLinkingInCMake(type: Copy) {
-    configurations {
-        extendedImplementation.extendsFrom implementation
-    }
     // Cannot resolve "implementation" configuration directly
     // Extend it, so it could be used to get resolved artifacts
 
