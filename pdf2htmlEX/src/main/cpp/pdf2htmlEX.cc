@@ -51,7 +51,7 @@ void vector_to_char_pp(const std::vector<const std::string> & input, int * argc,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_pdf2htmlex_pdf2htmlEX_set_1env_1values_1for_1fontforge(JNIEnv *env,
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1env_1values_1for_1fontforge(JNIEnv *env,
                                                                                jobject,
                                                                                jstring homedir_,
                                                                                jstring tmpdir_,
@@ -71,7 +71,7 @@ Java_com_viliussutkus89_pdf2htmlex_pdf2htmlEX_set_1env_1values_1for_1fontforge(J
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_viliussutkus89_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *env, jobject,
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *env, jobject,
                                                                jstring dataDir_,
                                                                jstring popplerDir_, jstring tmpDir_,
                                                                jstring inputFile_,

@@ -21,7 +21,7 @@ dependencies {
 
 Library is interfaced through Java.
 ```Java
-import com.viliussutkus89.pdf2htmlex.pdf2htmlEX;
+import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
 ...
 java.io.File inputPdf = new java.io.File(getFilesDir(), "my.pdf");
 pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());

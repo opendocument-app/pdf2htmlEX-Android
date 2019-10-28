@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viliussutkus89.pdf2htmlex;
+package com.viliussutkus89.android.pdf2htmlex;
 
 import android.content.Context;
 import android.content.res.AssetManager;

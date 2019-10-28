@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
-import com.viliussutkus89.pdf2htmlex.pdf2htmlEX;
+import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
