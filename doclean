@@ -22,12 +22,14 @@ rm_folder_if_exists pdf2htmlEX/.cxx
 rm_folder_if_exists pdf2htmlEX/build
 rm_folder_if_exists .gradle
 rm_folder_if_exists build
+rm_file_if_exists local.properties
 
 rm_file_if_exists android-sample-app/app/libs/pdf2htmlEX.aar
 rm_folder_if_exists android-sample-app/app/.cxx
 rm_folder_if_exists android-sample-app/app/build
 rm_folder_if_exists android-sample-app/.gradle
 rm_folder_if_exists android-sample-app/build
+rm_file_if_exists android-sample-app/local.properties
 
 rm_folder_if_exists dependency-builder/.cxx
 rm_folder_if_exists dependency-builder/build
