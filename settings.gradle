@@ -1,2 +1,2 @@
-include ":pdf2htmlEX"
+include ":pdf2htmlEX", ":dependency-builder"
 rootProject.name = "pdf2htmlex-android"

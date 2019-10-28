@@ -1,25 +1,24 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'com.android.library'
 
-buildscript {
-    repositories {
-        google()
-        jcenter()
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    buildTypes {
+        release.externalNativeBuild {
+          cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
+        }
+        debug.externalNativeBuild {
+          cmake.arguments '-DBUILD_3RDPARTY_BINARIES=ON'
+        }
     }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
+    externalNativeBuild.cmake {
+        path "src/main/cpp/CMakeLists.txt"
+        version "3.10.2"
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    ndkVersion "20.0.5594570"
 }
 

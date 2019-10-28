@@ -26,7 +26,5 @@ rm_folder_if_exists android-sample-app/.idea
 rm_file_if_exists android-sample-app/android-sample-app.iml
 rm_file_if_exists android-sample-app/app/app.iml
 
-rm_folder_if_exists dependency-builder/.idea
 rm_file_if_exists dependency-builder/dependency-builder.iml
-rm_file_if_exists dependency-builder/lib/lib.iml
 

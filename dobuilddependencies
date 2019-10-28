@@ -5,14 +5,14 @@ THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
 # @TODO: issue #1
-touch $BASEDIR/lib/src/main/cpp/packages/glib-2.0.cmake
+touch $BASEDIR/dependency-builder/src/main/cpp/packages/glib-2.0.cmake
 
 # Build 3rdparty libraries and upstream pdf2htmlEX
 cd $BASEDIR
-./gradlew assembleRelease
+./gradlew dependency-builder:assembleRelease
 
 pids=
-for build_target in $(find $BASEDIR/lib/.cxx/cmake -mindepth 2 -maxdepth 2)
+for build_target in $(find $BASEDIR/dependency-builder/.cxx/cmake -mindepth 2 -maxdepth 2)
 do
   cmake --build $build_target &
   pids="$pids $!"

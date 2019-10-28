@@ -29,8 +29,6 @@ rm_folder_if_exists android-sample-app/app/build
 rm_folder_if_exists android-sample-app/.gradle
 rm_folder_if_exists android-sample-app/build
 
-rm_folder_if_exists dependency-builder/lib/.cxx
-rm_folder_if_exists dependency-builder/lib/build
-rm_folder_if_exists dependency-builder/.gradle
+rm_folder_if_exists dependency-builder/.cxx
 rm_folder_if_exists dependency-builder/build
 

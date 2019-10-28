@@ -34,7 +34,7 @@ jobs:
         echo ::set-env PATH="$ANDROID_HOME/cmake/$ANDROID_CMAKE/bin:$PATH"
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
-    - name: Build DependencyBuilder
-      run: dependency-builder/dobuild
+    - name: Build dependencies
+      run: ./dobuilddependencies
     - name: Build main library
-      run: ./gradlew build
+      run: ./gradlew assembleRelease

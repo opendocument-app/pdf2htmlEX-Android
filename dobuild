@@ -6,7 +6,7 @@ THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
 # Build 3rdparty libraries and upstream pdf2htmlEX
-$BASEDIR/dependency-builder/dobuild
+$BASEDIR/dobuilddependencies
 
 # Build pdf2htmlEX-android
 cd $BASEDIR

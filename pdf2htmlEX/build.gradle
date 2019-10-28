@@ -53,7 +53,7 @@ task sourceJar(type: Jar) {
     into ("", { from file("../LICENSE")})
     into ("cpp", { from fileTree(dir: "src/main/cpp/") } )
     into ("dependency-builder", { from fileTree(
-        dir: "../dependency-builder/lib/src/main/cpp/",
+        dir: "../dependency-builder/src/main/cpp/",
         exclude: "tarballs"
     )})
     archiveBaseName = rootProject.name
@@ -159,7 +159,7 @@ publishing{
 task collectAssetsFromShareFolder {
     doLast {
         copy {
-            new File("$projectDir/../dependency-builder/lib/.cxx/cmake/").eachDir() { buildType ->
+            new File("$projectDir/../dependency-builder/.cxx/cmake/").eachDir() { buildType ->
                 buildType.eachDir() {
                     from("$it/share")
                     include("pdf2htmlEX/**", "poppler/**")
