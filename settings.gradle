@@ -1,1 +1,2 @@
 include ":pdf2htmlEX"
+rootProject.name = "pdf2htmlex-android"

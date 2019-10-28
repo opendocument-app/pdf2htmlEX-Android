@@ -18,6 +18,16 @@ android {
     ndkVersion "20.0.5594570"
 }
 
+task sourceJar(type: Jar) {
+    into ("", { from android.sourceSets.main.java.srcDirs} )
+    into ("cpp", { from fileTree(dir: "src/main/cpp/") } )
+    into ("dependency-builder", { from fileTree(
+        dir: "../dependency-builder/lib/src/main/cpp/",
+        exclude: "tarballs"
+    )})
+    archiveBaseName = rootProject.name
+    archiveClassifier = 'sources'
+}
 // pdf2htmlEX and Poppler have some data that is needed on runtime
 task collectAssetsFromShareFolder {
     doLast {
