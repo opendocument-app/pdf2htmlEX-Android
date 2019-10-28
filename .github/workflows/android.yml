@@ -37,7 +37,7 @@ jobs:
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
 
     - name: Build dependencies
-      run: ./dobuilddependencies
+      run: ./dobuilddependencies --serial --cleanup
 
     - name: Build main library
       run: ./gradlew assembleRelease
