@@ -161,7 +161,7 @@ task collectAssetsFromShareFolder {
         copy {
             new File("$projectDir/../dependency-builder/.cxx/cmake/").eachDir() { buildType ->
                 buildType.eachDir() {
-                    from("$it/share")
+                    from("$it/installed/share")
                     include("pdf2htmlEX/**", "poppler/**")
                     into("${project.buildDir}/assets")
                 }
