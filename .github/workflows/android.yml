@@ -19,11 +19,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+
     - name: Install Android sdkmanager
       run: |
         wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
         sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
         rm android-sdk.zip
+
     - name: Install required Android tools
       run: |
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" > /dev/null
@@ -33,7 +35,12 @@ jobs:
         echo ::set-env PATH="$ANDROID_HOME/cmake/$ANDROID_CMAKE/bin:$PATH"
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
         echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
+
     - name: Build dependencies
       run: ./dobuilddependencies
+
     - name: Build main library
       run: ./gradlew assembleRelease
+
+    - name: Upload to Bintray
+      run: ./gradlew bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_API_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
