@@ -8,6 +8,10 @@ android:
 install:
   - echo "y" | sdkmanager "ndk;20.0.5594570" > /dev/null
   - echo "y" | sdkmanager "cmake;3.10.2.4988404" > /dev/null
+  - sudo apt-get --quiet update --yes
+
+  # gperf is required by fontconfig
+  - sudo apt-get --quiet install --yes gperf
 
 script:
   - ./dodownloadtarballs
