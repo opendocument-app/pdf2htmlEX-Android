@@ -10,6 +10,7 @@ install:
   - echo "y" | sdkmanager "cmake;3.10.2.4988404" > /dev/null
 
 script:
-  ./dobuilddependencies --serial --cleanup --download
-  ./gradlew assembleRelease
+  - ./dodownloadtarballs
+  - ./dobuilddependencies --serial --cleanup
+  - ./gradlew assembleRelease
 
