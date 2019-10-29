@@ -55,7 +55,6 @@ Storage Access Framework (SAF) is used for file management, it requires API leve
 
 ### Tools to build from source:
 * Meson Build system
-* Ninja (build system)
 * pkg-config
 * CMake-3.10.2
 * ndk-20.0.5594570
