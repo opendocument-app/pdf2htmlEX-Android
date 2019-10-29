@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 THIRDPARTY_PREFIX=$2
 THIRDPARTY_PKG_CONFIG_LIBDIR=$THIRDPARTY_PREFIX/lib/pkgconfig

@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 THIRDPARTY_PREFIX=$2
 PC_FILE=$THIRDPARTY_PREFIX/lib/pkgconfig/poppler.pc

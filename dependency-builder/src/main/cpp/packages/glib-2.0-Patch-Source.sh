@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 MESON_BUILD_FILE=$1/meson.build
 
