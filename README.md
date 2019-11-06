@@ -64,5 +64,6 @@ Storage Access Framework (SAF) is used for file management, it requires API leve
 
 #### HOWTO build library:
 ```sh
-./dobuild
+./dobuilddependencies
+./gradlew assembleRelease
 ```
