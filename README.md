@@ -1,5 +1,6 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
+![Release build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Release%20Build/badge.svg)
 ![Debug build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Debug%20Build/badge.svg)
 
 ### Goals:
