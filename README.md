@@ -1,5 +1,7 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
+![Debug build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Debug%20Build/badge.svg)
+
 ### Goals:
 * Providing easy to use interface for downstream users.  
 Library is consumed as .aar file through gradle and used through a Java class, which provides a method to perform conversion.

@@ -1,0 +1,55 @@
+name: Debug Build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    env:
+      ANDROID_SDK_TOOLS:    "4333796"
+      ANDROID_NDK:          "20.0.5594570"
+      ANDROID_CMAKE:        "3.10.2.4988404"
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install Meson
+        run: |
+          # python3-setuptools and python3-wheel are required to pip install meson
+          sudo apt-get --quiet install --yes python3-setuptools python3-wheel
+          sudo -H pip3 install meson
+
+      - name: Install dependencies
+        run: sudo apt-get --quiet install --yes gperf gettext
+          # gperf is required by fontconfig
+          # gettext is required by libfontforge
+
+      - name: Install Android tools
+        run: |
+          if test ! -d $ANDROID_HOME/tools/bin/sdkmanager
+          then
+            wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
+            sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
+            rm android-sdk.zip
+          fi
+          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "tools" > /dev/null
+          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
+
+      - name: Install CMake and NDK
+        run: |
+          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "cmake;${ANDROID_CMAKE}" > /dev/null
+          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
+
+      - name: Download tarballs
+        run: ./dodownloadtarballs
+
+      - name: Build dependencies
+        run: ./dobuilddependencies --debug
+
+      - name: Build main library
+        run: ./gradlew assembleDebug
+
