@@ -1,7 +1,5 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
-[![Build Status](https://travis-ci.org/ViliusSutkus89/pdf2htmlEX-Android.svg?branch=master)](https://travis-ci.org/ViliusSutkus89/pdf2htmlEX-Android)
-
 ### Goals:
 * Providing easy to use interface for downstream users.  
 Library is consumed as .aar file through gradle and used through a Java class, which provides a method to perform conversion.
