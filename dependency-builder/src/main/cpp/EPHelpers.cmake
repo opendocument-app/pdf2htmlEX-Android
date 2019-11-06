@@ -84,15 +84,17 @@ function(FilterDependsList DEPENDS_LIST)
   SET(${DEPENDS_LIST} ${RESULT} PARENT_SCOPE)
 endfunction(FilterDependsList)
 
-function(CheckIfTarballCachedLocally URL)
+function(CheckIfTarballCachedLocally EP_NAME URL)
   # Expand URL variable twice, to get the INPUT value
   SET(INPUT ${${URL}})
 
   get_filename_component(FILENAME ${INPUT} NAME)
 
-  SET(CACHED_FILENAME ${TARBALL_STORAGE}/${FILENAME})
+  SET(CACHED_FILENAME ${TARBALL_STORAGE}/${EP_NAME}/${FILENAME})
   if (EXISTS ${CACHED_FILENAME})
     SET(${URL} ${CACHED_FILENAME} PARENT_SCOPE)
+  elseif (EXISTS "${CACHED_FILENAME}.tar")
+    SET(${URL} "${CACHED_FILENAME}.tar" PARENT_SCOPE)
   endif()
 
 endfunction(CheckIfTarballCachedLocally)

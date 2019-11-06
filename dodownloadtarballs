@@ -20,13 +20,21 @@ done
 pids=
 for package in $(find $DB/src/main/cpp/packages -mindepth 1 -maxdepth 1 -type f -name '*.cmake')
 do
+  PACKAGE_NAME=$(basename ${package%%\.cmake})
   URL=$(awk '/[^#]URL (.*)/{ print $2 }' $package)
   if test -n "$URL"
   then
+    mkdir --parents $TARBALL_STORAGE/$PACKAGE_NAME
     FILENAME=$(basename "$URL")
-    if test ! -f "$TARBALL_STORAGE/$FILENAME"
+
+    if ! $(echo $FILENAME | grep -E '(\.7z|\.tar|\.tbz2|\.tgz|\.txz|\.zip)' -q)
     then
-      wget --output-document="$TARBALL_STORAGE/$FILENAME" $URL &
+      FILENAME=$FILENAME.tar
+    fi
+
+    if test ! -f "$TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME"
+    then
+      wget --output-document="$TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME" $URL &
       pid=$!
       if "$PARALLEL"
       then

@@ -34,3 +34,6 @@ rm_file_if_exists android-sample-app/local.properties
 rm_folder_if_exists dependency-builder/.cxx
 rm_folder_if_exists dependency-builder/build
 
+find $BASEDIR/dependency-builder/src/main/cpp/tarballs -mindepth 2 -maxdepth 2 -type f -exec rm {} \;
+find $BASEDIR/dependency-builder/src/main/cpp/tarballs -mindepth 1 -maxdepth 1 -type d -exec rmdir {} \;
+
