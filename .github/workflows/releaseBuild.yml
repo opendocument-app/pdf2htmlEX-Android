@@ -70,7 +70,8 @@ jobs:
           draft: true
           prerelease: false
 
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Upload aar
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -79,7 +80,8 @@ jobs:
           asset_name: pdf2htmlex-android-release.aar
           asset_content_type: application/zip
 
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Upload javadoc.jar
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -88,7 +90,8 @@ jobs:
           asset_name: pdf2htmlex-android-${{steps.get_version.outputs.version}}-javadoc.jar
           asset_content_type: application/zip
 
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Upload sources.jar
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
