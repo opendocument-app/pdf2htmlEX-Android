@@ -12,6 +12,8 @@ touch $DB/src/main/cpp/packages/glib-2.0.cmake
 
 PARALLEL=true
 CLEANUP=false
+BUILD_TYPE="Release"
+
 for i in "$@"
 do
   if test "$i" = "--serial"
@@ -20,12 +22,15 @@ do
   elif test "$i" = "--cleanup"
   then
     CLEANUP=true
+  elif test "$i" = "--debug"
+  then
+    BUILD_TYPE="Debug"
   fi
 done
 
 # Build 3rdparty libraries and upstream pdf2htmlEX
 cd $BASEDIR
-./gradlew dependency-builder:assembleRelease
+./gradlew dependency-builder:assemble$BUILD_TYPE
 
 run_build() {
   local build_target=$1
