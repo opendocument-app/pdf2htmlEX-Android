@@ -80,6 +80,9 @@ jobs:
           asset_name: pdf2htmlex-android-release.aar
           asset_content_type: application/zip
 
+      - name: Generate javadoc
+        run: ./gradlew pdf2htmlEX:javadocJar
+
       - name: Upload javadoc.jar
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -89,6 +92,9 @@ jobs:
           asset_path: ./pdf2htmlEX/build/libs/pdf2htmlex-android-${{steps.get_version.outputs.version}}-javadoc.jar
           asset_name: pdf2htmlex-android-${{steps.get_version.outputs.version}}-javadoc.jar
           asset_content_type: application/zip
+
+      - name: Jar the sources
+        run: ./gradlew pdf2htmlEX:sourceJar
 
       - name: Upload sources.jar
         uses: actions/upload-release-asset@v1.0.1
