@@ -1,2 +1,1 @@
-Dump source archives here to cache them.
-Filename in requested URL must match filename stored in this folder.
+Script dodownloadtarballs downloads source tarballs and stores them here.
