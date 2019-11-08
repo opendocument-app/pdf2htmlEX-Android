@@ -106,7 +106,8 @@ jobs:
           asset_name: pdf2htmlex-android-${{steps.get_version.outputs.version}}-sources.jar
           asset_content_type: application/zip
 
-      - run: tar -cf source-tarballs.tar dependency-builder/src/main/cpp/tarballs
+      - name: Tar the source tarballs
+        run: tar -cf source-tarballs.tar dependency-builder/src/main/cpp/tarballs
 
       - name: Upload source tarballs
         uses: actions/upload-release-asset@v1.0.1
