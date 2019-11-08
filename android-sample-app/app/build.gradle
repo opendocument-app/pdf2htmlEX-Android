@@ -34,9 +34,6 @@ android {
 dependencies {
     implementation files('libs/pdf2htmlEX.aar')
 
-    // https://github.com/ViliusSutkus89/tmpfile-Android/issues/5
-    implementation 'com.viliussutkus89:tmpfile-android:1.0.1'
-
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
