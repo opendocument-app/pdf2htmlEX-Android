@@ -54,10 +54,7 @@ task sourceJar(type: Jar) {
     into ("", { from android.sourceSets.main.java.srcDirs} )
     into ("", { from file("../LICENSE")})
     into ("cpp", { from fileTree(dir: "src/main/cpp/") } )
-    into ("dependency-builder", { from fileTree(
-        dir: "../dependency-builder/src/main/cpp/",
-        exclude: "tarballs"
-    )})
+    into ("dependency-builder", { from fileTree(dir: "../dependency-builder/src/main/cpp/") } )
     archiveBaseName = rootProject.name
     archiveClassifier = 'sources'
 }

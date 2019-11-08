@@ -119,16 +119,3 @@ jobs:
           asset_name: pdf2htmlex-android-${{steps.get_version.outputs.version}}-sources.jar
           asset_content_type: application/zip
 
-      - name: Tar the source tarballs
-        run: tar -cf source-tarballs.tar dependency-builder/src/main/cpp/tarballs
-
-      - name: Upload source tarballs
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./source-tarballs.tar
-          asset_name: source-tarballs.tar
-          asset_content_type: application/x-tar
-
