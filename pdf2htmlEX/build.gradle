@@ -1,3 +1,5 @@
+import groovy.xml.MarkupBuilder
+
 /*
  * build.gradle
  *
@@ -80,6 +82,76 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+task gatherLicenses {
+  doLast {
+    file("$buildDir/licenses.xml").withWriter { writer ->
+        def xml = new MarkupBuilder(writer)
+
+        xml.doubleQuotes = true
+        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
+
+        xml.licenses() {
+            license() {
+                name("pdf2htmlEX-Android")
+                url("pdf2htmlEX-Android/LICENSE\n\n" + new File("$projectDir/../LICENSE").getText('UTF-8') + "\n\n")
+                distribution('repo')
+            }
+
+            def addLicense = { depName, licenseFiles ->
+                license {
+                    name(depName)
+                    def urlVal = new StringBuilder()
+                    licenseFiles.each() { licenseFilename ->
+                        urlVal.append("$depName/$licenseFilename\n\n")
+
+                        def licenseFile = new File("$projectDir/../dependency-builder/.cxx/cmake/release/x86/$depName-prefix/src/$depName/$licenseFilename")
+                        def licenseText = licenseFile.getText('UTF-8')
+                        // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
+                        // XML does not take kindly to form feed characters.
+                        if ((depName == "cairo" && licenseFilename == "COPYING-LGPL-2.1") ||
+                            (depName == "freetype" && licenseFilename == "docs/GPLv2.TXT") ||
+                            (depName == "glib-2.0" && licenseFilename == "COPYING") ||
+                            (depName == "fribidi" && licenseFilename == "COPYING") ||
+                            (depName == "iconv" && licenseFilename == "COPYING.LIB") ||
+                            (depName == "intl" && licenseFilename == "COPYING") ||
+                            (depName == "pango" && licenseFilename == "COPYING")) {
+                            urlVal.append(licenseText.replace("\u000C", ""))
+                        } else {
+                            urlVal.append(licenseText)
+                        }
+                        urlVal.append("\n\n")
+                    }
+                    url(urlVal)
+                }
+            }
+            addLicense("pdf2htmlEX", ["LICENSE", "LICENSE_GPLv3"])
+            addLicense("cairo", ["COPYING", "COPYING-LGPL-2.1", "COPYING-MPL-1.1"])
+            addLicense("fontconfig", ["COPYING"])
+            addLicense("freetype", ["docs/LICENSE.TXT", "docs/GPLv2.TXT", "docs/FTL.TXT"])
+            addLicense("fribidi", ["COPYING"])
+            addLicense("glib-2.0", ["COPYING"])
+            addLicense("harfbuzz", ["COPYING"])
+            addLicense("iconv", ["README", "COPYING", "COPYING.LIB"])
+            addLicense("intl", ["COPYING"])
+            addLicense("lcms2", ["COPYING"])
+            addLicense("libffi", ["LICENSE"])
+            addLicense("libfontforge", ["LICENSE", "COPYING.gplv3"])
+            addLicense("libjpeg", ["LICENSE.md", "README.ijg"])
+            addLicense("libopenjp2", ["LICENSE"])
+            addLicense("libpng", ["LICENSE"])
+            addLicense("libtiff-4", ["COPYRIGHT"])
+            addLicense("libtool", ["COPYING"])
+            addLicense("libuninameslist", ["LICENSE"])
+            addLicense("libxml-2.0", ["Copyright"])
+            addLicense("pango", ["COPYING"])
+            addLicense("pixman-1", ["COPYING"])
+            addLicense("poppler-data", ["COPYING", "COPYING.adobe", "COPYING.gpl2"])
+            addLicense("poppler", ["COPYING", "COPYING3"])
+        }
+    }
+  }
+}
+
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
@@ -119,13 +191,6 @@ publishing{
                 packaging = 'aar'
                 url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
                 inceptionYear = '2019'
-                licenses {
-                    license {
-                        name = 'The GNU General Public License, Version 3'
-                        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
-                        distribution = 'repo'
-                    }
-                }
                 developers {
                     developer {
                         id = "ViliusSutkus89"
@@ -139,8 +204,21 @@ publishing{
                 }
             }
             pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                def node = asNode()
+
+                def licensesNode = node.appendNode("licenses")
+                new XmlSlurper().parse("$buildDir/licenses.xml").license.each {
+                    def license = licensesNode.appendNode('license')
+                    license.appendNode('name', it.name)
+                    license.appendNode('url', it.url)
+                    if (it.distribution) {
+                        license.appendNode('distribution', it.distribution)
+                    }
+                }
+
+                def dependenciesNode = node.appendNode('dependencies')
+                // Iterate over the implementation dependencies (we don't want the test ones),
+                // adding a <dependency> node for each
                 configurations.implementation.allDependencies.each {
                     // Ensure dependencies such as fileTree are not included in the pom.
                     if (it.name != 'unspecified') {
