@@ -16,11 +16,11 @@ jobs:
       - name: Put release assets where gradle would have kept it after the build
         run: |
           mkdir --parents ./pdf2htmlEX/build/outputs/aar
-          cp ./releaseAssets/pdf2htmlex-android-release.aar $BASEDIR/pdf2htmlEX/build/outputs/aar/
+          mv ./releaseAssets/pdf2htmlex-android-release.aar $BASEDIR/pdf2htmlEX/build/outputs/aar/
 
           mkdir --parents ./pdf2htmlEX/build/libs
-          cp ./releaseAssets/pdf2htmlex-android-*-javadoc.jar ./pdf2htmlEX/build/libs/
-          cp ./releaseAssets/pdf2htmlex-android-*-sources.jar ./pdf2htmlEX/build/libs/
+          mv ./releaseAssets/pdf2htmlex-android-*-javadoc.jar ./pdf2htmlEX/build/libs/
+          mv ./releaseAssets/pdf2htmlex-android-*-sources.jar ./pdf2htmlEX/build/libs/
 
           mv ./releaseAssets/licenses.xml ./pdf2htmlEX/build/
 
