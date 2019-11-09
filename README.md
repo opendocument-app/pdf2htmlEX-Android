@@ -2,6 +2,7 @@
 
 ![Release build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Release%20Build/badge.svg)
 ![Debug build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Debug%20Build/badge.svg)
+[![Download](https://api.bintray.com/packages/viliussutkus89/maven-repo/pdf2htmlex-android/images/download.svg)](https://bintray.com/viliussutkus89/maven-repo/pdf2htmlex-android/_latestVersion)
 
 ### Goals:
 * Providing easy to use interface for downstream users.  
@@ -12,16 +13,25 @@ Supported ABIs: armeabi-v7a, arm64-v8a, x86, x86_64.
 * Keeping installed footprint low.  
 Sample application consumes under 30MB.
 
-### Usage:
-Download pdf2htmlEX.aar and place it to libs folder.
-Consume it as a dependency in [build.gradle](android-sample-app/app/build.gradle)
-
+### How to install:
+[android-sample-app/app/build.gradle](android-sample-app/app/build.gradle) contains code to load the library as a dependency in Gradle.
 ```gradle
 dependencies {
-  implementation files('libs/pdf2htmlEX.aar')
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.17.2'
 }
 ```
 
+pdf2htmlEX-Android is distributed using [JCenter](https://jcenter.bintray.com) Maven repository.  
+It needs be added to [top level build.gradle](android-sample-app/build.gradle)
+```gradle
+allprojects {
+  repositories {
+      jcenter()
+  }
+}
+```
+
+### Usage:
 Library is interfaced through Java.
 ```Java
 import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
