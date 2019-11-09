@@ -8,9 +8,11 @@ BASEDIR=$(dirname "$THIS_FILE")
 version_format='([0-9\.]+)'
 expression="s/^version \= ['\"]$version_format['\"]\$/\1/p"
 VERSION=$(sed -En "--expression=$expression" $BASEDIR/pdf2htmlEX/build.gradle)
+RELEASEDVERSION=$VERSION
 
-expression="s/versionCode ([0-9]+)\$/\1/p"
+expression="s/^\s*versionCode ([0-9]+)\$/\1/p"
 VERSIONCODE=$(sed -En "--expression=$expression" $BASEDIR/pdf2htmlEX/build.gradle)
+RELEASEDVERSIONCODE=$VERSIONCODE
 VERSIONCODE=$((VERSIONCODE + 1))
 
 major=$(echo $VERSION | cut -d'.' -f1)
@@ -44,8 +46,16 @@ then
 fi
 
 VERSION="$major.$minor.$patch"
-echo "versionName = $VERSION"
-echo "versionCode = $VERSIONCODE"
+
+echo "Released versionName = $RELEASEDVERSION"
+echo "Released versionCode = $RELEASEDVERSIONCODE"
+
+echo "New versionName = $VERSION"
+echo "New versionCode = $VERSIONCODE"
+
+
+# Library version is incremented
+# Sample app and README.md is updated to pre increment version, which matches released version
 
 # Update library's versionName
 version_format='([0-9\.]+)'
@@ -57,18 +67,18 @@ expression="s/versionCode ([0-9]+)\$/versionCode $VERSIONCODE/"
 sed -E "--expression=$expression" -i $BASEDIR/pdf2htmlEX/build.gradle
 
 # Update version in sample app's dependency list
-expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$VERSION'/"
+expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$RELEASEDVERSION'/"
 sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
 
 # Update sample app's versionName
-expression="s/versionName ['\"]$version_format['\"]\$/versionName '$VERSION'/"
+expression="s/versionName ['\"]$version_format['\"]\$/versionName '$RELEASEDVERSION'/"
 sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
 
 # Update sample app's versionCode
-expression="s/versionCode ([0-9]+)\$/versionCode $VERSIONCODE/"
+expression="s/versionCode ([0-9]+)\$/versionCode $RELEASEDVERSIONCODE/"
 sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
 
 # Update library's version in example usage in README.md
-expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$VERSION'/"
+expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$RELEASEDVERSION'/"
 sed -E "--expression=$expression" -i $BASEDIR/README.md
 
