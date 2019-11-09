@@ -1,0 +1,74 @@
+#!/bin/sh
+set -eu
+
+THIS_FILE=$(readlink -f "$0")
+BASEDIR=$(dirname "$THIS_FILE")
+
+# Extract project version from build.gradle
+version_format='([0-9\.]+)'
+expression="s/^version \= ['\"]$version_format['\"]\$/\1/p"
+VERSION=$(sed -En "--expression=$expression" $BASEDIR/pdf2htmlEX/build.gradle)
+
+expression="s/versionCode ([0-9]+)\$/\1/p"
+VERSIONCODE=$(sed -En "--expression=$expression" $BASEDIR/pdf2htmlEX/build.gradle)
+VERSIONCODE=$((VERSIONCODE + 1))
+
+major=$(echo $VERSION | cut -d'.' -f1)
+minor=$(echo $VERSION | cut -d'.' -f2)
+patch=$(echo $VERSION | cut -d'.' -f3)
+
+target="patch"
+for i in "$@"
+do
+  if test "$i" = "--major"
+  then
+    target="major"
+  elif test "$i" = "--minor"
+  then
+    target="minor"
+  fi
+done
+
+if test "$target" = "major"
+then
+  major=$((major + 1))
+  minor=0
+  patch=0
+elif test "$target" = "minor"
+then
+  minor=$((minor + 1))
+  patch=0
+elif test "$target" = "patch"
+then
+  patch=$((patch + 1))
+fi
+
+VERSION="$major.$minor.$patch"
+echo "versionName = $VERSION"
+echo "versionCode = $VERSIONCODE"
+
+# Update library's versionName
+version_format='([0-9\.]+)'
+expression="s/^version \= ['\"]$version_format['\"]\$/version \= '$VERSION'/"
+sed -E "--expression=$expression" -i $BASEDIR/pdf2htmlEX/build.gradle
+
+# Update library's versionCode
+expression="s/versionCode ([0-9]+)\$/versionCode $VERSIONCODE/"
+sed -E "--expression=$expression" -i $BASEDIR/pdf2htmlEX/build.gradle
+
+# Update version in sample app's dependency list
+expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$VERSION'/"
+sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
+
+# Update sample app's versionName
+expression="s/versionName ['\"]$version_format['\"]\$/versionName '$VERSION'/"
+sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
+
+# Update sample app's versionCode
+expression="s/versionCode ([0-9]+)\$/versionCode $VERSIONCODE/"
+sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradle
+
+# Update library's version in example usage in README.md
+expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$VERSION'/"
+sed -E "--expression=$expression" -i $BASEDIR/README.md
+
