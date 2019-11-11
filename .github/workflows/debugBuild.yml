@@ -47,9 +47,6 @@ jobs:
       - name: Download tarballs
         run: ./dodownloadtarballs
 
-      - name: Build dependencies
-        run: ./dobuilddependencies --debug
-
-      - name: Build main library
+      - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug
 

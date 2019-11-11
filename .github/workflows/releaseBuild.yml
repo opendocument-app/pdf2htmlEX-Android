@@ -49,10 +49,7 @@ jobs:
       - name: Download tarballs
         run: ./dodownloadtarballs
 
-      - name: Build dependencies
-        run: ./dobuilddependencies
-
-      - name: Build main library
+      - name: Build pdf2htmlEX
         run: ./gradlew assembleRelease
 
       - name: Get version
