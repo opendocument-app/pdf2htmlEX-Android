@@ -60,18 +60,10 @@ task sourceJar(type: Jar) {
     archiveClassifier = 'sources'
 }
 
-configurations {
-    // * What went wrong:
-    // Could not determine the dependencies of task ':lib:javadoc'.
-    // > Resolving configuration 'implementation' directly is not allowed
-    extendedImplementation.extendsFrom implementation
-}
-
 task javadoc(type: Javadoc) {
     options.encoding = 'UTF-8'
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.extendedImplementation
     title = "${rootProject.name} ${project.version} API"
 }
 
