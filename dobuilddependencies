@@ -7,9 +7,6 @@ BASEDIR=$(dirname "$THIS_FILE")
 DB=$BASEDIR/dependency-builder
 TARBALL_STORAGE=$DB/src/main/cpp/tarballs
 
-# @TODO: issue #1
-touch $DB/src/main/cpp/packages/glib-2.0.cmake
-
 PARALLEL=true
 CLEANUP=false
 BUILD_TYPE="Release"

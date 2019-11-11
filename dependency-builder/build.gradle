@@ -22,3 +22,9 @@ android {
     ndkVersion "20.0.5594570"
 }
 
+// Issue #1
+task touchGlibPackage(type: Exec) {
+    commandLine 'touch', 'src/main/cpp/packages/glib-2.0.cmake'
+}
+preBuild.dependsOn touchGlibPackage
+
