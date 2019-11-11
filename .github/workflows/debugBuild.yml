@@ -50,3 +50,51 @@ jobs:
       - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug
 
+      - name: Upload build logs - x86-dependency-builder.stdout
+        uses: actions/upload-artifact@v1
+        with:
+          name: x86-dependency-builder.stdout
+          path: pdf2htmlEX/.cxx/cmake/debug/x86/dependency-builder.stdout
+
+      - name: Upload build logs - x86-dependency-builder.stderr
+        uses: actions/upload-artifact@v1
+        with:
+          name: x86-dependency-builder.stderr
+          path: pdf2htmlEX/.cxx/cmake/debug/x86/dependency-builder.stderr
+
+      - name: Upload build logs - x86-64-dependency-builder.stdout
+        uses: actions/upload-artifact@v1
+        with:
+          name: x86-64-dependency-builder.stdout
+          path: pdf2htmlEX/.cxx/cmake/debug/x86_64/dependency-builder.stdout
+
+      - name: Upload build logs - x86-64-dependency-builder.stderr
+        uses: actions/upload-artifact@v1
+        with:
+          name: x86-64-dependency-builder.stderr
+          path: pdf2htmlEX/.cxx/cmake/debug/x86_64/dependency-builder.stderr
+
+      - name: Upload build logs - armeabi-v7a-dependency-builder.stdout
+        uses: actions/upload-artifact@v1
+        with:
+          name: armeabi-v7a-dependency-builder.stdout
+          path: pdf2htmlEX/.cxx/cmake/debug/armeabi-v7a/dependency-builder.stdout
+
+      - name: Upload build logs - armeabi-v7a-dependency-builder.stderr
+        uses: actions/upload-artifact@v1
+        with:
+          name: armeabi-v7a-dependency-builder.stderr
+          path: pdf2htmlEX/.cxx/cmake/debug/armeabi-v7a/dependency-builder.stderr
+
+      - name: Upload build logs - arm64-v8a-dependency-builder.stdout
+        uses: actions/upload-artifact@v1
+        with:
+          name: arm64-v8a-dependency-builder.stdout
+          path: pdf2htmlEX/.cxx/cmake/debug/arm64-v8a/dependency-builder.stdout
+
+      - name: Upload build logs - arm64-v8a-dependency-builder.stderr
+        uses: actions/upload-artifact@v1
+        with:
+          name: arm64-v8a-dependency-builder.stderr
+          path: pdf2htmlEX/.cxx/cmake/debug/arm64-v8a/dependency-builder.stderr
+
