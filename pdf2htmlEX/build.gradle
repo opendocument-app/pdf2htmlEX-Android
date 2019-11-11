@@ -224,15 +224,25 @@ publishing{
 }
 
 // pdf2htmlEX and Poppler have some data that is needed on runtime
-task collectAssetsFromShareFolder {
+task collectReleaseAssetsFromShareFolder {
     doLast {
         copy {
-            new File("$projectDir/../dependency-builder/.cxx/cmake/").eachDir() { buildType ->
-                buildType.eachDir() {
-                    from("$it/installed/share")
-                    include("pdf2htmlEX/**", "poppler/**")
-                    into("${project.buildDir}/assets")
-                }
+            new File("$projectDir/../dependency-builder/.cxx/cmake/release").eachDir() {
+                from("$it/installed/share")
+                include("pdf2htmlEX/**", "poppler/**")
+                into("${project.buildDir}/assets")
+            }
+            duplicatesStrategy('exclude')
+        }
+    }
+}
+task collectDebugAssetsFromShareFolder {
+    doLast {
+        copy {
+            new File("$projectDir/../dependency-builder/.cxx/cmake/debug").eachDir() {
+                from("$it/installed/share")
+                include("pdf2htmlEX/**", "poppler/**")
+                into("${project.buildDir}/assets")
             }
             duplicatesStrategy('exclude')
         }
@@ -241,8 +251,11 @@ task collectAssetsFromShareFolder {
 
 // Because "generateDebugAssets.dependsOn collectAssetsFromShareFolder" would be too simple
 tasks.whenTaskAdded {
-    if (it.name == 'generateDebugAssets' || it.name == 'generateReleaseAssets') {
-        it.dependsOn collectAssetsFromShareFolder
+    if (it.name == 'generateReleaseAssets') {
+        it.dependsOn collectReleaseAssetsFromShareFolder
+    }
+    else if (it.name == 'generateDebugAssets') {
+        it.dependsOn collectDebugAssetsFromShareFolder
     }
 }
 
