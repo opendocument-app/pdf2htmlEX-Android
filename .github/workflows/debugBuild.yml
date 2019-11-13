@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       ANDROID_SDK_TOOLS:    "4333796"
-      ANDROID_NDK:          "20.0.5594570"
+      ANDROID_NDK:          "20.1.5948944"
       ANDROID_CMAKE:        "3.10.2.4988404"
 
     steps:
