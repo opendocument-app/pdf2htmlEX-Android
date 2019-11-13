@@ -30,6 +30,7 @@ jobs:
         run: ./gradlew bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_API_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
 
   versionIncrementer:
+    needs: publish
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
