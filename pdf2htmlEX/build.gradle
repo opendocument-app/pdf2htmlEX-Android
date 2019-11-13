@@ -39,6 +39,8 @@ android {
         versionName project.version
 
         archivesBaseName = rootProject.name
+
+        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
     }
     buildTypes.release.externalNativeBuild {
       cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'

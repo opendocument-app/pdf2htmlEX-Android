@@ -5,6 +5,10 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
+
     env:
       ANDROID_SDK_TOOLS:    "4333796"
       ANDROID_NDK:          "20.1.5948944"
@@ -48,53 +52,16 @@ jobs:
         run: ./dodownloadtarballs
 
       - name: Build pdf2htmlEX
-        run: ./gradlew assembleDebug -PdisablePreDex
+        run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
-      - name: Upload build logs - x86-dependency-builder.stdout
+      - name: Upload build logs -stdout
         uses: actions/upload-artifact@v1
         with:
-          name: x86-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/debug/x86/dependency-builder.stdout
+          name: ${{ matrix.abi }}-dependency-builder.stdout
+          path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stdout
 
-      - name: Upload build logs - x86-dependency-builder.stderr
+      - name: Upload build logs -stderr
         uses: actions/upload-artifact@v1
         with:
-          name: x86-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/debug/x86/dependency-builder.stderr
-
-      - name: Upload build logs - x86-64-dependency-builder.stdout
-        uses: actions/upload-artifact@v1
-        with:
-          name: x86-64-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/debug/x86_64/dependency-builder.stdout
-
-      - name: Upload build logs - x86-64-dependency-builder.stderr
-        uses: actions/upload-artifact@v1
-        with:
-          name: x86-64-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/debug/x86_64/dependency-builder.stderr
-
-      - name: Upload build logs - armeabi-v7a-dependency-builder.stdout
-        uses: actions/upload-artifact@v1
-        with:
-          name: armeabi-v7a-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/debug/armeabi-v7a/dependency-builder.stdout
-
-      - name: Upload build logs - armeabi-v7a-dependency-builder.stderr
-        uses: actions/upload-artifact@v1
-        with:
-          name: armeabi-v7a-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/debug/armeabi-v7a/dependency-builder.stderr
-
-      - name: Upload build logs - arm64-v8a-dependency-builder.stdout
-        uses: actions/upload-artifact@v1
-        with:
-          name: arm64-v8a-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/debug/arm64-v8a/dependency-builder.stdout
-
-      - name: Upload build logs - arm64-v8a-dependency-builder.stderr
-        uses: actions/upload-artifact@v1
-        with:
-          name: arm64-v8a-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/debug/arm64-v8a/dependency-builder.stderr
-
+          name: ${{ matrix.abi }}-dependency-builder.stderr
+          path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stderr
