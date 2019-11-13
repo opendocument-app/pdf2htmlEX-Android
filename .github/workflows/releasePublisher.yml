@@ -29,24 +29,24 @@ jobs:
       - name: Upload to Bintray
         run: ./gradlew bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_API_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
 
-  incrementVersion:
+  versionIncrementer:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
+      - run: git checkout master
 
       - run: ./doincrementversion
 
-      - name: Binary committer
+      - name: git commit
         run: |
-          if ! git diff-index --quiet HEAD
-          then
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action - Version Incrementer"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action - Version Incrementer"
+          git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
-            git remote add github "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-            git pull github "${{ github.ref }}" --ff-only
-            git add pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle
-            git commit -m "Post release version increment"
-            git push github "HEAD:${{ github.ref }}"
+          git add pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle
+
+          if git commit -m "PostRelease version increment"
+          then
+            git push
           fi
 
