@@ -48,7 +48,7 @@ jobs:
         run: ./dodownloadtarballs
 
       - name: Build pdf2htmlEX
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug -PdisablePreDex
 
       - name: Upload build logs - x86-dependency-builder.stdout
         uses: actions/upload-artifact@v1

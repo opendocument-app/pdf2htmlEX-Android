@@ -50,7 +50,7 @@ jobs:
         run: ./dodownloadtarballs
 
       - name: Build pdf2htmlEX
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease -PdisablePreDex
 
       - name: Get version
         id: get_version
