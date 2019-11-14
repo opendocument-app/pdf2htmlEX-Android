@@ -1,4 +1,4 @@
-package com.viliussutkus89.pdf2htmlex_sample;
+package com.viliussutkus89.android.pdf2htmlex.sampleapp;
 
 import android.app.Activity;
 import android.content.Context;
