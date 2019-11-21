@@ -1,7 +1,5 @@
-import groovy.xml.MarkupBuilder
-
 /*
- * build.gradle
+ * pdf2htmlEX/build.gradle
  *
  * pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
  * Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
@@ -20,6 +18,8 @@ import groovy.xml.MarkupBuilder
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+import groovy.xml.MarkupBuilder
 
 version = '0.17.3'
 group = 'com.viliussutkus89'
