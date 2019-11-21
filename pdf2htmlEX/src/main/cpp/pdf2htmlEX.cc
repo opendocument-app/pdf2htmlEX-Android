@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 #include <jni.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "pdf2htmlEX.h"
 
 // Creating char ** by hand is rather annoying.
@@ -92,10 +94,26 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
 
   int argc;
   char **argv;
-  int retVal;
+  int retVal = -1;
+
   vector_to_char_pp(args, &argc, &argv);
 
-  retVal = pdf2htmlEX_main(argc, argv);
+  // https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/4
+  // Upstream library is actually an executable, not a library.
+  // May have some global state, initialized as static constructor, poisoned after first use.
+  // Workaround: fork process before use.
+  pid_t pid = fork();
+  if (0 == pid) {
+    retVal = pdf2htmlEX_main(argc, argv);
+    exit(retVal);
+  }
+  else if (0 < pid) {
+    int wstatus;
+    waitpid(pid, &wstatus, 0);
+    if (WIFEXITED(wstatus)) {
+      retVal = WEXITSTATUS(wstatus);
+    }
+  }
 
   for (int i = 0; i < argc; i++) {
     delete[] argv[i];
