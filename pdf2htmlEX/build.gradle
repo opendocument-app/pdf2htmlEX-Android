@@ -41,6 +41,8 @@ android {
         archivesBaseName = rootProject.name
 
         ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes.release.externalNativeBuild {
       cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
@@ -267,6 +269,9 @@ dependencies {
     compileOnly project(":dependency-builder")
     implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
     implementation 'androidx.annotation:annotation:1.1.0'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
 task extractLibtmpfileSoForLinkingInCMake {
