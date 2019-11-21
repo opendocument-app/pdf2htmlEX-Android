@@ -98,7 +98,8 @@ task gatherLicenses {
                     licenseFiles.each() { licenseFilename ->
                         urlVal.append("$depName/$licenseFilename\n\n")
 
-                        def licenseFile = new File("$projectDir/../dependency-builder/.cxx/cmake/release/x86/$depName-prefix/src/$depName/$licenseFilename")
+                        def abi = project.hasProperty('abi') ? project.property('abi') : "x86"
+                        def licenseFile = new File("$projectDir/../dependency-builder/.cxx/cmake/release/" + abi + "/$depName-prefix/src/$depName/$licenseFilename")
                         def licenseText = licenseFile.getText('UTF-8')
                         // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
                         // XML does not take kindly to form feed characters.
