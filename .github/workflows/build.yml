@@ -184,8 +184,8 @@ jobs:
           echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "cmake;${ANDROID_CMAKE}" > /dev/null
           echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
 
-      - name: Cache gathered licenses
-        uses: actions/upload-artifact@v1
+      - name: Download cached licenses
+        uses: actions/download-artifact@v1
         with:
           name: licenses-x86
           path: pdf2htmlEX/build/licenses.xml
