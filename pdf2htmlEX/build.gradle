@@ -21,7 +21,7 @@
 
 import groovy.xml.MarkupBuilder
 
-version = '0.17.3'
+version = '0.17.4'
 group = 'com.viliussutkus89'
 
 apply plugin: 'com.android.library'
@@ -35,7 +35,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
 
-        versionCode 7
+        versionCode 8
         versionName project.version
 
         archivesBaseName = rootProject.name
