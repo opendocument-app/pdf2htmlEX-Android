@@ -1,7 +1,6 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
-![Release build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Release%20Build/badge.svg)
-![Debug build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Debug%20Build/badge.svg)
+![Build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Build/badge.svg)
 [![Download](https://api.bintray.com/packages/viliussutkus89/maven-repo/pdf2htmlex-android/images/download.svg)](https://bintray.com/viliussutkus89/maven-repo/pdf2htmlex-android/_latestVersion)
 
 ### Goals:
