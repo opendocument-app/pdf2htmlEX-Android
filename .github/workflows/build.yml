@@ -87,13 +87,13 @@ jobs:
       - name: Gather licenses
         run: ./gradlew pdf2htmlEX:gatherLicenses -Pabi=${{ matrix.abi }}
 
-      - name: Cache gathered licenses
+      - name: Artifact gathered licenses
         uses: actions/upload-artifact@v1
         with:
           name: licenses-${{ matrix.abi }}
           path: pdf2htmlEX/build/licenses.xml
 
-      - name: Cache built dependencies
+      - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
           name: dependencies-${{ matrix.abi }}
@@ -132,31 +132,31 @@ jobs:
 
       - run: .github/installBuildDependencies.sh
 
-      - name: Download cached licenses
+      - name: Download artifacted licenses
         uses: actions/download-artifact@v1
         with:
           name: licenses-x86
           path: pdf2htmlEX/build/licenses.xml
 
-      - name: Download cached dependencies - x86
+      - name: Download artifacted dependencies - x86
         uses: actions/download-artifact@v1
         with:
           name: dependencies-x86
           path: dependency-builder/.cxx/cmake/release/x86/installed
 
-      - name: Download cached dependencies - x86_64
+      - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
         with:
           name: dependencies-x86_64
           path: dependency-builder/.cxx/cmake/release/x86_64/installed
 
-      - name: Download cached dependencies - armeabi-v7a
+      - name: Download artifacted dependencies - armeabi-v7a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-armeabi-v7a
           path: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed
 
-      - name: Download cached dependencies - arm64-v8a
+      - name: Download artifacted dependencies - arm64-v8a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-arm64-v8a
