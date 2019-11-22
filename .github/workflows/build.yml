@@ -84,6 +84,9 @@ jobs:
       - name: Build pdf2htmlEX-Android dependencies
         run: ./gradlew dependency-builder:assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
 
+      # @TODO: mkdir --parents pdf2htmlEX/build in build.gradle
+      - run: mkdir --parents pdf2htmlEX/build
+
       - name: Gather licenses
         run: ./gradlew pdf2htmlEX:gatherLicenses -Pabi=${{ matrix.abi }}
 

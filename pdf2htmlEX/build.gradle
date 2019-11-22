@@ -78,6 +78,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 task gatherLicenses {
   doLast {
+    // @TODO: mkdir --parents pdf2htmlEX/build
     file("$buildDir/licenses.xml").withWriter { writer ->
         def xml = new MarkupBuilder(writer)
 
