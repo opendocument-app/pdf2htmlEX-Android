@@ -200,7 +200,7 @@ tasks.whenTaskAdded {
 }
 
 dependencies {
-    compileOnly project(":dependency-builder")
+    //compileOnly project(":dependency-builder")
     implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
     implementation 'androidx.annotation:annotation:1.1.0'
 

@@ -36,7 +36,10 @@ jobs:
 
       - run: ./dodownloadtarballs
 
-      - name: Build pdf2htmlEX
+      - name: Build pdf2htmlEX-Android dependencies
+        run: ./gradlew dependency-builder:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
+
+      - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Artifact build logs -stdout

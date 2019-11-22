@@ -32,12 +32,12 @@ get_filename_component(GIT_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../.." ABSO
 SET(DEPENDENCY_BUILDER_FOR_THIS_ABI ${GIT_ROOT_DIR}/dependency-builder/.cxx/cmake/${GRADLE_BUILD_TYPE}/${ANDROID_ABI})
 SET(PKG_CONFIG_EXECUTABLE ${DEPENDENCY_BUILDER_FOR_THIS_ABI}/installed/bin/pkg-config)
 
-execute_process(
-  COMMAND ${CMAKE_COMMAND}
-  "--build" ${DEPENDENCY_BUILDER_FOR_THIS_ABI}
-  OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stdout
-  ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stderr
-)
+#execute_process(
+  #COMMAND ${CMAKE_COMMAND}
+  #"--build" ${DEPENDENCY_BUILDER_FOR_THIS_ABI}
+  #OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stdout
+  #ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stderr
+#)
 
 include(FindPkgConfig)
 pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
