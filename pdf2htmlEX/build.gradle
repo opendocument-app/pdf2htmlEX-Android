@@ -163,7 +163,7 @@ publishing{
 
 // pdf2htmlEX and Poppler have some data that is needed on runtime
 task collectReleaseAssetsFromShareFolder {
-    dependsOn ":dependency-builder:externalNativeBuildRelease"
+    //dependsOn ":dependency-builder:externalNativeBuildRelease"
     doLast {
         copy {
             new File("$projectDir/../dependency-builder/.cxx/cmake/release").eachDir() {
@@ -176,7 +176,7 @@ task collectReleaseAssetsFromShareFolder {
     }
 }
 task collectDebugAssetsFromShareFolder {
-    dependsOn ":dependency-builder:externalNativeBuildDebug"
+    //dependsOn ":dependency-builder:externalNativeBuildDebug"
     doLast {
         copy {
             new File("$projectDir/../dependency-builder/.cxx/cmake/debug").eachDir() {
