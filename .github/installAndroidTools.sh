@@ -6,7 +6,7 @@ then
   if test ! -f android-sdk.zip
   then
     wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip
-  then
+  fi
   sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
 fi
 
