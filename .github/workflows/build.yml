@@ -45,9 +45,9 @@ jobs:
           path: dependency-builder/src/main/cpp/tarballs
 
       - run: |
-        ls -lR dependency-builder/src/main/cpp/tarballs
-        ./dodownloadtarballs
-        ls -lR dependency-builder/src/main/cpp/tarballs
+          ls -lR dependency-builder/src/main/cpp/tarballs
+          ./dodownloadtarballs
+          ls -lR dependency-builder/src/main/cpp/tarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -87,9 +87,9 @@ jobs:
           path: dependency-builder/src/main/cpp/tarballs
 
       - run: |
-        ls -lR dependency-builder/src/main/cpp/tarballs
-        ./dodownloadtarballs
-        ls -lR dependency-builder/src/main/cpp/tarballs
+          ls -lR dependency-builder/src/main/cpp/tarballs
+          ./dodownloadtarballs
+          ls -lR dependency-builder/src/main/cpp/tarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
