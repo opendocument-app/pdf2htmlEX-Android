@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew dependency-builder:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
+        run: ./gradlew pdf2htmlEX:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
   release:
     if: github.ref == 'refs/heads/master'
@@ -140,7 +140,7 @@ jobs:
       - run: ls -lR dependency-builder/.cxx
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew assembleRelease -PdisablePreDex
+        run: ./gradlew pdf2htmlEX:assembleRelease -PdisablePreDex
 
       - name: Get version
         id: get_version
