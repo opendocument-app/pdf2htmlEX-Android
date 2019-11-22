@@ -33,35 +33,11 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Install Meson
-        run: |
-          # python3-setuptools and python3-wheel are required to pip install meson
-          sudo apt-get --quiet install --yes python3-setuptools python3-wheel
-          sudo -H pip3 install meson
-
-      - name: Install dependencies
-        run: sudo apt-get --quiet install --yes gperf gettext
-        # gperf is required by fontconfig
-        # gettext is required by libfontforge
-
-      - name: Install Android tools
-        run: |
-          if test ! -d $ANDROID_HOME/tools/bin/sdkmanager
-          then
-            wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-            sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
-            rm android-sdk.zip
-          fi
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "tools" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
-
-      - name: Install CMake and NDK
-        run: |
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "cmake;${ANDROID_CMAKE}" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
+      - run: .github/installAndroidTools.sh
 
       - name: Download tarballs
         uses: actions/download-artifact@v1
+      - run: .github/installBuildDependencies.sh
         with:
           name: tarballs
           path: dependency-builder/src/main/cpp/tarballs
@@ -94,35 +70,11 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Install Meson
-        run: |
-          # python3-setuptools and python3-wheel are required to pip install meson
-          sudo apt-get --quiet install --yes python3-setuptools python3-wheel
-          sudo -H pip3 install meson
-
-      - name: Install dependencies
-        run: sudo apt-get --quiet install --yes gperf gettext
-        # gperf is required by fontconfig
-        # gettext is required by libfontforge
-
-      - name: Install Android tools
-        run: |
-          if test ! -d $ANDROID_HOME/tools/bin/sdkmanager
-          then
-            wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-            sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
-            rm android-sdk.zip
-          fi
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "tools" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
-
-      - name: Install CMake and NDK
-        run: |
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "cmake;${ANDROID_CMAKE}" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
+      - run: .github/installAndroidTools.sh
 
       - name: Download tarballs
         uses: actions/download-artifact@v1
+      - run: .github/installBuildDependencies.sh
         with:
           name: tarballs
           path: dependency-builder/src/main/cpp/tarballs
@@ -168,21 +120,9 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Install Android tools
-        run: |
-          if test ! -d $ANDROID_HOME/tools/bin/sdkmanager
-          then
-            wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-            sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
-            rm android-sdk.zip
-          fi
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "tools" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
+      - run: .github/installAndroidTools.sh
 
-      - name: Install CMake and NDK
-        run: |
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "cmake;${ANDROID_CMAKE}" > /dev/null
-          echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;${ANDROID_NDK}" > /dev/null
+      - run: .github/installBuildDependencies.sh
 
       - name: Download cached licenses
         uses: actions/download-artifact@v1
