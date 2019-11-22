@@ -81,8 +81,8 @@ jobs:
 
       - run: ./dodownloadtarballs
 
-      - name: Build pdf2htmlEX
-        run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
+      - name: Build pdf2htmlEX-Android dependencies
+        run: ./gradlew dependency-builder:assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Gather licenses
         run: ./gradlew pdf2htmlEX:gatherLicenses -Pabi=${{ matrix.abi }}
@@ -160,7 +160,7 @@ jobs:
           name: dependencies-arm64-v8a
           path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
 
-      - name: Build pdf2htmlEX
+      - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleRelease -PdisablePreDex
 
       - name: Get version
