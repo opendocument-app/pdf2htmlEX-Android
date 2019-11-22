@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v1
         with:
           key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk.zip
+          path: android-sdk
 
       - run: .github/installAndroidTools.sh
 
@@ -67,7 +67,7 @@ jobs:
         uses: actions/cache@v1
         with:
           key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk.zip
+          path: android-sdk
 
       - run: .github/installAndroidTools.sh
 
@@ -126,7 +126,7 @@ jobs:
         uses: actions/cache@v1
         with:
           key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk.zip
+          path: android-sdk
 
       - run: .github/installAndroidTools.sh
 
