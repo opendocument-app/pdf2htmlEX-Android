@@ -99,18 +99,6 @@ jobs:
           name: dependencies-${{ matrix.abi }}
           path: dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed
 
-      - name: Artifact build logs -stdout
-        uses: actions/upload-artifact@v1
-        with:
-          name: release-${{ matrix.abi }}-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/release/${{ matrix.abi }}/dependency-builder.stdout
-
-      - name: Artifact build logs -stderr
-        uses: actions/upload-artifact@v1
-        with:
-          name: release-${{ matrix.abi }}-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/release/${{ matrix.abi }}/dependency-builder.stderr
-
   releaseAllABIs:
     needs: release
     if: github.ref == 'refs/heads/master'
