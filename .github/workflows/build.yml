@@ -7,25 +7,8 @@ env:
   ANDROID_CMAKE:      "3.10.2.4988404"
 
 jobs:
-  cacheTarballs:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-
-      - uses: actions/cache@v1
-        with:
-          key: tarballs
-          path: dependency-builder/src/main/cpp/tarballs
-
-      - run: ls -lR dependency-builder/src/main/cpp/tarballs
-
-      - run: ./dodownloadtarballs
-
-      - run: ls -lR dependency-builder/src/main/cpp/tarballs
-
   debug:
     runs-on: ubuntu-18.04
-    needs: cacheTarballs
     strategy:
       matrix:
         abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
@@ -45,15 +28,13 @@ jobs:
 
       - run: .github/installBuildDependencies.sh
 
-      - uses: actions/cache@v1
+      - name: Cache tarballs
+        uses: actions/cache@v1
         with:
           key: tarballs
           path: dependency-builder/src/main/cpp/tarballs
 
-      - run: |
-          ls -lR dependency-builder/src/main/cpp/tarballs
-          ./dodownloadtarballs
-          ls -lR dependency-builder/src/main/cpp/tarballs
+      - run: ./dodownloadtarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -71,7 +52,6 @@ jobs:
           path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stderr
 
   release:
-    needs: cacheTarballs
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-18.04
     strategy:
@@ -93,15 +73,13 @@ jobs:
 
       - run: .github/installBuildDependencies.sh
 
-      - uses: actions/cache@v1
+      - name: Cache tarballs
+        uses: actions/cache@v1
         with:
           key: tarballs
           path: dependency-builder/src/main/cpp/tarballs
 
-      - run: |
-          ls -lR dependency-builder/src/main/cpp/tarballs
-          ./dodownloadtarballs
-          ls -lR dependency-builder/src/main/cpp/tarballs
+      - run: ./dodownloadtarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -134,7 +112,7 @@ jobs:
           path: pdf2htmlEX/.cxx/cmake/release/${{ matrix.abi }}/dependency-builder.stderr
 
   releaseAllABIs:
-    needs: [ cacheTarballs, release ]
+    needs: release
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-18.04
     steps:
