@@ -39,13 +39,13 @@ jobs:
       - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
-      - name: Upload build logs -stdout
+      - name: Artifact build logs -stdout
         uses: actions/upload-artifact@v1
         with:
           name: debug-${{ matrix.abi }}-dependency-builder.stdout
           path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stdout
 
-      - name: Upload build logs -stderr
+      - name: Artifact build logs -stderr
         uses: actions/upload-artifact@v1
         with:
           name: debug-${{ matrix.abi }}-dependency-builder.stderr
@@ -99,13 +99,13 @@ jobs:
           name: dependencies-${{ matrix.abi }}
           path: dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed
 
-      - name: Upload build logs -stdout
+      - name: Artifact build logs -stdout
         uses: actions/upload-artifact@v1
         with:
           name: release-${{ matrix.abi }}-dependency-builder.stdout
           path: pdf2htmlEX/.cxx/cmake/release/${{ matrix.abi }}/dependency-builder.stdout
 
-      - name: Upload build logs -stderr
+      - name: Artifact build logs -stderr
         uses: actions/upload-artifact@v1
         with:
           name: release-${{ matrix.abi }}-dependency-builder.stderr
