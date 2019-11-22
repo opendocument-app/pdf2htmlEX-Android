@@ -42,18 +42,6 @@ jobs:
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
-      - name: Artifact build logs -stdout
-        uses: actions/upload-artifact@v1
-        with:
-          name: debug-${{ matrix.abi }}-dependency-builder.stdout
-          path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stdout
-
-      - name: Artifact build logs -stderr
-        uses: actions/upload-artifact@v1
-        with:
-          name: debug-${{ matrix.abi }}-dependency-builder.stderr
-          path: pdf2htmlEX/.cxx/cmake/debug/${{ matrix.abi }}/dependency-builder.stderr
-
   release:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-18.04
