@@ -35,6 +35,12 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Cache android-sdk.zip
+        uses: actions/cache@v1
+        with:
+          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          path: android-sdk.zip
+
       - run: .github/installAndroidTools.sh
 
       - run: .github/installBuildDependencies.sh
@@ -76,6 +82,12 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - name: Cache android-sdk.zip
+        uses: actions/cache@v1
+        with:
+          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          path: android-sdk.zip
 
       - run: .github/installAndroidTools.sh
 
@@ -131,6 +143,12 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - name: Cache android-sdk.zip
+        uses: actions/cache@v1
+        with:
+          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          path: android-sdk.zip
 
       - run: .github/installAndroidTools.sh
 

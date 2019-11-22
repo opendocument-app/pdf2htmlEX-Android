@@ -3,9 +3,11 @@ set -eu
 
 if test ! -d $ANDROID_HOME/tools/bin/sdkmanager
 then
-  wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip
+  if test ! -f android-sdk.zip
+  then
+    wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip
+  then
   sudo unzip -d $ANDROID_HOME android-sdk.zip > /dev/null
-  rm android-sdk.zip
 fi
 
 echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "tools" > /dev/null
