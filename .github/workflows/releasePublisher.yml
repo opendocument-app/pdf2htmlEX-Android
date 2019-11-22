@@ -24,7 +24,8 @@ jobs:
           mv ./releaseAssets/pdf2htmlex-android-*-javadoc.jar ./pdf2htmlEX/build/libs/
           mv ./releaseAssets/pdf2htmlex-android-*-sources.jar ./pdf2htmlEX/build/libs/
 
-          mv ./releaseAssets/licenses.xml ./pdf2htmlEX/build/
+          mkdir ./dependency-builder/build
+          mv ./releaseAssets/licenses.xml ./dependency-builder/build/
 
       - name: Upload to Bintray
         run: ./gradlew bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_API_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}

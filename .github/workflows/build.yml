@@ -84,17 +84,14 @@ jobs:
       - name: Build pdf2htmlEX-Android dependencies
         run: ./gradlew dependency-builder:assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
 
-      # @TODO: mkdir --parents pdf2htmlEX/build in build.gradle
-      - run: mkdir --parents pdf2htmlEX/build
-
       - name: Gather licenses
-        run: ./gradlew pdf2htmlEX:gatherLicenses -Pabi=${{ matrix.abi }}
+        run: ./gradlew dependency-builder:gatherLicenses -Pabi=${{ matrix.abi }}
 
       - name: Artifact gathered licenses
         uses: actions/upload-artifact@v1
         with:
           name: licenses-${{ matrix.abi }}
-          path: pdf2htmlEX/build/licenses.xml
+          path: dependency-builder/build/licenses.xml
 
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
@@ -132,12 +129,6 @@ jobs:
           path: android-sdk
 
       - run: .github/installAndroidTools.sh
-
-      - name: Download artifacted licenses
-        uses: actions/download-artifact@v1
-        with:
-          name: licenses-x86
-          path: pdf2htmlEX/build/licenses.xml
 
       - name: Download artifacted dependencies - x86
         uses: actions/download-artifact@v1
@@ -187,13 +178,19 @@ jobs:
           draft: true
           prerelease: false
 
+      - name: Download artifacted licenses
+        uses: actions/download-artifact@v1
+        with:
+          name: licenses-x86
+          path: dependency-builder/build/licenses.xml
+
       - name: Upload licenses
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pdf2htmlEX/build/licenses.xml
+          asset_path: ./dependency-builder/build/licenses.xml
           asset_name: licenses.xml
           asset_content_type: text/xml
 
