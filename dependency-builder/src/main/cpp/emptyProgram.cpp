@@ -1,3 +1,3 @@
-int main(int, const char *) {
+int main(int, const char **) {
   return 0;
 }
