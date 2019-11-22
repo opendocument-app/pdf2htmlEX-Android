@@ -58,3 +58,7 @@ option(BUILD_3RDPARTY_BINARIES "Build all 3rd party binaries to catch missing sy
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/packages/pdf2htmlEX.cmake)
 
+# This will make sure pdf2htmlEX is added to the dependency chain
+add_executable(emptyProgram emptyProgram.cpp)
+add_dependencies(emptyProgram pdf2htmlEX)
+
