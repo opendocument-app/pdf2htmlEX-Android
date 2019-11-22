@@ -1,6 +1,5 @@
 #!/bin/sh
 set -eu
-shopt -s failglob
 
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")/..
