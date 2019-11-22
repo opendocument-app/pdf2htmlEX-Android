@@ -12,14 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - run: ./dodownloadtarballs
+      - uses: actions/cache@v1
+        with:
+          key: tarballs
+          path: dependency-builder/src/main/cpp/tarballs
 
       - run: ls -lR dependency-builder/src/main/cpp/tarballs
 
-      - uses: actions/upload-artifact@v1
-        with:
-          name: tarballs
-          path: dependency-builder/src/main/cpp/tarballs
+      - run: ./dodownloadtarballs
+
+      - run: ls -lR dependency-builder/src/main/cpp/tarballs
 
   debug:
     runs-on: ubuntu-18.04
@@ -35,12 +37,17 @@ jobs:
 
       - run: .github/installAndroidTools.sh
 
-      - name: Download tarballs
-        uses: actions/download-artifact@v1
       - run: .github/installBuildDependencies.sh
+
+      - uses: actions/cache@v1
         with:
-          name: tarballs
+          key: tarballs
           path: dependency-builder/src/main/cpp/tarballs
+
+      - run: |
+        ls -lR dependency-builder/src/main/cpp/tarballs
+        ./dodownloadtarballs
+        ls -lR dependency-builder/src/main/cpp/tarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -72,12 +79,17 @@ jobs:
 
       - run: .github/installAndroidTools.sh
 
-      - name: Download tarballs
-        uses: actions/download-artifact@v1
       - run: .github/installBuildDependencies.sh
+
+      - uses: actions/cache@v1
         with:
-          name: tarballs
+          key: tarballs
           path: dependency-builder/src/main/cpp/tarballs
+
+      - run: |
+        ls -lR dependency-builder/src/main/cpp/tarballs
+        ./dodownloadtarballs
+        ls -lR dependency-builder/src/main/cpp/tarballs
 
       - name: Build pdf2htmlEX
         run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
