@@ -38,7 +38,7 @@ jobs:
       - name: Cache android-sdk.zip
         uses: actions/cache@v1
         with:
-          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
           path: android-sdk.zip
 
       - run: .github/installAndroidTools.sh
@@ -86,7 +86,7 @@ jobs:
       - name: Cache android-sdk.zip
         uses: actions/cache@v1
         with:
-          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
           path: android-sdk.zip
 
       - run: .github/installAndroidTools.sh
@@ -147,7 +147,7 @@ jobs:
       - name: Cache android-sdk.zip
         uses: actions/cache@v1
         with:
-          key: android-sdk.zip-${{ ANDROID_SDK_TOOLS }}
+          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
           path: android-sdk.zip
 
       - run: .github/installAndroidTools.sh
