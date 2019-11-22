@@ -145,6 +145,9 @@ jobs:
           name: dependencies-x86
           path: dependency-builder/.cxx/cmake/release/x86/installed
 
+      # @STAGING
+      - run: ls -lR dependency-builder/.cxx
+
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
         with:
@@ -162,6 +165,9 @@ jobs:
         with:
           name: dependencies-arm64-v8a
           path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
+
+      # @STAGING
+      - run: ls -lR dependency-builder/.cxx
 
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleRelease -PdisablePreDex
