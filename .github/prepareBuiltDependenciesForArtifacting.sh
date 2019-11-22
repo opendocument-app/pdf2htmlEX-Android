@@ -13,3 +13,6 @@ do
   find $abi/share -mindepth 1 -maxdepth 1 -type d -not \( -name 'pdf2htmlEX' -o -name 'poppler' -o -name 'pkgconfig' \) -exec rm -r {} \;
 done
 
+sync
+sync
+
