@@ -119,7 +119,8 @@ jobs:
           path: dependency-builder/.cxx/cmake/release/x86/installed
 
       # @STAGING
-      - run: ls -lR dependency-builder/.cxx
+      - run: dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config --list-all
+      - run: dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config --debug --validate pdf2htmlEX
 
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
@@ -127,17 +128,29 @@ jobs:
           name: dependencies-x86_64
           path: dependency-builder/.cxx/cmake/release/x86_64/installed
 
+      # @STAGING
+      - run: dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config --list-all
+      - run: dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config --debug --validate pdf2htmlEX
+
       - name: Download artifacted dependencies - armeabi-v7a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-armeabi-v7a
           path: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed
 
+      # @STAGING
+      - run: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config --list-all
+      - run: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config --debug --validate pdf2htmlEX
+
       - name: Download artifacted dependencies - arm64-v8a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-arm64-v8a
           path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
+
+      # @STAGING
+      - run: dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config --list-all
+      - run: dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config --debug --validate pdf2htmlEX
 
       # @STAGING
       - run: ls -lR dependency-builder/.cxx
