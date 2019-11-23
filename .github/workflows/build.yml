@@ -121,6 +121,14 @@ jobs:
 
       - run: .github/installAndroidTools.sh
 
+      - name: Cache tarballs
+        uses: actions/cache@v1
+        with:
+          key: tarballs
+          path: dependency-builder/src/main/cpp/tarballs
+
+      - run: ./dodownloadtarballs
+
       - name: Download artifacted dependencies - x86
         uses: actions/download-artifact@v1
         with:
