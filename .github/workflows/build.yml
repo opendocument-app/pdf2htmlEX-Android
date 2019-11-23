@@ -84,14 +84,23 @@ jobs:
           name: licenses-${{ matrix.abi }}
           path: dependency-builder/build/licenses.xml
 
-      #- name: Clean up built dependencies before artifacting
-      # run: .github/prepareBuiltDependenciesForArtifacting.sh
+      - name: Prepare built dependencies for artifacting
+        run: |
+          mkdir --parents pdeps/bin pdeps/share
+          cp dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config pdeps/bin/
+
+          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/include pdeps/
+          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/lib pdeps/
+
+          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pdf2htmlEX pdeps/share/
+          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pkgconfig pdeps/share/
+          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/poppler pdeps/share/
 
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
           name: dependencies-${{ matrix.abi }}
-          path: dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed
+          path: pdeps
 
   releaseAllABIs:
     needs: release
