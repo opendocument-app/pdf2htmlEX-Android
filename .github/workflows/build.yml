@@ -87,17 +87,11 @@ jobs:
       #- name: Clean up built dependencies before artifacting
       # run: .github/prepareBuiltDependenciesForArtifacting.sh
 
-      # @STAGING
-      - run: ls -lh dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config
-
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
           name: dependencies-${{ matrix.abi }}
           path: dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed
-
-      # @STAGING
-      - run: ls -lh dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config
 
   releaseAllABIs:
     needs: release
@@ -125,20 +119,12 @@ jobs:
           path: dependency-builder/.cxx/cmake/release/x86/installed
       - run: chmod +x dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config
 
-      # @STAGING
-      - run: dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config --list-all
-      - run: dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config --debug --validate pdf2htmlEX
-
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
         with:
           name: dependencies-x86_64
           path: dependency-builder/.cxx/cmake/release/x86_64/installed
       - run: chmod +x dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config
-
-      # @STAGING
-      - run: dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config --list-all
-      - run: dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config --debug --validate pdf2htmlEX
 
       - name: Download artifacted dependencies - armeabi-v7a
         uses: actions/download-artifact@v1
@@ -147,23 +133,12 @@ jobs:
           path: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed
       - run: chmod +x dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config
 
-      # @STAGING
-      - run: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config --list-all
-      - run: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config --debug --validate pdf2htmlEX
-
       - name: Download artifacted dependencies - arm64-v8a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-arm64-v8a
           path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
       - run: chmod +x dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config
-
-      # @STAGING
-      - run: dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config --list-all
-      - run: dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config --debug --validate pdf2htmlEX
-
-      # @STAGING
-      - run: ls -lR dependency-builder/.cxx
 
       - name: Build pdf2htmlEX-Android
         run: ./gradlew pdf2htmlEX:assembleRelease -PdisablePreDex
