@@ -112,6 +112,12 @@ jobs:
 
       - run: .github/installAndroidTools.sh
 
+      - name: Download artifacted licenses
+        uses: actions/download-artifact@v1
+        with:
+          name: licenses-x86
+          path: dependency-builder/build/licenses.xml
+
       - name: Download artifacted dependencies - x86
         uses: actions/download-artifact@v1
         with:
@@ -157,16 +163,6 @@ jobs:
           release_name: pdf2htmlEX-Android v${{ steps.get_version.outputs.version }}
           draft: true
           prerelease: false
-
-      - name: Download artifacted licenses
-        uses: actions/download-artifact@v1
-        with:
-          name: licenses-x86
-          path: dependency-builder/build/licenses.xml
-
-      # @STAGING
-      - run: ls -lh dependency-builder/build/licenses.xml
-      - run: cat dependency-builder/build/licenses.xml
 
       - name: Upload licenses
         uses: actions/upload-release-asset@v1.0.1
