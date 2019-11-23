@@ -117,6 +117,7 @@ jobs:
         with:
           name: dependencies-x86
           path: dependency-builder/.cxx/cmake/release/x86/installed
+      - run: chmod +x dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config
 
       # @STAGING
       - run: dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config --list-all
@@ -127,6 +128,7 @@ jobs:
         with:
           name: dependencies-x86_64
           path: dependency-builder/.cxx/cmake/release/x86_64/installed
+      - run: chmod +x dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config
 
       # @STAGING
       - run: dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config --list-all
@@ -137,6 +139,7 @@ jobs:
         with:
           name: dependencies-armeabi-v7a
           path: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed
+      - run: chmod +x dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config
 
       # @STAGING
       - run: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config --list-all
@@ -147,6 +150,7 @@ jobs:
         with:
           name: dependencies-arm64-v8a
           path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
+      - run: chmod +x dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config
 
       # @STAGING
       - run: dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config --list-all
