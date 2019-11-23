@@ -135,7 +135,7 @@ publishing{
                 thisProjLicense.appendNode('url', "pdf2htmlEX-Android/LICENSE\n\n" + new File("$projectDir/../LICENSE").getText('UTF-8') + "\n\n")
                 thisProjLicense.appendNode('distribution', 'repo')
 
-                new XmlSlurper().parse("../dependency-builder/build/licenses.xml").license.each {
+                new XmlSlurper().parse("$projectDir/../dependency-builder/build/licenses.xml").license.each {
                     def license = licensesNode.appendNode('license')
                     license.appendNode('name', it.name)
                     license.appendNode('url', it.url)
