@@ -129,7 +129,7 @@ publishing{
                 def node = asNode()
 
                 def licensesNode = node.appendNode("licenses")
-                def thisProjLicense = licensesNode('license')
+                def thisProjLicense = licensesNode.appendNode('license')
 
                 thisProjLicense.appendNode('name', 'pdf2htmlEX-Android')
                 thisProjLicense.appendNode('url', "pdf2htmlEX-Android/LICENSE\n\n" + new File("$projectDir/../LICENSE").getText('UTF-8') + "\n\n")
