@@ -87,11 +87,17 @@ jobs:
       #- name: Clean up built dependencies before artifacting
       # run: .github/prepareBuiltDependenciesForArtifacting.sh
 
+      # @STAGING
+      - run: ls -lh dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config
+
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
           name: dependencies-${{ matrix.abi }}
           path: dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed
+
+      # @STAGING
+      - run: ls -lh dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config
 
   releaseAllABIs:
     needs: release
