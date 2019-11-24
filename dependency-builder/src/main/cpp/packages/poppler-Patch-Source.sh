@@ -15,8 +15,3 @@ sed -i "/macro_optional_find_package(TIFF)/a if(TIFF_FOUND)\n SET(TIFF_LIBRARIES
 CAIRO_LIBS=`$THIRDPARTY_PREFIX/bin/pkg-config --libs cairo`
 sed -i "/set(poppler_LIBS \${FREETYPE_LIBRARIES})/a if(CAIRO_FOUND)\n set(poppler_LIBS \${poppler_LIBS} $CAIRO_LIBS)\nendif()" $CMAKELISTS
 
-# https://gitlab.freedesktop.org/poppler/poppler/commit/842a75d8d6cc0105da6c0b5dbb0997b79ba63246
-# Poppler-0.74.0 fixed HAVE_FSEEKO detection issue that happens prior to Android-24
-# Patch that file until we upgrade to Poppler-0.74.0+
-patch $POPPLER_SRC/ConfigureChecks.cmake < ${BASEDIR}/poppler-Patch-Source-android-23.patch
-
