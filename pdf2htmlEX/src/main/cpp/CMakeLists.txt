@@ -23,7 +23,7 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, 
 project(pdf2htmlEX-android)
 
 get_filename_component(GIT_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../.." ABSOLUTE)
-SET(PKG_CONFIG_EXECUTABLE ${GIT_ROOT_DIR}/build/installed/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}/bin/pkg-config
+SET(PKG_CONFIG_EXECUTABLE ${GIT_ROOT_DIR}/build/installed/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}/bin/pkg-config)
 
 include(FindPkgConfig)
 pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
