@@ -34,7 +34,7 @@ jobs:
           key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
-      - run: ./dodownloadtarballs
+      - run: ./dodownloadtarballs --serial
 
       - name: Build pdf2htmlEX-Android dependencies
         run: ./gradlew dependency-builder:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -70,7 +70,7 @@ jobs:
           key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
-      - run: ./dodownloadtarballs
+      - run: ./dodownloadtarballs --serial
 
       - name: Build pdf2htmlEX-Android dependencies
         run: ./gradlew dependency-builder:assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
@@ -130,7 +130,7 @@ jobs:
           key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
-      - run: ./dodownloadtarballs
+      - run: ./dodownloadtarballs --serial
 
       - name: Download artifacted dependencies - x86
         uses: actions/download-artifact@v1
