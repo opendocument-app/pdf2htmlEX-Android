@@ -91,13 +91,19 @@ jobs:
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/include pdeps/
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/lib pdeps/
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/share/pkgconfig pdeps/share/
-          mv dependency-builder/build/assets pdeps/
 
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
           name: dependencies-${{ matrix.abi }}
           path: pdeps
+
+      - name: Artifact assets (from pdf2htmlEX and poppler)
+        if: matrix.abi == 'armeabi-v7a'
+        uses: actions/upload-artifact@v1
+        with:
+          name: assets
+          path: dependency-builder/build/assets
 
   releaseAllABIs:
     needs: release
@@ -132,7 +138,6 @@ jobs:
           name: dependencies-x86
           path: dependency-builder/build/installed/MinSizeRel/x86
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86/bin/pkg-config
-      - run: mv dependency-builder/build/installed/MinSizeRel/x86/assets dependency-builder/build/
 
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
@@ -154,6 +159,12 @@ jobs:
           name: dependencies-arm64-v8a
           path: dependency-builder/build/installed/MinSizeRel/arm64-v8a
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/arm64-v8a/bin/pkg-config
+
+      - name: Download artifacted assets
+        uses: actions/download-artifact@v1
+        with:
+          name: assets
+          path: dependency-builder/build/assets
 
       - name: Build pdf2htmlEX-Android
         run: ./gradlew pdf2htmlEX:assembleRelease -PdisablePreDex
