@@ -31,7 +31,7 @@ jobs:
       - name: Cache tarballs
         uses: actions/cache@v1
         with:
-          key: tarballs
+          key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
       - run: ./dodownloadtarballs
@@ -67,7 +67,7 @@ jobs:
       - name: Cache tarballs
         uses: actions/cache@v1
         with:
-          key: tarballs
+          key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
       - run: ./dodownloadtarballs
@@ -127,7 +127,7 @@ jobs:
       - name: Cache tarballs
         uses: actions/cache@v1
         with:
-          key: tarballs
+          key: tarballs-key-1
           path: dependency-builder/src/main/cpp/tarballs
 
       - run: ./dodownloadtarballs
