@@ -9,7 +9,7 @@ env:
 
 jobs:
   tarballCacher:
-    #if: false
+    if: false
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
@@ -23,7 +23,7 @@ jobs:
       - run: ./dodownloadtarballs --serial
 
   debug:
-    needs: tarballCacher
+    #needs: tarballCacher
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -59,7 +59,7 @@ jobs:
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
   release:
-    needs: tarballCacher
+    #needs: tarballCacher
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-18.04
     strategy:
