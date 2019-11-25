@@ -87,14 +87,14 @@ jobs:
       - name: Prepare built dependencies for artifacting
         run: |
           mkdir --parents pdeps/bin pdeps/share
-          cp dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config pdeps/bin/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config pdeps/bin/
 
-          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/include pdeps/
-          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/lib pdeps/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/include pdeps/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/lib pdeps/
 
-          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pdf2htmlEX pdeps/share/
-          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pkgconfig pdeps/share/
-          cp -r dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/poppler pdeps/share/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pdf2htmlEX pdeps/share/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pkgconfig pdeps/share/
+          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/poppler pdeps/share/
 
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
