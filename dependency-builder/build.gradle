@@ -66,7 +66,7 @@ task gatherLicenses {
                     licenseFiles.each() { licenseFilename ->
                         urlVal.append("$depName/$licenseFilename\n\n")
 
-                        def abi = project.hasProperty('abi') ? project.property('abi') : "x86"
+                        def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
                         def buildTargetPath = "$projectDir/.cxx/cmake/release/" + abi
                         def licenseFile = new File(buildTargetPath + "/$depName-prefix/src/$depName/$licenseFilename")
                         def licenseText = licenseFile.getText('UTF-8')
