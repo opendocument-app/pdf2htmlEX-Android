@@ -120,10 +120,10 @@ task collectReleaseAssetsFromShareFolder {
     dependsOn ":dependency-builder:externalNativeBuildRelease"
     doLast {
         copy {
-            new File("$projectDir/.cxx/cmake/release").eachDir() {
-                from("$it/installed/share")
+            new File("$buildDir/installed/MinSizeRel").eachDir() {
+                from("$it/share")
                 include("pdf2htmlEX/**", "poppler/**")
-                into("${project.buildDir}/assets")
+                into("$buildDir/assets")
             }
             duplicatesStrategy('exclude')
         }
@@ -134,10 +134,10 @@ task collectDebugAssetsFromShareFolder {
     dependsOn ":dependency-builder:externalNativeBuildDebug"
     doLast {
         copy {
-            new File("$projectDir/.cxx/cmake/debug").eachDir() {
-                from("$it/installed/share")
+            new File("$buildDir/installed/Debug").eachDir() {
+                from("$it/share")
                 include("pdf2htmlEX/**", "poppler/**")
-                into("${project.buildDir}/assets")
+                into("$buildDir/assets")
             }
             duplicatesStrategy('exclude')
         }
