@@ -87,10 +87,10 @@ jobs:
       - name: Prepare built dependencies for artifacting
         run: |
           mkdir --parents pdeps/bin
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config pdeps/bin/
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/include pdeps/
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/lib pdeps/
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pkgconfig pdeps/share/
+          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/bin/pkg-config pdeps/bin/
+          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/include pdeps/
+          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/lib pdeps/
+          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/share/pkgconfig pdeps/share/
           mv dependency-builder/build/assets pdeps/
 
       - name: Artifact built dependencies
@@ -130,32 +130,30 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: dependencies-x86
-          path: dependency-builder/.cxx/cmake/release/x86/installed
-      - run: chmod +x dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config
-
-      - run: mkdir dependency-builder/build
-      - run: mv dependency-builder/.cxx/cmake/release/x86/installed/assets dependency-builder/build/
+          path: dependency-builder/build/installed/MinSizeRel/x86
+      - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86/bin/pkg-config
+      - run: mv dependency-builder/build/installed/MinSizeRel/x86/assets dependency-builder/build/
 
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1
         with:
           name: dependencies-x86_64
-          path: dependency-builder/.cxx/cmake/release/x86_64/installed
-      - run: chmod +x dependency-builder/.cxx/cmake/release/x86_64/installed/bin/pkg-config
+          path: dependency-builder/build/installed/MinSizeRel/x86_64
+      - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86_64/bin/pkg-config
 
       - name: Download artifacted dependencies - armeabi-v7a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-armeabi-v7a
-          path: dependency-builder/.cxx/cmake/release/armeabi-v7a/installed
-      - run: chmod +x dependency-builder/.cxx/cmake/release/armeabi-v7a/installed/bin/pkg-config
+          path: dependency-builder/build/installed/MinSizeRel/armeabi-v7a
+      - run: chmod +x dependency-builder/build/installed/MinSizeRel/armeabi-v7a/bin/pkg-config
 
       - name: Download artifacted dependencies - arm64-v8a
         uses: actions/download-artifact@v1
         with:
           name: dependencies-arm64-v8a
-          path: dependency-builder/.cxx/cmake/release/arm64-v8a/installed
-      - run: chmod +x dependency-builder/.cxx/cmake/release/arm64-v8a/installed/bin/pkg-config
+          path: dependency-builder/build/installed/MinSizeRel/arm64-v8a
+      - run: chmod +x dependency-builder/build/installed/MinSizeRel/arm64-v8a/bin/pkg-config
 
       - name: Build pdf2htmlEX-Android
         run: ./gradlew pdf2htmlEX:assembleRelease -PdisablePreDex

@@ -18,26 +18,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, MinSizeRel)")
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, RelWithDebInfo, MinSizeRel)")
 
 project(pdf2htmlEX-android)
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  SET(GRADLE_BUILD_TYPE "debug")
-elseif(CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
-  SET(GRADLE_BUILD_TYPE "release")
-endif()
-
 get_filename_component(GIT_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../.." ABSOLUTE)
-SET(DEPENDENCY_BUILDER_FOR_THIS_ABI ${GIT_ROOT_DIR}/dependency-builder/.cxx/cmake/${GRADLE_BUILD_TYPE}/${ANDROID_ABI})
-SET(PKG_CONFIG_EXECUTABLE ${DEPENDENCY_BUILDER_FOR_THIS_ABI}/installed/bin/pkg-config)
-
-#execute_process(
-  #COMMAND ${CMAKE_COMMAND}
-  #"--build" ${DEPENDENCY_BUILDER_FOR_THIS_ABI}
-  #OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stdout
-  #ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/dependency-builder.stderr
-#)
+SET(PKG_CONFIG_EXECUTABLE ${GIT_ROOT_DIR}/build/installed/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}/bin/pkg-config
 
 include(FindPkgConfig)
 pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
