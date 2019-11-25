@@ -86,15 +86,12 @@ jobs:
 
       - name: Prepare built dependencies for artifacting
         run: |
-          mkdir --parents pdeps/bin pdeps/share
+          mkdir --parents pdeps/bin
           mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/bin/pkg-config pdeps/bin/
-
           mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/include pdeps/
           mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/lib pdeps/
-
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pdf2htmlEX pdeps/share/
           mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/pkgconfig pdeps/share/
-          mv dependency-builder/.cxx/cmake/release/${{ matrix.abi }}/installed/share/poppler pdeps/share/
+          mv dependency-builder/build/assets pdeps/
 
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
@@ -135,6 +132,9 @@ jobs:
           name: dependencies-x86
           path: dependency-builder/.cxx/cmake/release/x86/installed
       - run: chmod +x dependency-builder/.cxx/cmake/release/x86/installed/bin/pkg-config
+
+      - run: mkdir dependency-builder/build
+      - run: mv dependency-builder/.cxx/cmake/release/x86/installed/assets dependency-builder/build/
 
       - name: Download artifacted dependencies - x86_64
         uses: actions/download-artifact@v1

@@ -116,7 +116,42 @@ task gatherLicenses {
   }
 }
 
+// pdf2htmlEX and Poppler have some data that is needed on runtime
+task collectReleaseAssetsFromShareFolder {
+    dependsOn ":dependency-builder:externalNativeBuildRelease"
+    doLast {
+        copy {
+            new File("$projectDir/.cxx/cmake/release").eachDir() {
+                from("$it/installed/share")
+                include("pdf2htmlEX/**", "poppler/**")
+                into("${project.buildDir}/assets")
+            }
+            duplicatesStrategy('exclude')
+        }
+    }
+}
+
+task collectDebugAssetsFromShareFolder {
+    dependsOn ":dependency-builder:externalNativeBuildDebug"
+    doLast {
+        copy {
+            new File("$projectDir/.cxx/cmake/debug").eachDir() {
+                from("$it/installed/share")
+                include("pdf2htmlEX/**", "poppler/**")
+                into("${project.buildDir}/assets")
+            }
+            duplicatesStrategy('exclude')
+        }
+    }
+}
+
 tasks.whenTaskAdded {
+    if (it.name == 'generateReleaseAssets') {
+        it.dependsOn collectReleaseAssetsFromShareFolder
+    }
+    else if (it.name == 'generateDebugAssets') {
+        it.dependsOn collectDebugAssetsFromShareFolder
+    }
     if (it.name == 'externalNativeBuildRelease') {
         gatherLicenses.dependsOn externalNativeBuildRelease
     }

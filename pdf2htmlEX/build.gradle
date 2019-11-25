@@ -49,7 +49,7 @@ android {
         path "src/main/cpp/CMakeLists.txt"
         version "3.10.2"
     }
-    sourceSets.main.assets.srcDirs = ["${project.buildDir}/assets/"]
+    sourceSets.main.assets.srcDirs = ["${projectDir}/../dependency-builder/build/assets/"]
     ndkVersion "20.1.5948944"
 }
 
@@ -158,44 +158,6 @@ publishing{
                 }
             }
         }
-    }
-}
-
-// pdf2htmlEX and Poppler have some data that is needed on runtime
-task collectReleaseAssetsFromShareFolder {
-    //dependsOn ":dependency-builder:externalNativeBuildRelease"
-    doLast {
-        copy {
-            new File("$projectDir/../dependency-builder/.cxx/cmake/release").eachDir() {
-                from("$it/installed/share")
-                include("pdf2htmlEX/**", "poppler/**")
-                into("${project.buildDir}/assets")
-            }
-            duplicatesStrategy('exclude')
-        }
-    }
-}
-task collectDebugAssetsFromShareFolder {
-    //dependsOn ":dependency-builder:externalNativeBuildDebug"
-    doLast {
-        copy {
-            new File("$projectDir/../dependency-builder/.cxx/cmake/debug").eachDir() {
-                from("$it/installed/share")
-                include("pdf2htmlEX/**", "poppler/**")
-                into("${project.buildDir}/assets")
-            }
-            duplicatesStrategy('exclude')
-        }
-    }
-}
-
-// Because "generateDebugAssets.dependsOn collectAssetsFromShareFolder" would be too simple
-tasks.whenTaskAdded {
-    if (it.name == 'generateReleaseAssets') {
-        it.dependsOn collectReleaseAssetsFromShareFolder
-    }
-    else if (it.name == 'generateDebugAssets') {
-        it.dependsOn collectDebugAssetsFromShareFolder
     }
 }
 
