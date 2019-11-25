@@ -21,32 +21,32 @@
 function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
   if("${PACKAGE_NAME}" STREQUAL "iconv" AND ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28)
     # ANDROID-28+ has iconv built in.
-    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+    SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
     return()
 
   elseif("${PACKAGE_NAME}" STREQUAL "libtool")
     # libtool does not have pkg-config.pc. Check if libltdl.a exists.
     if (EXISTS ${THIRDPARTY_PREFIX}/lib/libltdl.a)
-      SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+      SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
       return()
     endif()
   endif()
 
   # Check pkg-config
-  pkg_search_module(PKG QUIET ${PACKAGE_NAME})
-  if (PKG_FOUND)
-    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+  pkg_search_module("${PACKAGE_NAME}_PKG" QUIET "${PACKAGE_NAME}")
+  if (${${PACKAGE_NAME}_PKG_FOUND})
+    SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
     return()
   endif()
 
   # Try to find package through CMake
-  find_package(${PACKAGE_NAME} QUIET)
-  if (${PACKAGE_NAME}_FOUND)
-    SET(PACKAGE_FOUND 1 PARENT_SCOPE)
+  find_package("${PACKAGE_NAME}_CMAKE" QUIET)
+  if ("${${PACKAGE_NAME}_CMAKE_FOUND}")
+    SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
     return()
   endif()
 
-  SET(PACKAGE_FOUND 0 PARENT_SCOPE)
+  SET("${PACKAGE_NAME}_FOUND" 0 PARENT_SCOPE)
 
 endfunction(CheckIfPackageAlreadyBuilt)
 
@@ -69,7 +69,7 @@ function(FilterDependsList DEPENDS_LIST)
 
       else()
         CheckIfPackageAlreadyBuilt(${DEPENDENCY})
-        if (NOT PACKAGE_FOUND)
+        if (NOT "${${DEPENDENCY}_FOUND}")
           message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
         endif()
       endif()

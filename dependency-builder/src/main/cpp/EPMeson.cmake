@@ -62,7 +62,7 @@ function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
 
   FilterDependsList(EP_DEPENDS)
   CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
-  if (PACKAGE_FOUND)
+  if ("${${EXTERNAL_PROJECT_NAME}_FOUND}")
     return()
   endif()
 
