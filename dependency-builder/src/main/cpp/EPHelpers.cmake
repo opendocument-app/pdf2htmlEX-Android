@@ -33,7 +33,7 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
   endif()
 
   # Check pkg-config
-  pkg_check_modules(PKG QUIET ${PACKAGE_NAME})
+  pkg_search_module(PKG QUIET ${PACKAGE_NAME})
   if (PKG_FOUND)
     SET(PACKAGE_FOUND 1 PARENT_SCOPE)
     return()
