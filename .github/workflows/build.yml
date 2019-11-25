@@ -52,9 +52,6 @@ jobs:
 
       - run: ./dodownloadtarballs --serial
 
-      - name: Build pdf2htmlEX-Android dependencies
-        run: ./gradlew dependency-builder:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
-
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
@@ -89,11 +86,8 @@ jobs:
 
       - run: ./dodownloadtarballs --serial
 
-      - name: Build pdf2htmlEX-Android dependencies
-        run: ./gradlew dependency-builder:assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
-
-      - name: Gather licenses
-        run: ./gradlew dependency-builder:gatherLicenses -Pabi=${{ matrix.abi }}
+      - name: Build pdf2htmlEX-Android
+        run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Artifact gathered licenses
         uses: actions/upload-artifact@v1
@@ -183,6 +177,12 @@ jobs:
           name: assets
           path: dependency-builder/build/assets
 
+      - name: Download artifacted licenses
+        uses: actions/download-artifact@v1
+        with:
+          name: licenses-x86
+          path: dependency-builder/build/
+
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleRelease -PdisablePreDex
 
@@ -200,12 +200,6 @@ jobs:
           release_name: pdf2htmlEX-Android v${{ steps.get_version.outputs.version }}
           draft: true
           prerelease: false
-
-      - name: Download artifacted licenses
-        uses: actions/download-artifact@v1
-        with:
-          name: licenses-x86
-          path: dependency-builder/build/
 
       - name: Upload licenses
         uses: actions/upload-release-asset@v1.0.1
