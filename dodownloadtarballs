@@ -34,7 +34,13 @@ do
 
     if test ! -f "$TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME"
     then
-      wget --output-document="$TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME" $URL &
+      (
+        if ! wget --output-document="$TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME" $URL
+        then
+          rm $TARBALL_STORAGE/$PACKAGE_NAME/$FILENAME
+          exit 1
+        fi
+      ) &
       pid=$!
       if "$PARALLEL"
       then
