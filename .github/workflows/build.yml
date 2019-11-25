@@ -56,7 +56,7 @@ jobs:
         run: ./gradlew dependency-builder:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew pdf2htmlEX:assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
+        run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
 
   release:
     needs: tarballCacher
