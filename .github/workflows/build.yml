@@ -167,7 +167,7 @@ jobs:
           path: dependency-builder/build/assets
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew pdf2htmlEX:assembleRelease -PdisablePreDex
+        run: ./gradlew assembleRelease -PdisablePreDex
 
       - name: Get version
         id: get_version
