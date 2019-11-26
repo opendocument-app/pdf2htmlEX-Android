@@ -5,7 +5,7 @@
 
 ### Goals:
 * Providing easy to use interface for downstream users.  
-Library is consumed as .aar file through gradle and used through a Java class, which provides a method to perform conversion.
+Library is consumed through gradle and used through a Java class, which provides a method to perform conversion.
 * Keeping device requirements low.  
 Current versions of NDK support building for Android-16 (Jelly Bean) and newer.  
 Supported ABIs: armeabi-v7a, arm64-v8a, x86, x86_64.
@@ -67,7 +67,7 @@ Storage Access Framework (SAF) is used for file management, it requires API leve
 * Meson Build system
 * pkg-config
 * CMake-3.10.2
-* ndk-20.0.5594570
+* ndk-20.1.5948944
 * gettext
 * gperf
 
