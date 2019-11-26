@@ -21,9 +21,6 @@ jobs:
 
       - name: Put release assets where gradle would have kept it after the build
         run: |
-          #@STAGING
-          ls -lhR releaseAssets
-
           mkdir --parents ./pdf2htmlEX/build/outputs/aar
           mv ./releaseAssets/pdf2htmlex-android-release.aar ./pdf2htmlEX/build/outputs/aar/
 
@@ -33,11 +30,6 @@ jobs:
 
           mkdir ./dependency-builder/build
           mv ./releaseAssets/licenses.xml ./dependency-builder/build/
-
-      #@STAGING
-      - run: |
-          ls -lhR dependency-builder/build pdf2htmlEX/build/outputs/aar pdf2htmlEX/build/libs
-          readlink -f dependency-builder/build/licenses.xml
 
       - name: Upload to Bintray
         run: ./gradlew bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_API_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
