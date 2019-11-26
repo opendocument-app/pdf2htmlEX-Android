@@ -8,8 +8,8 @@ ENDIF ()
 
 ExternalProjectCMake(harfbuzz
   DEPENDS cairo fontconfig freetype glib-2.0
-  URL https://github.com/harfbuzz/harfbuzz/releases/download/2.6.1/harfbuzz-2.6.1.tar.xz
-  URL_HASH SHA256=c651fb3faaa338aeb280726837c2384064cdc17ef40539228d88a1260960844f
+  URL https://github.com/harfbuzz/harfbuzz/releases/download/2.6.4/harfbuzz-2.6.4.tar.xz
+  URL_HASH SHA256=9413b8d96132d699687ef914ebb8c50440efc87b3f775d25856d7ec347c03c12
 
   CONFIGURE_ARGUMENTS 
     -DHB_HAVE_FREETYPE=ON
