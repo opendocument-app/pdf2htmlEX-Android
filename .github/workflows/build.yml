@@ -89,7 +89,12 @@ jobs:
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
 
+      - name: Gather licenses
+        if: matrix.abi == 'armeabi-v7a'
+        run: ./gradlew dependency-builder:gatherLicenses -PdisablePreDex -Pabi=${{ matrix.abi }}
+
       - name: Artifact gathered licenses
+        if: matrix.abi == 'armeabi-v7a'
         uses: actions/upload-artifact@v1
         with:
           name: licenses-${{ matrix.abi }}
@@ -180,7 +185,7 @@ jobs:
       - name: Download artifacted licenses
         uses: actions/download-artifact@v1
         with:
-          name: licenses-x86
+          name: licenses-armeabi-v7a
           path: dependency-builder/build/
 
       - name: Build pdf2htmlEX-Android
