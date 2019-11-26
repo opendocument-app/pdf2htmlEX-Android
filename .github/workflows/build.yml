@@ -191,6 +191,17 @@ jobs:
       - name: Build pdf2htmlEX-Android
         run: ./gradlew assembleRelease -PdisablePreDex
 
+      - name: Publish to maven local
+        run: ./gradlew publishToMavenLocal
+
+      - name: Prepare sample app
+        run: .github/prepareSampleAppForUnpublishedLib.sh
+
+      - name: Build sample app from unpublished library
+        run: |
+          cd android-sample-app
+          ./gradlew build
+
       - name: Get version
         id: get_version
         run: echo "::set-output name=version::$(./getVersion.sh)"
