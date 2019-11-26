@@ -67,8 +67,8 @@ jobs:
           java-version: 1.8
 
       - run: |
-        cd android-sample-app
-        ./gradlew build
+          cd android-sample-app
+          ./gradlew assembleDebug
 
       - name: Upload app-universal-debug.apk
         uses: actions/upload-release-asset@v1.0.1
