@@ -56,3 +56,67 @@ jobs:
             git push
           fi
 
+  sampleApp:
+    needs: versionIncrementer
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - run: |
+        cd android-sample-app
+        ./gradlew build
+
+      - name: Upload app-universal-debug.apk
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: android-sample-app/app/build/outputs/apk/debug/app-universal-debug.apk
+          asset_name: app-universal-debug.apk
+          asset_content_type: application/zip
+
+      - name: Upload app-arm64-v8a-debug.apk
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: android-sample-app/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
+          asset_name: app-arm64-v8a-debug.apk
+          asset_content_type: application/zip
+
+      - name: Upload app-armeabi-v7a-debug.apk
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: android-sample-app/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
+          asset_name: app-armeabi-v7a-debug.apk
+          asset_content_type: application/zip
+
+      - name: Upload app-x86-debug.apk
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: android-sample-app/app/build/outputs/apk/debug/app-x86-debug.apk
+          asset_name: app-x86-debug.apk
+          asset_content_type: application/zip
+
+      - name: Upload app-x86_64-debug.apk
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: android-sample-app/app/build/outputs/apk/debug/app-x86_64-debug.apk
+          asset_name: app-x86_64-debug.apk
+          asset_content_type: application/zip
+
