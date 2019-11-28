@@ -77,34 +77,29 @@ public class InstrumentedTests {
   }
 
   @Test
-  public synchronized void conversionTest() {
-    File pdfFile, htmlFile;
-    try {
-      pdfFile = extractAssetPDF("fontfile3_opentype.pdf");
-    } catch (IOException e) {
-      e.printStackTrace();
-      fail("Failed to extract PDF from assets");
-      return;
-    }
-
+  public synchronized void conversionTest() throws IOException {
     pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+    File pdfFile = extractAssetPDF("fontfile3_opentype.pdf");
+    File htmlFile;
     try {
       htmlFile = converter.convert(pdfFile);
-    } catch (IOException e) {
-      e.printStackTrace();
-      fail("Failed to convert PDF to HTML");
-      return;
-    } catch (pdf2htmlEX.ConversionFailedException e) {
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      pdfFile.delete();
       e.printStackTrace();
       fail("Failed to convert PDF to HTML");
       return;
     }
+
+    pdfFile.delete();
     assertTrue("Converted HTML file not found!", htmlFile.exists());
     assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+
+    htmlFile.delete();
   }
 
+  // https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/4
   @Test
-  public void conversionTwiceTest() {
+  public void conversionTwiceTest() throws IOException {
     conversionTest();
     conversionTest();
   }
