@@ -112,10 +112,12 @@ public final class pdf2htmlEX {
   private File m_outputHtmlsDir;
 
   public pdf2htmlEX(@NonNull Context ctx) {
+    // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
     m_pdf2htmlEX_dataDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
     ExtractAssets(ctx.getAssets(), ctx.getFilesDir(), "pdf2htmlEX");
 
+    // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
     m_poppler_dataDir = new File(ctx.getFilesDir(), "poppler");
     ExtractAssets(ctx.getAssets(), ctx.getFilesDir(), "poppler");
@@ -136,9 +138,7 @@ public final class pdf2htmlEX {
     }
   }
 
-  // @TODO: patch pdf2htmlEX and poppler to use AssetManager in C++
   public File convert(@NonNull File inputPDF) throws IOException, ConversionFailedException {
-
     String inputFilenameNoPDFExt = inputPDF.getName();
     if (inputFilenameNoPDFExt.endsWith(".pdf")) {
       inputFilenameNoPDFExt = inputFilenameNoPDFExt.substring(0, inputFilenameNoPDFExt.length() - 4);
