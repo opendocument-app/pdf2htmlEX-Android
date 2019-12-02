@@ -62,6 +62,7 @@ Current implementation supports building projects which are based on [Autotools]
 ### [Sample application](/android-sample-app)
 Example demonstrates how to convert PDF files to HTML and either open the result in browser or save to storage.
 Storage Access Framework (SAF) is used for file management, it requires API level 19 (KitKat).
+Debug build of sample application is available in [Releases Page](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/releases)
 
 ### Tools to build from source:
 * Meson Build system
