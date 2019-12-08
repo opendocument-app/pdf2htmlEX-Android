@@ -1,0 +1,12 @@
+--- CMakeLists.txt	2019-09-22 15:56:22.000000000 -0000
++++ CMakeLists.txt	2019-12-04 21:07:14.085000000 -0000
+@@ -93,9 +93,6 @@
+ 
+ if(WIN32)
+   set(_default_fontconfiguration "win32")
+-elseif(ANDROID)
+-  # on android we don't have fontconfig and we don't want windows-specific code
+-  set(_default_fontconfiguration "generic")
+ else()
+   set(_default_fontconfiguration "fontconfig")
+ endif()

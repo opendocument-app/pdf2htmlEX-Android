@@ -15,3 +15,5 @@ sed -i "/macro_optional_find_package(TIFF)/a if(TIFF_FOUND)\n SET(TIFF_LIBRARIES
 CAIRO_LIBS=`$THIRDPARTY_PREFIX/bin/pkg-config --libs cairo`
 sed -i "/set(poppler_LIBS \${FREETYPE_LIBRARIES})/a if(CAIRO_FOUND)\n set(poppler_LIBS \${poppler_LIBS} $CAIRO_LIBS)\nendif()" $CMAKELISTS
 
+patch $1/CMakeLists.txt <$BASEDIR/poppler-Patch-Source-use-fontconfig.patch
+
