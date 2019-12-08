@@ -54,7 +54,7 @@ public final class pdf2htmlEX {
           return false;
         }
       } else { // Processing a folder
-        if (!output_name.exists() && !output_name.mkdir()) {
+        if (!output_name.exists() && !output_name.mkdirs()) {
           return false;
         }
         for (String asset: assets) {
@@ -112,24 +112,36 @@ public final class pdf2htmlEX {
   private File m_outputHtmlsDir;
 
   public pdf2htmlEX(@NonNull Context ctx) {
+    File filesDir = ctx.getFilesDir();
+    File cacheDir = ctx.getCacheDir();
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
-    m_pdf2htmlEX_dataDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
-    ExtractAssets(ctx.getAssets(), ctx.getFilesDir(), "pdf2htmlEX");
+    m_pdf2htmlEX_dataDir = new File(filesDir, "pdf2htmlEX");
+    ExtractAssets(ctx.getAssets(), filesDir, "pdf2htmlEX");
 
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
-    m_poppler_dataDir = new File(ctx.getFilesDir(), "poppler");
-    ExtractAssets(ctx.getAssets(), ctx.getFilesDir(), "poppler");
+    m_poppler_dataDir = new File(filesDir, "poppler");
+    ExtractAssets(ctx.getAssets(), filesDir, "poppler");
 
     // tmpDir is where pdf2htmlEX does it's work
-    m_pdf2htmlEX_tmpDir = new File(ctx.getCacheDir(), "pdf2htmlEX-tmp");
+    m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
     m_pdf2htmlEX_tmpDir.mkdir();
 
     m_outputHtmlsDir = new File(m_pdf2htmlEX_tmpDir, "output-htmls");
     m_outputHtmlsDir.mkdir();
 
     prepareEnvironmentForFontforge(ctx);
+
+    // xdg-cache Used by fontconfig
+    File xdgCache = new File(cacheDir, "xdg-cache");
+    xdgCache.mkdir();
+    set_environment_value("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
+
+    // /etc/fonts is provided by fontconfig
+    File fontsConfigDir = new File(filesDir, "etc/fonts");
+    ExtractAssets(ctx.getAssets(), filesDir, "etc/fonts");
+    set_environment_value("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
   }
 
   public class ConversionFailedException extends Exception {
@@ -162,6 +174,9 @@ public final class pdf2htmlEX {
   }
 
   private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile);
+
+  // Because Java cannot setenv for the current process
+  private native void set_environment_value(String key, String value);
 
   // Because Java can't set env vars for the current process...
   private native void set_env_values_for_fontforge(String homeDir, String tmpDir, String username);

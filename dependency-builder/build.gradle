@@ -128,6 +128,16 @@ task collectReleaseAssetsFromShareFolder {
             duplicatesStrategy('exclude')
         }
     }
+    doLast {
+        copy {
+            new File("$buildDir/installed/MinSizeRel").eachDir() {
+                from("$it/etc")
+                include("fonts/**")
+                into("$buildDir/assets/etc")
+            }
+            duplicatesStrategy('exclude')
+        }
+    }
 }
 
 task collectDebugAssetsFromShareFolder {
@@ -138,6 +148,16 @@ task collectDebugAssetsFromShareFolder {
                 from("$it/share")
                 include("pdf2htmlEX/**", "poppler/**")
                 into("$buildDir/assets")
+            }
+            duplicatesStrategy('exclude')
+        }
+    }
+    doLast {
+        copy {
+            new File("$buildDir/installed/Debug").eachDir() {
+                from("$it/etc")
+                include("fonts/**")
+                into("$buildDir/assets/etc")
             }
             duplicatesStrategy('exclude')
         }

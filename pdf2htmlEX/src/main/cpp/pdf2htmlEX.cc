@@ -72,6 +72,18 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1env_1values_1for_1fon
 }
 
 extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jobject,
+                                                                          jstring key_,
+                                                                          jstring value_) {
+    const char * key = env->GetStringUTFChars(key_, nullptr);
+    const char * value = env->GetStringUTFChars(value_, nullptr);
+    setenv(key, value, 1);
+    env->ReleaseStringUTFChars(key_, key);
+    env->ReleaseStringUTFChars(value_, value);
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *env, jobject,
                                                                jstring dataDir_,
