@@ -20,19 +20,12 @@
 package com.viliussutkus89.android.pdf2htmlex;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public final class pdf2htmlEX {
   static {
@@ -40,59 +33,6 @@ public final class pdf2htmlEX {
   }
 
   private static final String TAG = "pdf2htmlEX";
-
-  // ExtractAssets adapted from
-  // https://gist.github.com/tylerchesley/6198074
-  private Boolean ExtractAssets(@NonNull AssetManager assetManager, @NonNull File outputDir, @NonNull String name) {
-    File output_name = new File(outputDir, name);
-    try {
-      String[] assets = assetManager.list(name);
-      if (0 == assets.length) { // Processing a file
-        InputStream in = assetManager.open(name);
-        OutputStream out = new FileOutputStream(output_name);
-        if (!copyFile(in, out)) {
-          return false;
-        }
-      } else { // Processing a folder
-        if (!output_name.exists() && !output_name.mkdirs()) {
-          return false;
-        }
-        for (String asset: assets) {
-          if (!ExtractAssets(assetManager, outputDir, name + File.separator + asset)) {
-            return false;
-          }
-        }
-      }
-    } catch (IOException e) {
-      Log.e(TAG, e.getMessage());
-      return false;
-    }
-    return true;
-  }
-
-  private Boolean copyFile(InputStream input, OutputStream output) {
-    final int buffer_size = 1024;
-    byte[] buffer = new byte[buffer_size];
-
-    BufferedInputStream in = new BufferedInputStream(input, buffer_size);
-    BufferedOutputStream out = new BufferedOutputStream(output, buffer_size);
-
-    try {
-      int read;
-      while (-1 != (read = in.read(buffer))) {
-        out.write(buffer, 0, read);
-      }
-      out.flush();
-      out.close();
-      output.close();
-      in.close();
-      input.close();
-    } catch (IOException e) {
-      Log.e(TAG, e.getMessage());
-      return false;
-    }
-    return true;
-  }
 
   private void prepareEnvironmentForFontforge(Context ctx) {
     File homeDir = new File(ctx.getCacheDir(), "homeForFontforge");
@@ -117,12 +57,12 @@ public final class pdf2htmlEX {
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
     m_pdf2htmlEX_dataDir = new File(filesDir, "pdf2htmlEX");
-    ExtractAssets(ctx.getAssets(), filesDir, "pdf2htmlEX");
+    AssetExtractor.extract(ctx.getAssets(), filesDir, "pdf2htmlEX");
 
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
     m_poppler_dataDir = new File(filesDir, "poppler");
-    ExtractAssets(ctx.getAssets(), filesDir, "poppler");
+    AssetExtractor.extract(ctx.getAssets(), filesDir, "poppler");
 
     // tmpDir is where pdf2htmlEX does it's work
     m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
@@ -133,15 +73,6 @@ public final class pdf2htmlEX {
 
     prepareEnvironmentForFontforge(ctx);
 
-    // xdg-cache Used by fontconfig
-    File xdgCache = new File(cacheDir, "xdg-cache");
-    xdgCache.mkdir();
-    set_environment_value("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
-
-    // /etc/fonts is provided by fontconfig
-    File fontsConfigDir = new File(filesDir, "etc/fonts");
-    ExtractAssets(ctx.getAssets(), filesDir, "etc/fonts");
-    set_environment_value("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
   }
 
   public class ConversionFailedException extends Exception {
@@ -176,7 +107,7 @@ public final class pdf2htmlEX {
   private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile);
 
   // Because Java cannot setenv for the current process
-  private native void set_environment_value(String key, String value);
+  static native void set_environment_value(String key, String value);
 
   // Because Java can't set env vars for the current process...
   private native void set_env_values_for_fontforge(String homeDir, String tmpDir, String username);
