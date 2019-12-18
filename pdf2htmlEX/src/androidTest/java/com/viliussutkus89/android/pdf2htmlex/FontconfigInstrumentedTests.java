@@ -34,10 +34,6 @@ import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class FontconfigInstrumentedTests {
-    static {
-        System.loadLibrary("nativeFontconfigInstrumentedTests");
-    }
-
     //pdf base14 fonts:
     //Courier, Courier Bold, Courier Oblique, Courier Bold-Oblique
     //Helvetica, Helvetica Bold, Helvetica Oblique, Helvetica Bold-Oblique
@@ -114,5 +110,5 @@ public class FontconfigInstrumentedTests {
         assertEquals("d050000l.pfb", getFontFilenameFromFontconfig("Zapf Dingbats"));
     }
 
-    private native String getFontFilenameFromFontconfig(String pattern);
+    public static native String getFontFilenameFromFontconfig(String pattern);
 }

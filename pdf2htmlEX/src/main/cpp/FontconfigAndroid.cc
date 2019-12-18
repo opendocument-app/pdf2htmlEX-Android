@@ -4,7 +4,7 @@
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_FontconfigInstrumentedTests_getFontFilenameFromFontconfig(
-        JNIEnv *env, jobject, jstring pattern_) {
+        JNIEnv *env, jclass, jstring pattern_) {
   const char * pattern = env->GetStringUTFChars(pattern_, nullptr);
   FcFontSet	*fs = FcFontSetCreate();
   FcPattern *pat = FcNameParse (reinterpret_cast<const FcChar8 *>(pattern));
@@ -36,3 +36,4 @@ Java_com_viliussutkus89_android_pdf2htmlex_FontconfigInstrumentedTests_getFontFi
   FcFini ();
   return matchedFilename ? matchedFilename : env->NewStringUTF("");
 }
+

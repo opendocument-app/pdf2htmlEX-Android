@@ -30,7 +30,8 @@ pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
 
 link_directories(${pdf2htmlEX_LIBRARY_DIRS})
 
-add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc)
+add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc
+  FontconfigAndroid.cc)
 
 target_link_libraries(pdf2htmlEX-android
   ${CMAKE_CURRENT_LIST_DIR}/../../../build/tmpfile/jni/${ANDROID_ABI}/libtmpfile.so
@@ -40,8 +41,3 @@ target_link_libraries(pdf2htmlEX-android
 set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS})
 target_include_directories(pdf2htmlEX-android PRIVATE ${pdf2htmlEX_INCLUDE_DIRS})
 
-add_library(nativeFontconfigInstrumentedTests SHARED nativeFontconfigInstrumentedTests.cpp)
-target_link_libraries(nativeFontconfigInstrumentedTests ${pdf2htmlEX_LIBRARIES})
-
-set_target_properties(nativeFontconfigInstrumentedTests PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS})
-target_include_directories(nativeFontconfigInstrumentedTests PRIVATE ${pdf2htmlEX_INCLUDE_DIRS})
