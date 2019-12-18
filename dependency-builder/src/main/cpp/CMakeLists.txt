@@ -49,6 +49,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/EPHelpers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPAutotools.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPCMake.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/EPMeson.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/EPTarball.cmake)
 
 SET(TARBALL_STORAGE ${CMAKE_CURRENT_SOURCE_DIR}/tarballs/ CACHE PATH "Path to manually downloaded tarballs. Used to look up before downloading from the internet.")
 

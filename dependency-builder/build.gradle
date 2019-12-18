@@ -72,6 +72,7 @@ task gatherLicenses {
                         // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
                         // XML does not take kindly to form feed characters.
                         if ((depName == "cairo" && licenseFilename == "COPYING-LGPL-2.1") ||
+                            (depName == "Fonts-SymbolAndZapfDingbats" && licenseFilename == "COPYING") ||
                             (depName == "freetype" && licenseFilename == "docs/GPLv2.TXT") ||
                             (depName == "glib-2.0" && licenseFilename == "COPYING") ||
                             (depName == "fribidi" && licenseFilename == "COPYING") ||
@@ -90,6 +91,7 @@ task gatherLicenses {
             addLicense("pdf2htmlEX", ["LICENSE", "LICENSE_GPLv3"])
             addLicense("cairo", ["COPYING", "COPYING-LGPL-2.1", "COPYING-MPL-1.1"])
             addLicense("fontconfig", ["COPYING"])
+            addLicense("Fonts-SymbolAndZapfDingbats", ["COPYING"])
             addLicense("freetype", ["docs/LICENSE.TXT", "docs/GPLv2.TXT", "docs/FTL.TXT"])
             addLicense("fribidi", ["COPYING"])
             addLicense("glib-2.0", ["COPYING"])
@@ -138,6 +140,15 @@ task collectReleaseAssetsFromShareFolder {
             duplicatesStrategy('exclude')
         }
     }
+    // @TODO: maybe make EPTarball extract to "installed" ?
+    doLast {
+        copy {
+            def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
+            from("$projectDir/.cxx/cmake/release/" + abi + "/Fonts-SymbolAndZapfDingbats-prefix/src/Fonts-SymbolAndZapfDingbats/")
+            include("*.pfb")
+            into("$buildDir/assets/fonts")
+        }
+    }
 }
 
 task collectDebugAssetsFromShareFolder {
@@ -160,6 +171,15 @@ task collectDebugAssetsFromShareFolder {
                 into("$buildDir/assets/etc")
             }
             duplicatesStrategy('exclude')
+        }
+    }
+    // @TODO: maybe make EPTarball extract to "installed" ?
+    doLast {
+        copy {
+            def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
+            from("$projectDir/.cxx/cmake/debug/" + abi + "/Fonts-SymbolAndZapfDingbats-prefix/src/Fonts-SymbolAndZapfDingbats/")
+            include("*.pfb")
+            into("$buildDir/assets/fonts")
         }
     }
 }

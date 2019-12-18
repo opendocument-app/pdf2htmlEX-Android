@@ -94,5 +94,25 @@ public class FontconfigInstrumentedTests {
                 .contains(getFontFilenameFromFontconfig("Times:Bold:Italic")));
     }
 
+    @Test
+    public synchronized void matchSymbolTest() {
+        // @TODO: init only FontconfigAndroid, not the whole pdf2htmlEX
+        new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+        assertEquals("s050000l.pfb", getFontFilenameFromFontconfig("Symbol"));
+        assertEquals("s050000l.pfb", getFontFilenameFromFontconfig("StandardSymbolsL"));
+        assertEquals("s050000l.pfb", getFontFilenameFromFontconfig("Standard Symbols L"));
+    }
+
+    @Test
+    public synchronized void matchDingbatsTest() {
+        // @TODO: init only FontconfigAndroid, not the whole pdf2htmlEX
+        new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+        assertEquals("d050000l.pfb", getFontFilenameFromFontconfig("Dingbats"));
+        assertEquals("d050000l.pfb", getFontFilenameFromFontconfig("ZapfDingbats"));
+        assertEquals("d050000l.pfb", getFontFilenameFromFontconfig("Zapf Dingbats"));
+    }
+
     private native String getFontFilenameFromFontconfig(String pattern);
 }
