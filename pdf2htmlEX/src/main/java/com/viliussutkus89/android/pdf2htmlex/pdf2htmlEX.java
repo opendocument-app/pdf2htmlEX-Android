@@ -57,12 +57,16 @@ public final class pdf2htmlEX {
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
     m_pdf2htmlEX_dataDir = new File(filesDir, "pdf2htmlEX");
-    AssetExtractor.extract(ctx.getAssets(), filesDir, "pdf2htmlEX");
+    if (!m_pdf2htmlEX_dataDir.exists()) {
+      AssetExtractor.extract(ctx.getAssets(), filesDir, "pdf2htmlEX");
+    }
 
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
     m_poppler_dataDir = new File(filesDir, "poppler");
-    AssetExtractor.extract(ctx.getAssets(), filesDir, "poppler");
+    if (!m_poppler_dataDir.exists()) {
+      AssetExtractor.extract(ctx.getAssets(), filesDir, "poppler");
+    }
 
     // tmpDir is where pdf2htmlEX does it's work
     m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");

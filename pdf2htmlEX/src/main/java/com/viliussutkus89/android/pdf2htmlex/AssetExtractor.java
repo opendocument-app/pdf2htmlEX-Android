@@ -16,6 +16,8 @@ import java.io.OutputStream;
 final class AssetExtractor {
     private static final String TAG = "AssetExtractor";
 
+    // @TODO: don't extract if already extracted
+
     // ExtractAssets adapted from
     // https://gist.github.com/tylerchesley/6198074
     static Boolean extract(@NonNull AssetManager assetManager, @NonNull File outputDir, @NonNull String name) {
