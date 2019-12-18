@@ -118,7 +118,7 @@ final class FontconfigAndroid {
         }
     }
 
-    abstract static class FontElement {
+    static class FontElement {
         protected String alias;
         protected String family;
 
