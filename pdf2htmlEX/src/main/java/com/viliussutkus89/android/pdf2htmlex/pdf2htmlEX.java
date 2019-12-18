@@ -77,6 +77,7 @@ public final class pdf2htmlEX {
 
     prepareEnvironmentForFontforge(ctx);
 
+    FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir);
   }
 
   public class ConversionFailedException extends Exception {

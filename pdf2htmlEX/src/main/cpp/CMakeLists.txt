@@ -40,3 +40,8 @@ target_link_libraries(pdf2htmlEX-android
 set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS})
 target_include_directories(pdf2htmlEX-android PRIVATE ${pdf2htmlEX_INCLUDE_DIRS})
 
+add_library(nativeFontconfigInstrumentedTests SHARED nativeFontconfigInstrumentedTests.cpp)
+target_link_libraries(nativeFontconfigInstrumentedTests ${pdf2htmlEX_LIBRARIES})
+
+set_target_properties(nativeFontconfigInstrumentedTests PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS})
+target_include_directories(nativeFontconfigInstrumentedTests PRIVATE ${pdf2htmlEX_INCLUDE_DIRS})
