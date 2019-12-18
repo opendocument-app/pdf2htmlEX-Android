@@ -39,7 +39,10 @@ final class AssetExtractor {
                 }
             }
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            String msg = e.getMessage();
+            if (null != msg) {
+                Log.e(TAG, msg);
+            }
             return false;
         }
         return true;
