@@ -119,7 +119,7 @@ public final class pdf2htmlEX {
 
     Integer retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
       m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
-      inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath());
+      this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath());
 
     if (0 != retVal) {
       outputHtml.delete();
