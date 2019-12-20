@@ -40,6 +40,8 @@ public final class pdf2htmlEX {
   private File m_outputHtmlsDir;
 
   private File p_inputPDF;
+  private String p_ownerPassword = "";
+  private String p_userPassword = "";
 
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
@@ -98,6 +100,16 @@ public final class pdf2htmlEX {
     return convert();
   }
 
+  public pdf2htmlEX setOwnerPassword(@NonNull String ownerPassword) {
+    this.p_ownerPassword = ownerPassword;
+    return this;
+  }
+
+  public pdf2htmlEX setUserPassword(@NonNull String userPassword) {
+    this.p_userPassword = userPassword;
+    return this;
+  }
+
   public File convert() throws IOException, ConversionFailedException {
     if (null == this.p_inputPDF) {
       throw new ConversionFailedException("No Input PDF given!");
@@ -119,7 +131,9 @@ public final class pdf2htmlEX {
 
     Integer retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
       m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
-      this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath());
+      this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
+      this.p_ownerPassword, this.p_userPassword
+      );
 
     if (0 != retVal) {
       outputHtml.delete();
@@ -129,7 +143,7 @@ public final class pdf2htmlEX {
     return outputHtml;
   }
 
-  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile);
+  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword);
 
   // Because Java cannot setenv for the current process
   static native void set_environment_value(String key, String value);

@@ -42,6 +42,8 @@ public:
       return this->cstr;
     }
 
+    bool isEmpty() const { return this->cstr[0] == '\0'; }
+
     ~CCharGC() {
       env->ReleaseStringUTFChars(this->input, this->cstr);
     }
@@ -88,12 +90,16 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
                                                                jstring dataDir_,
                                                                jstring popplerDir_, jstring tmpDir_,
                                                                jstring inputFile_,
-                                                               jstring outputFile_) {
+                                                               jstring outputFile_,
+                                                               jstring ownerPassword_,
+                                                               jstring userPassword_) {
   CCharGC dataDir(env, dataDir_);
   CCharGC popplerDir(env, popplerDir_);
   CCharGC tmpDir(env, tmpDir_);
   CCharGC inputFile(env, inputFile_);
   CCharGC outputFile(env, outputFile_);
+  CCharGC ownerPassword(env, ownerPassword_);
+  CCharGC userPassword(env, userPassword_);
 
   std::vector<const std::string> args = {
     "libpdf2htmlEX",
@@ -102,6 +108,16 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
     "--tmp-dir", tmpDir.c_str(),
     inputFile.c_str(), outputFile.c_str()
   };
+
+  if (!ownerPassword.isEmpty()) {
+    args.push_back("--owner-password");
+    args.push_back(ownerPassword.c_str());
+  }
+
+  if (!userPassword.isEmpty()) {
+    args.push_back("--user-password");
+    args.push_back(userPassword.c_str());
+  }
 
   int argc;
   char **argv;

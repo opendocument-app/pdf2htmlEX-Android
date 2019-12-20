@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -102,6 +103,59 @@ public class InstrumentedTests {
   public void conversionTwiceTest() throws IOException {
     conversionTest();
     conversionTest();
+  }
+
+  @Test
+  public synchronized void encryptedPdfTest() throws IOException {
+    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+    // encrypted_fontfile3_opentype.pdf generated using:
+    // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
+    File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
+    File htmlFile;
+    try {
+      htmlFile = converter.setInputPDF(pdfFile)
+              .setOwnerPassword("sample-owner-password")
+              .setUserPassword("sample-user-password")
+              .convert();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      pdfFile.delete();
+      e.printStackTrace();
+      fail("Failed to convert PDF to HTML");
+      return;
+    }
+
+    pdfFile.delete();
+
+    assertTrue("Converted HTML file not found!", htmlFile.exists());
+    assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+
+    htmlFile.delete();
+  }
+
+  @Test
+  public synchronized void encryptedPdfWrongPasswordTest() throws IOException {
+    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+    // encrypted_fontfile3_opentype.pdf generated using:
+    // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
+    File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
+    File htmlFile = null;
+    try {
+      htmlFile = converter.setInputPDF(pdfFile)
+              .setOwnerPassword("wrong-owner-password")
+              .setUserPassword("wrong-user-password")
+              .convert();
+    } catch (pdf2htmlEX.ConversionFailedException ignored) {
+    } catch (IOException e) {
+      pdfFile.delete();
+      e.printStackTrace();
+      fail("Failed to convert PDF to HTML");
+      return;
+    }
+    pdfFile.delete();
+
+    assertNull("Conversion succeeded when it should have failed because of wrong encryption password!", htmlFile);
   }
 
 }
