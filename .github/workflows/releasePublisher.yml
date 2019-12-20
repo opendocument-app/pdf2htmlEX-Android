@@ -61,6 +61,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
+      - run: git checkout master
 
       - uses: actions/setup-java@v1
         with:
