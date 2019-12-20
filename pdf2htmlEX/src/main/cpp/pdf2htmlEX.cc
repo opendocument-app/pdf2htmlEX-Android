@@ -82,7 +82,6 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JN
     CCharGC value(env, value_);
     setenv(key.c_str(), value.c_str(), 1);
 }
-}
 
 extern "C"
 JNIEXPORT jint JNICALL
