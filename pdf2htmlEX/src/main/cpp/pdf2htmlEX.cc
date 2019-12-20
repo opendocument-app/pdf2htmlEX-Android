@@ -27,6 +27,26 @@
 #include <sys/wait.h>
 #include "pdf2htmlEX.h"
 
+class CCharGC {
+private:
+    JNIEnv *env;
+    jstring input;
+    const char * cstr;
+
+public:
+    CCharGC(JNIEnv *env, jstring input) : env(env), input(input) {
+      this->cstr = env->GetStringUTFChars(input, nullptr);
+    }
+
+    const char * c_str() const {
+      return this->cstr;
+    }
+
+    ~CCharGC() {
+      env->ReleaseStringUTFChars(this->input, this->cstr);
+    }
+};
+
 // Creating char ** by hand is rather annoying.
 // I'll rather take vector<string> and convert it before calling.
 void vector_to_char_pp(const std::vector<const std::string> & input, int * argc, char *** argv) {
@@ -56,11 +76,10 @@ JNIEXPORT void JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jobject,
                                                                           jstring key_,
                                                                           jstring value_) {
-    const char * key = env->GetStringUTFChars(key_, nullptr);
-    const char * value = env->GetStringUTFChars(value_, nullptr);
-    setenv(key, value, 1);
-    env->ReleaseStringUTFChars(key_, key);
-    env->ReleaseStringUTFChars(value_, value);
+    CCharGC key(env, key_);
+    CCharGC value(env, value_);
+    setenv(key.c_str(), value.c_str(), 1);
+}
 }
 
 extern "C"
@@ -70,18 +89,18 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
                                                                jstring popplerDir_, jstring tmpDir_,
                                                                jstring inputFile_,
                                                                jstring outputFile_) {
-  const char *dataDir = env->GetStringUTFChars(dataDir_, nullptr);
-  const char *popplerDir = env->GetStringUTFChars(popplerDir_, nullptr);
-  const char *tmpDir = env->GetStringUTFChars(tmpDir_, nullptr);
-  const char *inputFile = env->GetStringUTFChars(inputFile_, nullptr);
-  const char *outputFile = env->GetStringUTFChars(outputFile_, nullptr);
+  CCharGC dataDir(env, dataDir_);
+  CCharGC popplerDir(env, popplerDir_);
+  CCharGC tmpDir(env, tmpDir_);
+  CCharGC inputFile(env, inputFile_);
+  CCharGC outputFile(env, outputFile_);
 
   std::vector<const std::string> args = {
     "libpdf2htmlEX",
-    "--data-dir", dataDir,
-    "--poppler-data-dir", popplerDir,
-    "--tmp-dir", tmpDir,
-    inputFile, outputFile
+    "--data-dir", dataDir.c_str(),
+    "--poppler-data-dir", popplerDir.c_str(),
+    "--tmp-dir", tmpDir.c_str(),
+    inputFile.c_str(), outputFile.c_str()
   };
 
   int argc;
@@ -112,10 +131,5 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   }
   delete argv;
 
-  env->ReleaseStringUTFChars(dataDir_, dataDir);
-  env->ReleaseStringUTFChars(popplerDir_, popplerDir);
-  env->ReleaseStringUTFChars(tmpDir_, tmpDir);
-  env->ReleaseStringUTFChars(inputFile_, inputFile);
-  env->ReleaseStringUTFChars(outputFile_, outputFile);
   return retVal;
 }
