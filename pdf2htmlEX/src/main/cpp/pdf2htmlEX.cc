@@ -53,26 +53,6 @@ void vector_to_char_pp(const std::vector<const std::string> & input, int * argc,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1env_1values_1for_1fontforge(JNIEnv *env,
-                                                                               jobject,
-                                                                               jstring homedir_,
-                                                                               jstring tmpdir_,
-                                                                               jstring username_) {
-  const char * homedir = env->GetStringUTFChars(homedir_, nullptr);
-  const char * tmpdir = env->GetStringUTFChars(tmpdir_, nullptr);
-  const char * username = env->GetStringUTFChars(username_, nullptr);
-
-  setenv("HOME", homedir, 0);
-  setenv("TMPDIR", tmpdir, 0);
-  setenv("USER", username, 0);
-
-  env->ReleaseStringUTFChars(homedir_, homedir);
-  env->ReleaseStringUTFChars(tmpdir_, tmpdir);
-  env->ReleaseStringUTFChars(username_, username);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jobject,
                                                                           jstring key_,
                                                                           jstring value_) {

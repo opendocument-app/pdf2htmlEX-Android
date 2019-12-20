@@ -34,24 +34,20 @@ public final class pdf2htmlEX {
 
   private static final String TAG = "pdf2htmlEX";
 
-  private void prepareEnvironmentForFontforge(Context ctx) {
-    File homeDir = new File(ctx.getCacheDir(), "homeForFontforge");
-    homeDir.mkdir();
-
-    File tmpDir = new File(ctx.getCacheDir(), "tmpdir");
-    tmpDir.mkdir();
-
-    String model = Build.MODEL;
-
-    set_env_values_for_fontforge(homeDir.getAbsolutePath(), tmpDir.getAbsolutePath(), model);
-  }
-
   private File m_pdf2htmlEX_dataDir;
   private File m_poppler_dataDir;
   private File m_pdf2htmlEX_tmpDir;
   private File m_outputHtmlsDir;
 
-  public pdf2htmlEX(@NonNull Context ctx) {
+  private File p_inputPDF;
+
+  public static class ConversionFailedException extends Exception {
+    public ConversionFailedException(String errorMessage) {
+      super(errorMessage);
+    }
+  }
+
+  private synchronized void init(@NonNull Context ctx) {
     File filesDir = ctx.getFilesDir();
     File cacheDir = ctx.getCacheDir();
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
@@ -75,19 +71,43 @@ public final class pdf2htmlEX {
     m_outputHtmlsDir = new File(m_pdf2htmlEX_tmpDir, "output-htmls");
     m_outputHtmlsDir.mkdir();
 
-    prepareEnvironmentForFontforge(ctx);
+    File homeDir = new File(cacheDir, "homeForFontforge");
+    homeDir.mkdir();
+
+    File tmpDir = new File(cacheDir, "tmpdir");
+    tmpDir.mkdir();
+
+    set_environment_value("HOME", homeDir.getAbsolutePath());
+    set_environment_value("TMPDIR", tmpDir.getAbsolutePath());
+    set_environment_value("USER", Build.MODEL);
 
     FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir);
   }
 
-  public class ConversionFailedException extends Exception {
-    public ConversionFailedException(String errorMessage) {
-      super(errorMessage);
-    }
+  public pdf2htmlEX(@NonNull Context ctx) {
+    init(ctx);
+  }
+
+  public pdf2htmlEX setInputPDF(@NonNull File inputPDF) {
+    this.p_inputPDF = inputPDF;
+    return this;
   }
 
   public File convert(@NonNull File inputPDF) throws IOException, ConversionFailedException {
-    String inputFilenameNoPDFExt = inputPDF.getName();
+    setInputPDF(inputPDF);
+    return convert();
+  }
+
+  public File convert() throws IOException, ConversionFailedException {
+    if (null == this.p_inputPDF) {
+      throw new ConversionFailedException("No Input PDF given!");
+    }
+
+    if (!this.p_inputPDF.exists()) {
+      throw new ConversionFailedException("Input PDF does not exist!");
+    }
+
+    String inputFilenameNoPDFExt = this.p_inputPDF.getName();
     if (inputFilenameNoPDFExt.endsWith(".pdf")) {
       inputFilenameNoPDFExt = inputFilenameNoPDFExt.substring(0, inputFilenameNoPDFExt.length() - 4);
     }
@@ -114,6 +134,4 @@ public final class pdf2htmlEX {
   // Because Java cannot setenv for the current process
   static native void set_environment_value(String key, String value);
 
-  // Because Java can't set env vars for the current process...
-  private native void set_env_values_for_fontforge(String homeDir, String tmpDir, String username);
 }
