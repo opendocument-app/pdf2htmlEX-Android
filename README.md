@@ -36,8 +36,19 @@ Library is interfaced through Java.
 import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
 ...
 java.io.File inputPdf = new java.io.File(getFilesDir(), "my.pdf");
-pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());
-java.io.File outputHTML = converter.convert(inputPdf);
+java.io.File outputHTML = new pdf2htmlEX(getApplicationContext()).setInputPDF(inputPdf).convert();
+```
+
+Encrypted PDF documents need a password to be decrypted.
+
+Either owner (admin):
+```Java
+java.io.File outputHTML = new pdf2htmlEX(getApplicationContext()).setInputPDF(inputPdf).setOwnerPassword("owner-password").convert();
+```
+or user password can be used:
+```Java
+
+java.io.File outputHTML = new pdf2htmlEX(getApplicationContext()).setInputPDF(inputPdf).setUserPassword("user-password").convert();
 ```
 
 Library needs Android Context to obtain path to cache directory and asset files, which are supplied in .aar.
