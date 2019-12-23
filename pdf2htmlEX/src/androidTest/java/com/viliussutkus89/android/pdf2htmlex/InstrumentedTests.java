@@ -43,6 +43,12 @@ import static org.junit.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class InstrumentedTests {
 
+  // PDFs must be places in pdf2htmlEX/src/androidTest/assets/
+  private final String[] m_PDFsToTest = new String[] {
+    "fontfile3_opentype.pdf",
+    "fontfile3_opentype.pdf"
+  };
+
   private File extractAssetPDF(String filename) throws IOException {
     Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     Context appContext = instrumentation.getTargetContext();
@@ -78,35 +84,33 @@ public class InstrumentedTests {
   }
 
   @Test
-  public synchronized void conversionTest() throws IOException {
-    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
-    File pdfFile = extractAssetPDF("fontfile3_opentype.pdf");
-    File htmlFile;
-    try {
-      htmlFile = converter.convert(pdfFile);
-    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+  public void testAllSuppliedPDFs() throws IOException {
+    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+    for (String i: m_PDFsToTest) {
+      File pdfFile = extractAssetPDF(i);
+      File htmlFile;
+
+      pdf2htmlEX pdf2htmlEX = new pdf2htmlEX(ctx);
+      try {
+        htmlFile = pdf2htmlEX.convert(pdfFile);
+      } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+        pdfFile.delete();
+        e.printStackTrace();
+        fail("Failed to convert PDF to HTML: " + i);
+        continue;
+      }
+
       pdfFile.delete();
-      e.printStackTrace();
-      fail("Failed to convert PDF to HTML");
-      return;
+      assertTrue("Converted HTML file not found! " + i, htmlFile.exists());
+      assertTrue("Converted HTML file empty! " + i, htmlFile.length() > 0);
+
+      htmlFile.delete();
     }
-
-    pdfFile.delete();
-    assertTrue("Converted HTML file not found!", htmlFile.exists());
-    assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
-
-    htmlFile.delete();
-  }
-
-  // https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/4
-  @Test
-  public void conversionTwiceTest() throws IOException {
-    conversionTest();
-    conversionTest();
   }
 
   @Test
-  public synchronized void encryptedPdfTest() throws IOException {
+  public void encryptedPdfTest() throws IOException {
     pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
     // encrypted_fontfile3_opentype.pdf generated using:
@@ -134,7 +138,7 @@ public class InstrumentedTests {
   }
 
   @Test
-  public synchronized void encryptedPdfWrongPasswordTest() throws IOException {
+  public void encryptedPdfWrongPasswordTest() throws IOException {
     pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
     // encrypted_fontfile3_opentype.pdf generated using:
