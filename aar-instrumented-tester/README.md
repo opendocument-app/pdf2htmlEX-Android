@@ -17,7 +17,7 @@ implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.3'
 Local .aar file can be used to, but it needs a complete list of dependencies
 ```Groovy
 ...
-files('libs/pdf2htmlex-android-release.aar')
+implementation files('libs/pdf2htmlex-android-release.aar')
 implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
 ...
 ```

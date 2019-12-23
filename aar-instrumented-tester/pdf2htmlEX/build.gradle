@@ -22,10 +22,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 //    Either depend on local .aar (and all it's dependencies)
-//    files('libs/pdf2htmlex-android-release.aar')
+//    implementation files('libs/pdf2htmlex-android-release.aar')
 //    implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
 
 //    Or a released version in Bintray
-    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.3'
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.4'
 }
 

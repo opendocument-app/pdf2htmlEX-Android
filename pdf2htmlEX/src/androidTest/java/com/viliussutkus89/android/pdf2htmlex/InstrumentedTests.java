@@ -43,7 +43,7 @@ import static org.junit.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class InstrumentedTests {
 
-  // PDFs must be places in pdf2htmlEX/src/androidTest/assets/
+  // PDFs must be placed in pdf2htmlEX/src/androidTest/assets/
   private final String[] m_PDFsToTest = new String[] {
           "fontfile3_opentype.pdf",
           "basic_text.pdf",
