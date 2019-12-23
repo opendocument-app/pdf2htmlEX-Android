@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.viliussutkus89.android.pdf2htmlex.tester"
+        minSdkVersion 16
+        targetSdkVersion 29
+
+        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    ndkVersion "20.1.5948944"
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.1.0'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+//    Either depend on local .aar (and all it's dependencies)
+//    files('libs/pdf2htmlex-android-release.aar')
+//    implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
+
+//    Or a released version in Bintray
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.3'
+}
+
