@@ -45,17 +45,16 @@ public class InstrumentedTests {
 
   // PDFs must be places in pdf2htmlEX/src/androidTest/assets/
   private final String[] m_PDFsToTest = new String[] {
-//          Commented out PDFs do not pass the conversion test, for one reason or another.
           "fontfile3_opentype.pdf",
-//          "basic_text.pdf",
+          "basic_text.pdf",
           "invalid_unicode_issue477.pdf",
-//          "pdf.pdf",
-          "sample.pdf"
-//          "geneve_1564.pdf",
-//          "svg_background_with_page_rotation_issue402.pdf",
-//          "test_fail.pdf",
-//          "with_form.pdf",
-//          "text_visibility.pdf"
+          "pdf.pdf",
+          "sample.pdf",
+          "geneve_1564.pdf",
+          "svg_background_with_page_rotation_issue402.pdf",
+          "test_fail.pdf",
+          "with_form.pdf",
+          "text_visibility.pdf"
   };
 
   private File extractAssetPDF(String filename) throws IOException {

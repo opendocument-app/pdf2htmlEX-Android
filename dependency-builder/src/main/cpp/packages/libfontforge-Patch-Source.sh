@@ -49,3 +49,5 @@ patch $1/fontforge/noprefs.c $BASEDIR/libfontforge-Patch-Source-noprefs.patch
 # #define LC_GLOBAL_LOCALE __BIONIC_CAST(reinterpret_cast, locale_t, -1L)
 patch -p0 < $BASEDIR/libfontforge-Patch-Source-localeconv.patch
 
+# rpl_localtime calls itself until stack exhaustion
+patch $1/lib/localtime-buffer.c $BASEDIR/libfontforge-Patch-Source-localtime-gmtime.patch
