@@ -232,7 +232,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pdf2htmlEX/build/outputs/aar/pdf2htmlex-android-debug.aar
-          asset_name: pdf2htmlex-android-release.aar
+          asset_name: pdf2htmlex-android-debug.aar
           asset_content_type: application/zip
 
       - name: Generate javadoc
