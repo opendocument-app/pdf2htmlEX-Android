@@ -8,26 +8,12 @@ env:
   TARBALL_CACHE_KEY:  "tarballs-key-1"
 
 jobs:
-  tarballCacher:
-    if: false
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Cache tarballs
-        uses: actions/cache@v1
-        with:
-          key: ${{ env.TARBALL_CACHE_KEY }}
-          path: dependency-builder/src/main/cpp/tarballs
-
-      - run: ./dodownloadtarballs --serial
-
-  debug:
-    #needs: tarballCacher
+  build:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
         abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
+        buildType: [ Debug, Release ]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -53,54 +39,21 @@ jobs:
       - run: ./dodownloadtarballs --serial
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew assembleDebug -PdisablePreDex -Pabi=${{ matrix.abi }}
-
-  release:
-    #needs: tarballCacher
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: Cache android-sdk.zip
-        uses: actions/cache@v1
-        with:
-          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk
-
-      - run: .github/installAndroidTools.sh
-
-      - run: .github/installBuildDependencies.sh
-
-      - name: Cache tarballs
-        uses: actions/cache@v1
-        with:
-          key: ${{ env.TARBALL_CACHE_KEY }}
-          path: dependency-builder/src/main/cpp/tarballs
-
-      - run: ./dodownloadtarballs --serial
-
-      - name: Build pdf2htmlEX-Android
-        run: ./gradlew assembleRelease -PdisablePreDex -Pabi=${{ matrix.abi }}
+        run: ./gradlew assemble${{ matrix.buildType }} -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Gather licenses
-        if: matrix.abi == 'armeabi-v7a'
+        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
         run: ./gradlew dependency-builder:gatherLicenses -PdisablePreDex -Pabi=${{ matrix.abi }}
 
       - name: Artifact gathered licenses
-        if: matrix.abi == 'armeabi-v7a'
+        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
         uses: actions/upload-artifact@v1
         with:
-          name: licenses-${{ matrix.abi }}
+          name: licenses
           path: dependency-builder/build/licenses.xml
 
       - name: Prepare built dependencies for artifacting
+        if: matrix.buildType == 'Release'
         run: |
           mkdir --parents pdeps/bin
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/bin/pkg-config pdeps/bin/
@@ -108,26 +61,33 @@ jobs:
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/lib pdeps/
           mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/share/pkgconfig pdeps/share/
 
+      - name: Prepare built dependencies for artifacting
+        if: matrix.buildType == 'Debug'
+        run: |
+          mkdir --parents pdeps/bin
+          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/bin/pkg-config pdeps/bin/
+          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/include pdeps/
+          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/lib pdeps/
+          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/share/pkgconfig pdeps/share/
+
       - name: Artifact built dependencies
         uses: actions/upload-artifact@v1
         with:
-          name: dependencies-${{ matrix.abi }}
+          name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
           path: pdeps
 
       - name: Artifact assets (from pdf2htmlEX and poppler)
-        if: matrix.abi == 'armeabi-v7a'
+        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
         uses: actions/upload-artifact@v1
         with:
           name: assets
           path: dependency-builder/build/assets
 
-  releaseAllABIs:
-    needs: release
-    if: github.ref == 'refs/heads/master'
+  buildAllABIs:
+    needs: build
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
-
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
@@ -148,33 +108,61 @@ jobs:
 
       - run: ./dodownloadtarballs --serial
 
-      - name: Download artifacted dependencies - x86
+      - name: Download artifacted dependencies - x86 - release
         uses: actions/download-artifact@v1
         with:
-          name: dependencies-x86
+          name: dependencies-Release-x86
           path: dependency-builder/build/installed/MinSizeRel/x86
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86/bin/pkg-config
 
-      - name: Download artifacted dependencies - x86_64
+      - name: Download artifacted dependencies - x86_64 - release
         uses: actions/download-artifact@v1
         with:
-          name: dependencies-x86_64
+          name: dependencies-Release-x86_64
           path: dependency-builder/build/installed/MinSizeRel/x86_64
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86_64/bin/pkg-config
 
-      - name: Download artifacted dependencies - armeabi-v7a
+      - name: Download artifacted dependencies - armeabi-v7a - release
         uses: actions/download-artifact@v1
         with:
-          name: dependencies-armeabi-v7a
+          name: dependencies-Release-armeabi-v7a
           path: dependency-builder/build/installed/MinSizeRel/armeabi-v7a
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/armeabi-v7a/bin/pkg-config
 
-      - name: Download artifacted dependencies - arm64-v8a
+      - name: Download artifacted dependencies - arm64-v8a - release
         uses: actions/download-artifact@v1
         with:
-          name: dependencies-arm64-v8a
+          name: dependencies-Release-arm64-v8a
           path: dependency-builder/build/installed/MinSizeRel/arm64-v8a
       - run: chmod +x dependency-builder/build/installed/MinSizeRel/arm64-v8a/bin/pkg-config
+
+      - name: Download artifacted dependencies - x86 - debug
+        uses: actions/download-artifact@v1
+        with:
+          name: dependencies-Debug-x86
+          path: dependency-builder/build/installed/Debug/x86
+      - run: chmod +x dependency-builder/build/installed/Debug/x86/bin/pkg-config
+
+      - name: Download artifacted dependencies - x86_64 - debug
+        uses: actions/download-artifact@v1
+        with:
+          name: dependencies-Debug-x86_64
+          path: dependency-builder/build/installed/Debug/x86_64
+      - run: chmod +x dependency-builder/build/installed/Debug/x86_64/bin/pkg-config
+
+      - name: Download artifacted dependencies - armeabi-v7a - debug
+        uses: actions/download-artifact@v1
+        with:
+          name: dependencies-Debug-armeabi-v7a
+          path: dependency-builder/build/installed/Debug/armeabi-v7a
+      - run: chmod +x dependency-builder/build/installed/Debug/armeabi-v7a/bin/pkg-config
+
+      - name: Download artifacted dependencies - arm64-v8a - debug
+        uses: actions/download-artifact@v1
+        with:
+          name: dependencies-Debug-arm64-v8a
+          path: dependency-builder/build/installed/Debug/arm64-v8a
+      - run: chmod +x dependency-builder/build/installed/Debug/arm64-v8a/bin/pkg-config
 
       - name: Download artifacted assets
         uses: actions/download-artifact@v1
@@ -185,11 +173,11 @@ jobs:
       - name: Download artifacted licenses
         uses: actions/download-artifact@v1
         with:
-          name: licenses-armeabi-v7a
+          name: licenses
           path: dependency-builder/build/
 
       - name: Build pdf2htmlEX-Android
-        run: ./gradlew assembleRelease -PdisablePreDex
+        run: ./gradlew build -PdisablePreDex
 
       - name: Publish to maven local
         run: ./gradlew publishToMavenLocal
@@ -213,7 +201,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: "pdf2htmlEX-Android v${{ steps.get_version.outputs.version }} - ${{ github.event.commits[0].message }}"
+          release_name: "pdf2htmlEX-Android v${{ steps.get_version.outputs.version }} - ${{ github.event.commits[0].message }} - ${{ github.ref }}"
           draft: true
           prerelease: false
 
@@ -227,13 +215,23 @@ jobs:
           asset_name: licenses.xml
           asset_content_type: text/xml
 
-      - name: Upload aar
+      - name: Upload Release aar
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pdf2htmlEX/build/outputs/aar/pdf2htmlex-android-release.aar
+          asset_name: pdf2htmlex-android-release.aar
+          asset_content_type: application/zip
+
+      - name: Upload Debug aar
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./pdf2htmlEX/build/outputs/aar/pdf2htmlex-android-debug.aar
           asset_name: pdf2htmlex-android-release.aar
           asset_content_type: application/zip
 
