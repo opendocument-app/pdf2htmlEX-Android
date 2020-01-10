@@ -83,6 +83,12 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JN
     setenv(key.c_str(), value.c_str(), 1);
 }
 
+static bool forkBeforeConverting = true;
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_setNoForking(JNIEnv *, jobject) {
+  forkBeforeConverting = false;
+}
+
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *env, jobject,
@@ -128,16 +134,26 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   // Upstream library is actually an executable, not a library.
   // May have some global state, initialized as static constructor, poisoned after first use.
   // Workaround: fork process before use.
-  pid_t pid = fork();
+  pid_t pid = 0;
+  if (forkBeforeConverting) {
+    pid = fork();
+    if (0 < pid) {
+      int waitStatus;
+      waitpid(pid, &waitStatus, 0);
+      if (WIFEXITED(waitStatus)) {
+        retVal = WEXITSTATUS(waitStatus);
+      } else {
+        retVal = 4;
+      }
+    } else if (-1 == pid) {
+      retVal = 3;
+    }
+  }
+
   if (0 == pid) {
     retVal = pdf2htmlEX_main(argc, argv);
-    exit(retVal);
-  }
-  else if (0 < pid) {
-    int wstatus;
-    waitpid(pid, &wstatus, 0);
-    if (WIFEXITED(wstatus)) {
-      retVal = WEXITSTATUS(wstatus);
+    if (forkBeforeConverting) {
+      exit(retVal);
     }
   }
 
@@ -148,3 +164,4 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
 
   return retVal;
 }
+

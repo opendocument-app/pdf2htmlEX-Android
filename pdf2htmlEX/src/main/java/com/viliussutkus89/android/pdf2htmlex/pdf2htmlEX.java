@@ -43,6 +43,8 @@ public final class pdf2htmlEX {
   private String p_ownerPassword = "";
   private String p_userPassword = "";
 
+  private boolean m_noForkingConversionAlreadyDone = false;
+
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
       super(errorMessage);
@@ -110,7 +112,19 @@ public final class pdf2htmlEX {
     return this;
   }
 
+  public pdf2htmlEX setNoForking(@NonNull boolean iDoUnderstandThatIWillHaveToRestartTheAppBeforeICanRunConversionForTheSecondTime) throws IllegalArgumentException {
+    if (!iDoUnderstandThatIWillHaveToRestartTheAppBeforeICanRunConversionForTheSecondTime) {
+      throw new IllegalArgumentException();
+    }
+    setNoForking();
+    return this;
+  }
+
   public File convert() throws IOException, ConversionFailedException {
+    if (this.m_noForkingConversionAlreadyDone) {
+      throw new ConversionFailedException("No forking mode allows only one conversion!");
+    }
+
     if (null == this.p_inputPDF) {
       throw new ConversionFailedException("No Input PDF given!");
     }
@@ -135,6 +149,8 @@ public final class pdf2htmlEX {
       this.p_ownerPassword, this.p_userPassword
       );
 
+    this.m_noForkingConversionAlreadyDone = true;
+
     if (0 != retVal) {
       outputHtml.delete();
       throw new ConversionFailedException("Conversion failed. Return value from pdf2htmlEX: " + retVal.toString());
@@ -148,4 +164,5 @@ public final class pdf2htmlEX {
   // Because Java cannot setenv for the current process
   static native void set_environment_value(String key, String value);
 
+  private native void setNoForking();
 }
