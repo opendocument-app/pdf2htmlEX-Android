@@ -44,7 +44,7 @@ public final class pdf2htmlEX {
   private String p_userPassword = "";
 
   private boolean m_isNoForking = false;
-  private boolean m_noForkingConversionAlreadyDone = false;
+  private static boolean m_noForkingConversionAlreadyDone = false;
 
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
