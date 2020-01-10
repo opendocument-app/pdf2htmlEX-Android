@@ -43,6 +43,7 @@ public final class pdf2htmlEX {
   private String p_ownerPassword = "";
   private String p_userPassword = "";
 
+  private boolean m_isNoForking = false;
   private boolean m_noForkingConversionAlreadyDone = false;
 
   public static class ConversionFailedException extends Exception {
@@ -112,10 +113,11 @@ public final class pdf2htmlEX {
     return this;
   }
 
-  public pdf2htmlEX setNoForking(@NonNull boolean iDoUnderstandThatIWillHaveToRestartTheAppBeforeICanRunConversionForTheSecondTime) throws IllegalArgumentException {
+  public pdf2htmlEX setNoForking(boolean iDoUnderstandThatIWillHaveToRestartTheAppBeforeICanRunConversionForTheSecondTime) throws IllegalArgumentException {
     if (!iDoUnderstandThatIWillHaveToRestartTheAppBeforeICanRunConversionForTheSecondTime) {
       throw new IllegalArgumentException();
     }
+    this.m_isNoForking = true;
     setNoForking();
     return this;
   }
@@ -149,7 +151,9 @@ public final class pdf2htmlEX {
       this.p_ownerPassword, this.p_userPassword
       );
 
-    this.m_noForkingConversionAlreadyDone = true;
+    if (this.m_isNoForking) {
+      this.m_noForkingConversionAlreadyDone = true;
+    }
 
     if (0 != retVal) {
       outputHtml.delete();
