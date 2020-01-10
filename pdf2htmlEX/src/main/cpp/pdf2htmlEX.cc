@@ -84,8 +84,10 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JN
 }
 
 static bool forkBeforeConverting = true;
+
+extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_setNoForking(JNIEnv *, jobject) {
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1no_1forking(JNIEnv *, jclass) {
   forkBeforeConverting = false;
 }
 
@@ -164,4 +166,3 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
 
   return retVal;
 }
-
