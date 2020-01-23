@@ -33,9 +33,12 @@ link_directories(${pdf2htmlEX_LIBRARY_DIRS})
 add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc
   FontconfigAndroid.cc)
 
+find_library(log-lib log)
+
 target_link_libraries(pdf2htmlEX-android
   ${CMAKE_CURRENT_LIST_DIR}/../../../build/tmpfile/jni/${ANDROID_ABI}/libtmpfile.so
   ${pdf2htmlEX_LIBRARIES}
+  ${log-lib}
 )
 
 set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS})

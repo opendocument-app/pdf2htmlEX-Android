@@ -21,11 +21,14 @@
 
 #include <cstdlib>
 #include <string>
-#include <vector>
 #include <jni.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include <android/log.h>
 #include "pdf2htmlEX.h"
+
+#define retValOK 0
+#define retValError 1
+#define retValEncryptionError 2
+#define retValCopyProtected 3
 
 class CCharGC {
 private:
@@ -49,30 +52,6 @@ public:
     }
 };
 
-// Creating char ** by hand is rather annoying.
-// I'll rather take vector<string> and convert it before calling.
-void vector_to_char_pp(const std::vector<const std::string> & input, int * argc, char *** argv) {
-  *argv = nullptr;
-  *argc = 0;
-
-  size_t sz = input.size();
-  if (sz == 0) {
-    return;
-  }
-  char ** output = new char *[sz];
-  int i = 0;
-  for (const std::string & s: input) {
-    size_t len = s.length();
-    output[i] = new char[len+1];
-    output[i][len] = '\0';
-    strncpy(output[i], s.c_str(), len);
-    i++;
-  }
-
-  *argc = static_cast<int>(sz);
-  *argv = output;
-}
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jobject,
@@ -81,14 +60,6 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JN
     CCharGC key(env, key_);
     CCharGC value(env, value_);
     setenv(key.c_str(), value.c_str(), 1);
-}
-
-static bool forkBeforeConverting = true;
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1no_1forking(JNIEnv *, jclass) {
-  forkBeforeConverting = false;
 }
 
 extern "C"
@@ -108,61 +79,30 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   CCharGC ownerPassword(env, ownerPassword_);
   CCharGC userPassword(env, userPassword_);
 
-  std::vector<const std::string> args = {
-    "libpdf2htmlEX",
-    "--data-dir", dataDir.c_str(),
-    "--poppler-data-dir", popplerDir.c_str(),
-    "--tmp-dir", tmpDir.c_str(),
-    inputFile.c_str(), outputFile.c_str()
-  };
+  pdf2htmlEX::pdf2htmlEX converter;
+  converter.setDataDir(dataDir.c_str());
+  converter.setPopplerDataDir(popplerDir.c_str());
+  converter.setTMPDir(tmpDir.c_str());
+  converter.setInputFilename(inputFile.c_str());
+  converter.setOutputFilename(outputFile.c_str());
 
   if (!ownerPassword.isEmpty()) {
-    args.push_back("--owner-password");
-    args.push_back(ownerPassword.c_str());
+    converter.setOwnerPassword(ownerPassword.c_str());
   }
 
   if (!userPassword.isEmpty()) {
-    args.push_back("--user-password");
-    args.push_back(userPassword.c_str());
+    converter.setUserPassword(userPassword.c_str());
   }
 
-  int argc;
-  char **argv;
-  int retVal = -1;
-
-  vector_to_char_pp(args, &argc, &argv);
-
-  // https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/4
-  // Upstream library is actually an executable, not a library.
-  // May have some global state, initialized as static constructor, poisoned after first use.
-  // Workaround: fork process before use.
-  pid_t pid = 0;
-  if (forkBeforeConverting) {
-    pid = fork();
-    if (0 < pid) {
-      int waitStatus;
-      waitpid(pid, &waitStatus, 0);
-      if (WIFEXITED(waitStatus)) {
-        retVal = WEXITSTATUS(waitStatus);
-      } else {
-        retVal = 4;
-      }
-    } else if (-1 == pid) {
-      retVal = 3;
-    }
+  try {
+    converter.convert();
+  } catch (const pdf2htmlEX::EncryptionPasswordException & e) {
+    return retValEncryptionError;
+  } catch (const pdf2htmlEX::DocumentCopyProtectedException & e) {
+    return retValCopyProtected;
+  } catch (const pdf2htmlEX::ConversionFailedException & e) {
+    __android_log_print(ANDROID_LOG_ERROR, "pdf2htmlEX-Android" , "%s", e.what());
+    return retValError;
   }
-
-  if (0 == pid) {
-    retVal = pdf2htmlEX_main(argc, argv);
-    if (forkBeforeConverting) {
-      exit(retVal);
-    }
-  }
-
-  for (int i = 0; i < argc; i++) {
-    delete[] argv[i];
-  }
-  delete argv;
-
-  return retVal;
+  return retValOK;
 }
