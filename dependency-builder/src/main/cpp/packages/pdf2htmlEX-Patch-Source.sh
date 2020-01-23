@@ -14,7 +14,3 @@ patch $1/CMakeLists.txt <$BASEDIR/pdf2htmlEX-Patch-Source-find-cairo-svg.patch
 # Do not add additional compile flags
 patch $1/CMakeLists.txt <$BASEDIR/pdf2htmlEX-Patch-Source-cflags.patch
 
-# STL errors on NDK
-patch $1/src/DrawingTracer.cc <$BASEDIR/pdf2htmlEX-Patch-Source-DrawingTracer-stl.patch
-
-
