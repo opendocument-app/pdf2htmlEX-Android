@@ -1,7 +1,7 @@
 /*
  * InstrumentedTests.java
  *
- * Copyright (C) 2019 Vilius Sutkus'89
+ * Copyright (C) 2019,2020 Vilius Sutkus'89
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -95,11 +94,12 @@ public class InstrumentedTests {
   public void testAllSuppliedPDFs() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
+    pdf2htmlEX pdf2htmlEX = new pdf2htmlEX(ctx);
+
     for (String i: m_PDFsToTest) {
       File pdfFile = extractAssetPDF(i);
       File htmlFile;
 
-      pdf2htmlEX pdf2htmlEX = new pdf2htmlEX(ctx);
       try {
         htmlFile = pdf2htmlEX.convert(pdfFile);
       } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
@@ -119,55 +119,99 @@ public class InstrumentedTests {
 
   @Test
   public void encryptedPdfTest() throws IOException {
-    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
-
-    // encrypted_fontfile3_opentype.pdf generated using:
+    // encrypted_fontfile3_opentype.pdf was generated using:
     // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
     File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
-    File htmlFile;
+
+    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
+    converter.setInputPDF(pdfFile);
+
     try {
-      htmlFile = converter.setInputPDF(pdfFile)
-              .setOwnerPassword("sample-owner-password")
-              .setUserPassword("sample-user-password")
-              .convert();
+      converter.convert().delete();
+      fail("Conversion succeeded when it should have failed because of no password!");
+    } catch (pdf2htmlEX.PasswordRequiredException ignored) {
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
-      pdfFile.delete();
       e.printStackTrace();
-      fail("Failed to convert PDF to HTML");
-      return;
+      fail("Encrypted pdf conversion failed!");
     }
 
-    pdfFile.delete();
-
-    assertTrue("Converted HTML file not found!", htmlFile.exists());
-    assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
-
-    htmlFile.delete();
-  }
-
-  @Test
-  public void encryptedPdfWrongPasswordTest() throws IOException {
-    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
-
-    // encrypted_fontfile3_opentype.pdf generated using:
-    // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
-    File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
-    File htmlFile = null;
     try {
-      htmlFile = converter.setInputPDF(pdfFile)
-              .setOwnerPassword("wrong-owner-password")
-              .setUserPassword("wrong-user-password")
-              .convert();
-    } catch (pdf2htmlEX.ConversionFailedException ignored) {
-    } catch (IOException e) {
-      pdfFile.delete();
+      converter.setUserPassword("wrong-user-password").convert().delete();
+      fail("Conversion succeeded when it should have failed because of wrong user password!");
+    } catch (pdf2htmlEX.WrongPasswordException ignored) {
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Failed to convert PDF to HTML");
-      return;
+      fail("Encrypted pdf conversion failed!");
     }
-    pdfFile.delete();
+    converter.setUserPassword("");
 
-    assertNull("Conversion succeeded when it should have failed because of wrong encryption password!", htmlFile);
+    try {
+      converter.setOwnerPassword("wrong-owner-password").convert().delete();
+      fail("Conversion succeeded when it should have failed because of wrong user password!");
+    } catch (pdf2htmlEX.WrongPasswordException ignored) {
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+    converter.setOwnerPassword("");
+
+    try {
+      File htmlFile = converter.setUserPassword("sample-user-password").convert();
+      assertTrue("Converted HTML file not found!", htmlFile.exists());
+      assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+      htmlFile.delete();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+    converter.setUserPassword("");
+
+    try {
+      File htmlFile = converter.setOwnerPassword("sample-owner-password").convert();
+      assertTrue("Converted HTML file not found!", htmlFile.exists());
+      assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+      htmlFile.delete();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+    converter.setOwnerPassword("");
+
+    try {
+      File htmlFile = converter.setUserPassword("sample-user-password").setOwnerPassword("wrong-owner-password"). convert();
+      assertTrue("Converted HTML file not found!", htmlFile.exists());
+      assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+      htmlFile.delete();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+    converter.setUserPassword("");
+    converter.setOwnerPassword("");
+
+    try {
+      File htmlFile = converter.setUserPassword("wrong-user-password").setOwnerPassword("sample-owner-password"). convert();
+      assertTrue("Converted HTML file not found!", htmlFile.exists());
+      assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+      htmlFile.delete();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+    converter.setUserPassword("");
+    converter.setOwnerPassword("");
+
+    try {
+      File htmlFile = converter.setUserPassword("sample-user-password").setOwnerPassword("sample-owner-password").convert();
+      assertTrue("Converted HTML file not found!", htmlFile.exists());
+      assertTrue("Converted HTML file empty!", htmlFile.length() > 0);
+      htmlFile.delete();
+    } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
+      e.printStackTrace();
+      fail("Encrypted pdf conversion failed!");
+    }
+
+    pdfFile.delete();
   }
 
 }
