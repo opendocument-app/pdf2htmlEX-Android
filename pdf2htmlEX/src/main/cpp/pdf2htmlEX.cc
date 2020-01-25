@@ -80,6 +80,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   CCharGC userPassword(env, userPassword_);
 
   pdf2htmlEX::pdf2htmlEX converter;
+  converter.setProcessOutline(false);
   converter.setDataDir(dataDir.c_str());
   converter.setPopplerDataDir(popplerDir.c_str());
   converter.setTMPDir(tmpDir.c_str());
