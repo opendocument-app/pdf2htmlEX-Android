@@ -42,6 +42,7 @@ public final class pdf2htmlEX {
   private File p_inputPDF;
   private String p_ownerPassword = "";
   private String p_userPassword = "";
+  private boolean p_outline = true;
 
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
@@ -128,6 +129,11 @@ public final class pdf2htmlEX {
     return this;
   }
 
+  public pdf2htmlEX setOutline(@NonNull boolean enableOutline) {
+    this.p_outline = enableOutline;
+    return this;
+  }
+
   /*
    * @deprecated pdf2htmlEX-Android doesn't fork anymore
    */
@@ -156,7 +162,7 @@ public final class pdf2htmlEX {
     Integer retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
       m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
       this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
-      this.p_ownerPassword, this.p_userPassword
+      this.p_ownerPassword, this.p_userPassword, this.p_outline
     );
 
     // retVal values defined in pdf2htmlEX.cc
@@ -177,7 +183,7 @@ public final class pdf2htmlEX {
     return outputHtml;
   }
 
-  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword);
+  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline);
 
   // Because Java cannot setenv for the current process
   static native void set_environment_value(String key, String value);
