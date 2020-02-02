@@ -83,6 +83,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
 
   pdf2htmlEX::pdf2htmlEX converter;
   converter.setProcessOutline(enableOutline == JNI_TRUE);
+  converter.setDRM(false);
   converter.setDataDir(dataDir.c_str());
   converter.setPopplerDataDir(popplerDir.c_str());
   converter.setTMPDir(tmpDir.c_str());
