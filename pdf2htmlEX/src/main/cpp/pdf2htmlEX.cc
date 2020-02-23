@@ -73,7 +73,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
                                                                jstring userPassword_,
                                                                jboolean enableOutline,
                                                                jboolean enableDrm,
-                                                               jstring backgroundFormat
+                                                               jstring backgroundFormat_
 							       ) {
   CCharGC dataDir(env, dataDir_);
   CCharGC popplerDir(env, popplerDir_);
@@ -82,6 +82,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   CCharGC outputFile(env, outputFile_);
   CCharGC ownerPassword(env, ownerPassword_);
   CCharGC userPassword(env, userPassword_);
+  CCharGC backgroundFormat(env, backgroundFormat_);
 
   pdf2htmlEX::pdf2htmlEX converter;
   converter.setProcessOutline(enableOutline == JNI_TRUE);
