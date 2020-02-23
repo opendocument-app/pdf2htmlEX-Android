@@ -186,7 +186,7 @@ public final class pdf2htmlEX {
     return outputHtml;
   }
 
-  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline);
+  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat);
 
   // Because Java cannot setenv for the current process
   static native void set_environment_value(String key, String value);
