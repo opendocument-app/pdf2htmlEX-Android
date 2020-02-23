@@ -43,6 +43,8 @@ public final class pdf2htmlEX {
   private String p_ownerPassword = "";
   private String p_userPassword = "";
   private boolean p_outline = true;
+  private boolean p_drm = true;
+  private String p_backgroundFormat = "";
 
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
@@ -162,7 +164,8 @@ public final class pdf2htmlEX {
     Integer retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
       m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
       this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
-      this.p_ownerPassword, this.p_userPassword, this.p_outline
+      this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
+      this.p_backgroundFormat
     );
 
     // retVal values defined in pdf2htmlEX.cc

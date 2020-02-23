@@ -71,7 +71,9 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
                                                                jstring outputFile_,
                                                                jstring ownerPassword_,
                                                                jstring userPassword_,
-							       jboolean enableOutline
+                                                               jboolean enableOutline,
+                                                               jboolean enableDrm,
+                                                               jstring backgroundFormat
 							       ) {
   CCharGC dataDir(env, dataDir_);
   CCharGC popplerDir(env, popplerDir_);
@@ -83,12 +85,16 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
 
   pdf2htmlEX::pdf2htmlEX converter;
   converter.setProcessOutline(enableOutline == JNI_TRUE);
-  converter.setDRM(false);
+  converter.setDRM(enableDrm == JNI_TRUE);
   converter.setDataDir(dataDir.c_str());
   converter.setPopplerDataDir(popplerDir.c_str());
   converter.setTMPDir(tmpDir.c_str());
   converter.setInputFilename(inputFile.c_str());
   converter.setOutputFilename(outputFile.c_str());
+
+  if (!backgroundFormat.isEmpty()) {
+    converter.setBackgroundImageFormat(backgroundFormat.c_str());
+  }
 
   if (!ownerPassword.isEmpty()) {
     converter.setOwnerPassword(ownerPassword.c_str());
