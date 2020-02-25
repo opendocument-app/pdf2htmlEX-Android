@@ -8,8 +8,8 @@ android {
         applicationId "com.viliussutkus89.android.pdf2htmlex.sampleapp"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 19
-        versionName '0.18.8'
+        versionCode 20
+        versionName '0.18.9'
     }
     splits {
         abi {
@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.8'
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.9'
 
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
