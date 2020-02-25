@@ -136,6 +136,19 @@ public final class pdf2htmlEX {
     return this;
   }
 
+  public pdf2htmlEX setDRM(@NonNull boolean enableDRM) {
+    this.p_drm = enableDRM;
+    return this;
+  }
+
+  /**
+   *  @param backgroundFormat: png (default), jpg or svg
+   */
+  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
+    this.p_backgroundFormat = backgroundFormat;
+    return this;
+  }
+
   /*
    * @deprecated pdf2htmlEX-Android doesn't fork anymore
    */
