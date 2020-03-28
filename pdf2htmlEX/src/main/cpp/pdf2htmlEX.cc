@@ -73,7 +73,9 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
                                                                jstring userPassword_,
                                                                jboolean enableOutline,
                                                                jboolean enableDrm,
-                                                               jstring backgroundFormat_
+                                                               jstring backgroundFormat_,
+                                                               jboolean enableEmbedFont,
+                                                               jboolean enableEmbedExternalFont
 							       ) {
   CCharGC dataDir(env, dataDir_);
   CCharGC popplerDir(env, popplerDir_);
@@ -92,6 +94,8 @@ Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *e
   converter.setTMPDir(tmpDir.c_str());
   converter.setInputFilename(inputFile.c_str());
   converter.setOutputFilename(outputFile.c_str());
+  converter.setEmbedFont(enableEmbedFont == JNI_TRUE);
+  converter.setEmbedExternalFont(enableEmbedExternalFont == JNI_TRUE);
 
   if (!backgroundFormat.isEmpty()) {
     converter.setBackgroundImageFormat(backgroundFormat.c_str());
