@@ -12,7 +12,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    ndkVersion "20.1.5948944"
 }
 
 dependencies {
