@@ -3,7 +3,7 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.viliussutkus89.android.pdf2htmlex.sampleapp"
         minSdkVersion 19
