@@ -3,7 +3,7 @@ on: push
 
 env:
   ANDROID_SDK_TOOLS:  "4333796"
-  ANDROID_NDK:        "21.1.6352462"
+  ANDROID_NDK:        "21.2.6472646"
   ANDROID_CMAKE:      "3.10.2.4988404"
   TARBALL_CACHE_KEY:  "tarballs-key-1"
 
