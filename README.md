@@ -79,7 +79,7 @@ Debug build of sample application is available in [Releases Page](https://github
 * Meson Build system
 * pkg-config
 * CMake-3.10.2
-* ndk-21.0.6113669
+* ndk-21.2.6472646
 * gettext
 * gperf
 
