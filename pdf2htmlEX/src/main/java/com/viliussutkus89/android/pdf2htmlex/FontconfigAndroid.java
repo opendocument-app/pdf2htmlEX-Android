@@ -96,7 +96,10 @@ final class FontconfigAndroid {
                         if (isLegacy) {
                             new LegacyFontFamily(parser).write(outputXML);
                         } else {
-                            fontFamilies.add(new FontFamily(parser));
+                            FontFamily ff = new FontFamily(parser);
+                            if (null != ff.alias && null != ff.family) {
+                                fontFamilies.add(ff);
+                            }
                         }
                         break;
                     default:
@@ -211,6 +214,11 @@ final class FontconfigAndroid {
             parser.require(XmlPullParser.START_TAG, null, "family");
 
             String alias = parser.getAttributeValue(null, "name");
+
+            if (null == alias) {
+                skipElement(parser);
+                return;
+            }
 
             List<String> filenames = new LinkedList<>();
             while (XmlPullParser.END_TAG != parser.next()) {
