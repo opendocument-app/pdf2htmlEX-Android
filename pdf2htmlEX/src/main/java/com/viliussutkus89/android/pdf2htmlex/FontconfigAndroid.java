@@ -6,6 +6,8 @@ import android.util.Xml;
 
 import androidx.annotation.NonNull;
 
+import com.viliussutkus89.android.assetextractor.AssetExtractor;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -38,12 +40,11 @@ final class FontconfigAndroid {
         xdgCache.mkdir();
         environment.put("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
 
-        File fontsConfigDir = new File(filesDir, "etc/fonts");
-        if (!fontsConfigDir.exists()) {
-            AssetExtractor.extract(assetManager, filesDir, "etc/fonts");
-        }
-        AssetExtractor.extract(assetManager, filesDir, "fonts");
+        AssetExtractor ae = new AssetExtractor(assetManager).setNoOverwrite();
+        File fontsConfigDir = ae.extract(new File(filesDir, "etc"), "etc/fonts");
         environment.put("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
+
+        ae.extract(filesDir, "fonts");
 
         boolean isLegacy = false;
         InputStream afx;

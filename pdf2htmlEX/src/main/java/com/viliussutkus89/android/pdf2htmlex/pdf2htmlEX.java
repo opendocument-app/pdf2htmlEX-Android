@@ -24,6 +24,8 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import com.viliussutkus89.android.assetextractor.AssetExtractor;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -77,19 +79,15 @@ public final class pdf2htmlEX {
   private synchronized void init(@NonNull Context ctx) {
     File filesDir = ctx.getFilesDir();
     File cacheDir = ctx.getCacheDir();
+
+    AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
-    m_pdf2htmlEX_dataDir = new File(filesDir, "pdf2htmlEX");
-    if (!m_pdf2htmlEX_dataDir.exists()) {
-      AssetExtractor.extract(ctx.getAssets(), filesDir, "pdf2htmlEX");
-    }
+    m_pdf2htmlEX_dataDir = ae.extract(filesDir, "pdf2htmlEX");
 
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
-    m_poppler_dataDir = new File(filesDir, "poppler");
-    if (!m_poppler_dataDir.exists()) {
-      AssetExtractor.extract(ctx.getAssets(), filesDir, "poppler");
-    }
+    m_poppler_dataDir = ae.extract(filesDir, "poppler");
 
     // tmpDir is where pdf2htmlEX does it's work
     m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
