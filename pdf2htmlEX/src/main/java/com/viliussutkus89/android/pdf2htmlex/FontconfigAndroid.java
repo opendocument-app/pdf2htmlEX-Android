@@ -59,7 +59,7 @@ final class FontconfigAndroid {
         }
 
         File fontconfigGeneratedXml = new File(fontsConfigDir, "system-etc-fonts-xml-translated.conf");
-        if (fontconfigGeneratedXml.exists()) {
+        if (fontconfigGeneratedXml.length() > 0) {
             // already generated
             return;
         }
