@@ -110,7 +110,7 @@ public final class pdf2htmlEX {
 
     Map<String, String> environment = new HashMap<>();
     FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, environment);
-    for (Map.Entry<String, String> e: this.m_environment.entrySet()) {
+    for (Map.Entry<String, String> e : environment.entrySet()) {
       set_environment_value(e.getKey(), e.getValue());
     }
   }
