@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 final class FontconfigAndroid {
     private static final String TAG = "FontconfigAndroid";
@@ -31,18 +32,18 @@ final class FontconfigAndroid {
     // Available on API 16-20
     private final static File legacyConfigFile = new File("/system/etc/system_fonts.xml");
 
-    static void init(@NonNull AssetManager assetManager, @NonNull File cacheDir, @NonNull File filesDir) {
+    static void init(@NonNull AssetManager assetManager, @NonNull File cacheDir, @NonNull File filesDir, @NonNull Map<String, String> environment) {
         File xdgCache = new File(cacheDir, "xdg-cache");
 
         xdgCache.mkdir();
-        pdf2htmlEX.set_environment_value("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
+        environment.put("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
 
         File fontsConfigDir = new File(filesDir, "etc/fonts");
         if (!fontsConfigDir.exists()) {
             AssetExtractor.extract(assetManager, filesDir, "etc/fonts");
         }
         AssetExtractor.extract(assetManager, filesDir, "fonts");
-        pdf2htmlEX.set_environment_value("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
+        environment.put("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
 
         boolean isLegacy = false;
         InputStream afx;

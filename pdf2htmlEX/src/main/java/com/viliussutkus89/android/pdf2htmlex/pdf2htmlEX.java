@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX.java
  *
- * Copyright (C) 2019 Vilius Sutkus'89
+ * Copyright (C) 2019,2020 Vilius Sutkus'89
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class pdf2htmlEX {
   static {
@@ -106,7 +108,11 @@ public final class pdf2htmlEX {
     set_environment_value("TMPDIR", tmpDir.getAbsolutePath());
     set_environment_value("USER", Build.MODEL);
 
-    FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir);
+    Map<String, String> environment = new HashMap<>();
+    FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, environment);
+    for (Map.Entry<String, String> e: this.m_environment.entrySet()) {
+      set_environment_value(e.getKey(), e.getValue());
+    }
   }
 
   public pdf2htmlEX(@NonNull Context ctx) {
@@ -214,5 +220,5 @@ public final class pdf2htmlEX {
   private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont);
 
   // Because Java cannot setenv for the current process
-  static native void set_environment_value(String key, String value);
+  private static native void set_environment_value(String key, String value);
 }
