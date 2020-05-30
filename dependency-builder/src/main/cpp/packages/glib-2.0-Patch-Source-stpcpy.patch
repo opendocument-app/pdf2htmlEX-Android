@@ -1,0 +1,15 @@
+--- meson.build	2020-05-30 19:16:52.786000000 +0300
++++ meson.build	2020-05-30 19:22:31.986000000 +0300
+@@ -532,7 +532,11 @@
+ endforeach
+ 
+ # Check that stpcpy() is usable; must use header
+-if cc.has_function('stpcpy', prefix : '#include <string.h>')
++if cc.links('''#include <string.h>
++            void func() {
++                char buff[1];
++                stpcpy(buff, "");
++            }''')
+   glib_conf.set('HAVE_STPCPY', 1)
+ endif
+ 
