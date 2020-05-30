@@ -165,6 +165,7 @@ dependencies {
     compileOnly project(":dependency-builder")
     implementation 'com.viliussutkus89:tmpfile-android:1.0.2'
     implementation 'com.viliussutkus89:assetextractor-android:1.2.1'
+    implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

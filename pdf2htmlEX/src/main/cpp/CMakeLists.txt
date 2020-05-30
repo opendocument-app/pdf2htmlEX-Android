@@ -30,8 +30,7 @@ pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
 
 link_directories(${pdf2htmlEX_LIBRARY_DIRS})
 
-add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc
-  FontconfigAndroid.cc)
+add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc)
 
 find_library(log-lib log)
 
