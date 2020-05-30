@@ -64,7 +64,7 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
   endif()
 
   CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
-  CheckIfSourcePatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
+  GenerateSourcePatchCall(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
   CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
 
   GetCMakeArguments("EP_CMAKE_ARGUMENTS"

@@ -32,6 +32,7 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
     endif()
   endif()
 
+
   # Check pkg-config
   pkg_search_module("${PACKAGE_NAME}_PKG" QUIET "${PACKAGE_NAME}")
   if (${${PACKAGE_NAME}_PKG_FOUND})
@@ -99,22 +100,16 @@ function(CheckIfTarballCachedLocally EP_NAME URL)
 
 endfunction(CheckIfTarballCachedLocally)
 
-function(CheckIfSourcePatchExists EXTERNAL_PROJECT_NAME OUTPUT_VAR)
+function(GenerateSourcePatchCall EXTERNAL_PROJECT_NAME OUTPUT_VAR)
   SET(PATCH_ENV ANDROID=${ANDROID} ANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL})
-
-  set(PATCH_FILENAME ${CMAKE_CURRENT_SOURCE_DIR}/packages/${EXTERNAL_PROJECT_NAME}-Patch-Source.sh)
-  set(PROJECT_SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME})
-  if (EXISTS ${PATCH_FILENAME} AND NOT EXISTS "${PROJECT_SRC_DIR}/source-already-patched")
-    SET(${OUTPUT_VAR} UPDATE_COMMAND
-      ${CMAKE_COMMAND} -E env ${PATCH_ENV}
-      ${PATCH_FILENAME} ${PROJECT_SRC_DIR} ${THIRDPARTY_PREFIX}
-      LOG_UPDATE 1
-      PARENT_SCOPE)
-    FILE(WRITE "${PROJECT_SRC_DIR}/source-already-patched" "Patching source")
-  else()
-    SET(${OUTPUT_VAR} "" PARENT_SCOPE)
-  endif()
-endfunction(CheckIfSourcePatchExists)
+  SET(PATCH_FILENAME ${CMAKE_CURRENT_SOURCE_DIR}/packages/${EXTERNAL_PROJECT_NAME}-Patch-Source.sh)
+  SET(PROJECT_SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME})
+  SET(${OUTPUT_VAR} UPDATE_COMMAND
+    ${CMAKE_COMMAND} -E env ${PATCH_ENV}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Patch-Package-Source.sh ${EXTERNAL_PROJECT_NAME} ${PROJECT_SRC_DIR} ${THIRDPARTY_PREFIX}
+    LOG_UPDATE 1
+    PARENT_SCOPE)
+endfunction(GenerateSourcePatchCall)
 
 function(CheckIfInstallPatchExists EXTERNAL_PROJECT_NAME OUTPUT_VAR)
   SET(PATCH_ENV ANDROID=${ANDROID} ANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL})
