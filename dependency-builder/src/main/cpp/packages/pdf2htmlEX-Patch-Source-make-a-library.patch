@@ -89,7 +89,7 @@ new file mode 100644
 +Description: @PROJECT_NAME@
 +Version: @PDF2HTMLEX_VERSION@
 +
-+Requires.private: cairo freetype libfontforge poppler
++Requires.private: cairo freetype2 libfontforge poppler
 +Libs: -L${libdir} -lpdf2htmlEX
 +Cflags: -I${includedir}
 \ No newline at end of file
