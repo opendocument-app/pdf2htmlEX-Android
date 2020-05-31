@@ -4,15 +4,22 @@ on:
   release:
     types: published
 
+env:
+  ANDROID_SDK_TOOLS:  "6514223"
+  ANDROID_NDK:        "21.2.6472646"
+  ANDROID_CMAKE:      "3.10.2.4988404"
+
 jobs:
   publish:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - run: .github/installAndroidTools.sh
 
       - name: Download assets from this Release
         uses: ViliusSutkus89/release-asset-downloader@v1.0.3
@@ -38,8 +45,9 @@ jobs:
     needs: publish
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
-      - run: git checkout master
+      - uses: actions/checkout@v2
+        with:
+          ref: master
 
       - run: ./doincrementversion
 
@@ -60,19 +68,22 @@ jobs:
     needs: versionIncrementer
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
-      - run: git checkout master
+      - uses: actions/checkout@v2
+        with:
+          ref: master
 
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - run: .github/installAndroidTools.sh
 
       - run: |
           cd android-sample-app
           ./gradlew assembleDebug
 
       - name: Upload app-universal-debug.apk
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -82,7 +93,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload app-arm64-v8a-debug.apk
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -92,7 +103,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload app-armeabi-v7a-debug.apk
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -102,7 +113,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload app-x86-debug.apk
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -112,7 +123,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload app-x86_64-debug.apk
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

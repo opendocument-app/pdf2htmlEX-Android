@@ -2,7 +2,7 @@ name: Build
 on: push
 
 env:
-  ANDROID_SDK_TOOLS:  "4333796"
+  ANDROID_SDK_TOOLS:  "6514223"
   ANDROID_NDK:        "21.2.6472646"
   ANDROID_CMAKE:      "3.10.2.4988404"
   TARBALL_CACHE_KEY:  "tarballs-key-1"
@@ -15,16 +15,10 @@ jobs:
         abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
         buildType: [ Debug, Release ]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Cache android-sdk.zip
-        uses: actions/cache@v1
-        with:
-          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk
 
       - run: .github/installAndroidTools.sh
 
@@ -87,16 +81,10 @@ jobs:
     needs: build
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Cache android-sdk.zip
-        uses: actions/cache@v1
-        with:
-          key: android-sdk.zip-${{ env.ANDROID_SDK_TOOLS }}
-          path: android-sdk
 
       - run: .github/installAndroidTools.sh
 
@@ -206,7 +194,7 @@ jobs:
           prerelease: false
 
       - name: Upload licenses
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -216,7 +204,7 @@ jobs:
           asset_content_type: text/xml
 
       - name: Upload Release aar
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -226,7 +214,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload Debug aar
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -239,7 +227,7 @@ jobs:
         run: ./gradlew pdf2htmlEX:javadocJar
 
       - name: Upload javadoc.jar
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -252,7 +240,7 @@ jobs:
         run: ./gradlew pdf2htmlEX:sourceJar
 
       - name: Upload sources.jar
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
