@@ -82,3 +82,6 @@ sed -E "--expression=$expression" -i $BASEDIR/android-sample-app/app/build.gradl
 expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$RELEASEDVERSION'/"
 sed -E "--expression=$expression" -i $BASEDIR/README.md
 
+# Update library's version in aar-instrumented-tester
+expression="s/implementation 'com.viliussutkus89:pdf2htmlex-android:$version_format'/implementation 'com.viliussutkus89:pdf2htmlex-android:$RELEASEDVERSION'/"
+sed -E "--expression=$expression" -i $BASEDIR/aar-instrumented-tester/pdf2htmlEX/build.gradle
