@@ -76,7 +76,7 @@ Storage Access Framework (SAF) is used for file management, it requires API leve
 Debug build of sample application is available in [Releases Page](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/releases)
 
 ### Tools to build from source:
-* Meson Build system
+* Meson Build system (version 0.54.2 or newer)
 * pkg-config
 * CMake-3.10.2
 * ndk-21.2.6472646
