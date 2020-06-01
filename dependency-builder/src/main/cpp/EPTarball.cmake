@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -30,6 +30,7 @@ function(ExternalProjectTarball EXTERNAL_PROJECT_NAME)
   endif()
 
   CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
+  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
 
   ExternalProject_Add(${EXTERNAL_PROJECT_NAME}
     ${EP_DEPENDS}
@@ -42,6 +43,8 @@ function(ExternalProjectTarball EXTERNAL_PROJECT_NAME)
     CONFIGURE_COMMAND /bin/true
     BUILD_COMMAND /bin/true
     INSTALL_COMMAND /bin/true
+
+    ${EP_PATCH_INSTALL_COMMAND}
 
     LOG_DOWNLOAD 1
     LOG_INSTALL 1

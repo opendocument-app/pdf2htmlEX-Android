@@ -1,3 +1,5 @@
+include_guard(GLOBAL)
+
 # https://www.xpdfreader.com/download.html
 
 ExternalProjectTarball(Fonts-SymbolAndZapfDingbats
