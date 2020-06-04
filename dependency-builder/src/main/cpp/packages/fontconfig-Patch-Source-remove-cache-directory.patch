@@ -1,0 +1,10 @@
+--- fonts.conf.in	2020-06-04 20:41:21.410000000 +0300
++++ fonts.conf.in	2020-06-04 20:41:28.038000000 +0300
+@@ -88,7 +88,6 @@
+ 
+ <!-- Font cache directory list -->
+ 
+-	<cachedir>@FC_CACHEDIR@</cachedir>
+ 	<cachedir prefix="xdg">fontconfig</cachedir>
+ 	<!-- the following element will be removed in the future -->
+ 	<cachedir>~/.fontconfig</cachedir>
