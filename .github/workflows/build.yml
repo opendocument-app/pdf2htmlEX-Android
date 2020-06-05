@@ -41,41 +41,30 @@ jobs:
 
       - name: Artifact gathered licenses
         if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: licenses
           path: dependency-builder/build/licenses.xml
 
-      - name: Prepare built dependencies for artifacting
-        if: matrix.buildType == 'Release'
-        run: |
-          mkdir --parents pdeps/bin
-          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/bin/pkg-config pdeps/bin/
-          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/include pdeps/
-          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/lib pdeps/
-          mv dependency-builder/build/installed/MinSizeRel/${{ matrix.abi }}/share/pkgconfig pdeps/share/
-
-      - name: Prepare built dependencies for artifacting
+      - name: Artifact installed dependencies - Debug
         if: matrix.buildType == 'Debug'
-        run: |
-          mkdir --parents pdeps/bin
-          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/bin/pkg-config pdeps/bin/
-          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/include pdeps/
-          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/lib pdeps/
-          mv dependency-builder/build/installed/Debug/${{ matrix.abi }}/share/pkgconfig pdeps/share/
-
-      - name: Artifact built dependencies
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
-          name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: pdeps
+          name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: dependency-builder/build/installed/${{ matrix.buildType }}
 
-      - name: Artifact assets (from pdf2htmlEX and poppler)
-        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
-        uses: actions/upload-artifact@v1
+      - name: Artifact installed dependencies - Release
+        if: matrix.buildType == 'Release'
+        uses: actions/upload-artifact@v2
         with:
-          name: assets
-          path: dependency-builder/build/assets
+          name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: dependency-builder/build/installed/MinSizeRel
+
+      - name: Artifact results for downstream AAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: results-for-downstream-aar-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: dependency-builder/build/includeTheseInDownstreamAAR
 
   buildAllABIs:
     needs: build
@@ -96,73 +85,51 @@ jobs:
 
       - run: ./dodownloadtarballs --serial
 
-      - name: Download artifacted dependencies - x86 - release
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Release-x86
-          path: dependency-builder/build/installed/MinSizeRel/x86
-      - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86/bin/pkg-config
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+          with:
+            path: artifacts
 
-      - name: Download artifacted dependencies - x86_64 - release
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Release-x86_64
-          path: dependency-builder/build/installed/MinSizeRel/x86_64
-      - run: chmod +x dependency-builder/build/installed/MinSizeRel/x86_64/bin/pkg-config
+      - name: Prepare downloaded artifacts
+        run: |
+          ls -lhaR artifacts
 
-      - name: Download artifacted dependencies - armeabi-v7a - release
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Release-armeabi-v7a
-          path: dependency-builder/build/installed/MinSizeRel/armeabi-v7a
-      - run: chmod +x dependency-builder/build/installed/MinSizeRel/armeabi-v7a/bin/pkg-config
+          mkdir -p dependency-builder/build
+          mv artifacts/licenses/licenses.xml dependency-builder/build
 
-      - name: Download artifacted dependencies - arm64-v8a - release
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Release-arm64-v8a
-          path: dependency-builder/build/installed/MinSizeRel/arm64-v8a
-      - run: chmod +x dependency-builder/build/installed/MinSizeRel/arm64-v8a/bin/pkg-config
+          mkdir -p dependency-builder/build/installed/MinSizeRel
+          mkdir -p dependency-builder/build/installed/Debug
+          mv artifacts/installed-dependencies-Release-x86/x86 dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-x86_64/x86_64 dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-armeabi-v7a/armeabi-v7a dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-arm64-v8a/arm64-v8a dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Debug-x86/x86 dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-x86_64/x86_64 dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-armeabi-v7a/armeabi-v7a dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-arm64-v8a/arm64-v8a dependency-builder/build/installed/Debug/
+          find dependency-builder/build/installed -type f -name 'pkg-config' -exec chmod +x {} \;
 
-      - name: Download artifacted dependencies - x86 - debug
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Debug-x86
-          path: dependency-builder/build/installed/Debug/x86
-      - run: chmod +x dependency-builder/build/installed/Debug/x86/bin/pkg-config
+          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Release-x86/release/assets/x86 dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-x86_64/release/assets/x86_64 dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/assets/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/assets/arm64-v8a dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Debug-x86/debug/assets/x86 dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/assets/x86_64 dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/assets/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/assets/arm64-v8a dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
 
-      - name: Download artifacted dependencies - x86_64 - debug
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Debug-x86_64
-          path: dependency-builder/build/installed/Debug/x86_64
-      - run: chmod +x dependency-builder/build/installed/Debug/x86_64/bin/pkg-config
-
-      - name: Download artifacted dependencies - armeabi-v7a - debug
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Debug-armeabi-v7a
-          path: dependency-builder/build/installed/Debug/armeabi-v7a
-      - run: chmod +x dependency-builder/build/installed/Debug/armeabi-v7a/bin/pkg-config
-
-      - name: Download artifacted dependencies - arm64-v8a - debug
-        uses: actions/download-artifact@v1
-        with:
-          name: dependencies-Debug-arm64-v8a
-          path: dependency-builder/build/installed/Debug/arm64-v8a
-      - run: chmod +x dependency-builder/build/installed/Debug/arm64-v8a/bin/pkg-config
-
-      - name: Download artifacted assets
-        uses: actions/download-artifact@v1
-        with:
-          name: assets
-          path: dependency-builder/build/assets
-
-      - name: Download artifacted licenses
-        uses: actions/download-artifact@v1
-        with:
-          name: licenses
-          path: dependency-builder/build/
+          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-x86/release/jniLibs/x86 dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-x86_64/release/jniLibs/x86_64 dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/jniLibs/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/jniLibs/arm64-v8a dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-x86/debug/jniLibs/x86 dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/jniLibs/x86_64 dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/jniLibs/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/jniLibs/arm64-v8a dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
 
       - name: Build pdf2htmlEX-Android
         run: ./gradlew build -PdisablePreDex
