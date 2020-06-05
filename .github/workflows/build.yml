@@ -87,8 +87,8 @@ jobs:
 
       - name: Download all artifacts
         uses: actions/download-artifact@v2
-          with:
-            path: artifacts
+        with:
+          path: artifacts
 
       - name: Prepare downloaded artifacts
         run: |
