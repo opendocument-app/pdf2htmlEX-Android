@@ -49,7 +49,16 @@ android {
         path "src/main/cpp/CMakeLists.txt"
         version "3.10.2"
     }
-    sourceSets.main.assets.srcDirs += "${projectDir}/../dependency-builder/build/assets/"
+    sourceSets {
+        release {
+            jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs"
+            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/assets/" + ( project.hasProperty('abi') ? project.property('abi') : "x86_64" )
+        }
+        debug {
+            jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs"
+            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + ( project.hasProperty('abi') ? project.property('abi') : "x86_64" )
+        }
+    }
     ndkVersion "21.2.6472646"
 }
 

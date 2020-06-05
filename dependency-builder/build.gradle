@@ -147,79 +147,58 @@ task gatherLicenses {
   }
 }
 
-// pdf2htmlEX and Poppler have some data that is needed on runtime
-task collectReleaseAssetsFromShareFolder {
-    dependsOn ":dependency-builder:externalNativeBuildRelease"
-    doLast {
+ext.gatherArtifacts = { buildType ->
+    def CMakeBuildType = (buildType == "debug") ? "Debug" : "MinSizeRel"
+    ((null != android.defaultConfig.ndk.abiFilters) ? android.defaultConfig.ndk.abiFilters : ['x86_64', 'x86', 'armeabi-v7a', 'arm64-v8a']).each { abi ->
         copy {
-            new File("$buildDir/installed/MinSizeRel").eachDir() {
-                from("$it/share")
-                include("pdf2htmlEX/**", "poppler/**")
-                into("$buildDir/assets")
-            }
-            duplicatesStrategy('exclude')
+            from("$buildDir/installed/$CMakeBuildType/$abi/lib/libpdf2htmlEX.so")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
         }
-    }
-    doLast {
         copy {
-            new File("$buildDir/installed/MinSizeRel").eachDir() {
-                from("$it/etc")
-                include("fonts/**")
-                into("$buildDir/assets/etc")
-            }
-            duplicatesStrategy('exclude')
+            from("$buildDir/installed/$CMakeBuildType/$abi/bin/libpdf2htmlEX-exe_not_lib.so")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
         }
-    }
-    // @TODO: maybe make EPTarball extract to "installed" ?
-    doLast {
+
         copy {
-            def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
-            from("$projectDir/.cxx/cmake/release/" + abi + "/Fonts-SymbolAndZapfDingbats-prefix/src/Fonts-SymbolAndZapfDingbats/")
-            include("*.pfb")
-            into("$buildDir/assets/fonts")
+            from("$buildDir/installed/$CMakeBuildType/$abi/share/pdf2htmlEX")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/pdf2htmlEX")
+        }
+        copy {
+            from("$buildDir/installed/$CMakeBuildType/$abi/share/poppler")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/poppler")
+        }
+        copy {
+            from("$buildDir/installed/$CMakeBuildType/$abi/etc/fonts")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/etc/fonts")
+        }
+
+        copy {
+            from("$buildDir/installed/$CMakeBuildType/$abi/share/fonts")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/fonts")
         }
     }
 }
 
-task collectDebugAssetsFromShareFolder {
+task gatherReleaseArtifacts {
+    dependsOn ":dependency-builder:externalNativeBuildRelease"
+    doLast {
+        gatherArtifacts("release")
+    }
+}
+
+task gatherDebugArtifacts {
     dependsOn ":dependency-builder:externalNativeBuildDebug"
     doLast {
-        copy {
-            new File("$buildDir/installed/Debug").eachDir() {
-                from("$it/share")
-                include("pdf2htmlEX/**", "poppler/**")
-                into("$buildDir/assets")
-            }
-            duplicatesStrategy('exclude')
-        }
-    }
-    doLast {
-        copy {
-            new File("$buildDir/installed/Debug").eachDir() {
-                from("$it/etc")
-                include("fonts/**")
-                into("$buildDir/assets/etc")
-            }
-            duplicatesStrategy('exclude')
-        }
-    }
-    // @TODO: maybe make EPTarball extract to "installed" ?
-    doLast {
-        copy {
-            def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
-            from("$projectDir/.cxx/cmake/debug/" + abi + "/Fonts-SymbolAndZapfDingbats-prefix/src/Fonts-SymbolAndZapfDingbats/")
-            include("*.pfb")
-            into("$buildDir/assets/fonts")
-        }
+        gatherArtifacts("debug")
     }
 }
 
 tasks.whenTaskAdded {
     if (it.name == 'generateReleaseAssets') {
-        it.dependsOn collectReleaseAssetsFromShareFolder
+        it.dependsOn gatherReleaseArtifacts
     }
     else if (it.name == 'generateDebugAssets') {
-        it.dependsOn collectDebugAssetsFromShareFolder
+        it.dependsOn gatherDebugArtifacts
     }
 
     else if (it.name == 'externalNativeBuildRelease') {

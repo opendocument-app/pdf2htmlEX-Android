@@ -20,7 +20,6 @@
 package com.viliussutkus89.android.pdf2htmlex;
 
 import android.content.Context;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -77,34 +76,37 @@ public final class pdf2htmlEX {
   }
 
   private synchronized void init(@NonNull Context ctx) {
-    File filesDir = ctx.getFilesDir();
-    File cacheDir = ctx.getCacheDir();
+    LegacyCleanup.cleanup(ctx);
+
+    File filesDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
+    File cacheDir = new File(ctx.getCacheDir(), "pdf2htmlEX");
+    cacheDir.mkdir();
 
     AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
     // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
-    m_pdf2htmlEX_dataDir = ae.extract(filesDir, "pdf2htmlEX");
+    m_pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/pdf2htmlEX");
 
     // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
     // Poppler requires encoding data
-    m_poppler_dataDir = ae.extract(filesDir, "poppler");
+    m_poppler_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/poppler");
 
     // tmpDir is where pdf2htmlEX does it's work
     m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
     m_pdf2htmlEX_tmpDir.mkdir();
 
-    m_outputHtmlsDir = new File(m_pdf2htmlEX_tmpDir, "output-htmls");
+    m_outputHtmlsDir = new File(cacheDir, "output-htmls");
     m_outputHtmlsDir.mkdir();
 
-    File homeDir = new File(cacheDir, "homeForFontforge");
-    homeDir.mkdir();
+    File fontforgeHome = new File(cacheDir, "FontforgeHome");
+    fontforgeHome.mkdir();
+    set_environment_value("HOME", fontforgeHome.getAbsolutePath());
 
-    File tmpDir = new File(cacheDir, "tmpdir");
-    tmpDir.mkdir();
+    File envTMPDIR = new File(cacheDir, "envTMPDIR");
+    envTMPDIR.mkdir();
+    set_environment_value("TMPDIR", envTMPDIR.getAbsolutePath());
 
-    set_environment_value("HOME", homeDir.getAbsolutePath());
-    set_environment_value("TMPDIR", tmpDir.getAbsolutePath());
-    set_environment_value("USER", Build.MODEL);
+    set_environment_value("USER", android.os.Build.MODEL);
 
     Map<String, String> environment = new HashMap<>();
     FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, environment);

@@ -17,10 +17,10 @@ final class FontconfigAndroid {
         environment.put("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
 
         AssetExtractor ae = new AssetExtractor(assetManager).setNoOverwrite();
-        File fontsConfigDir = ae.extract(new File(filesDir, "etc"), "etc/fonts");
+        File fontsConfigDir = ae.extract(new File(filesDir, "etc"), "pdf2htmlEX/etc/fonts");
         environment.put("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
 
-        ae.extract(filesDir, "fonts");
+        ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/fonts");
 
         File fontconfigGeneratedXml = new File(fontsConfigDir, "system-etc-fonts-xml-translated.conf");
         FontconfigTranslator.translate(fontconfigGeneratedXml);
