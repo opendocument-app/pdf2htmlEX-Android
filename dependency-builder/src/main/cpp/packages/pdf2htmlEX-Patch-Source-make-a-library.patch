@@ -47,14 +47,15 @@
      src/pdf2htmlEX-config.h
      src/HTMLRenderer/HTMLRenderer.h
      src/HTMLRenderer/draw.cc
-@@ -172,7 +157,14 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
+@@ -172,7 +157,15 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
      src/TmpFiles.cc
      )
  
 -add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
 +set(PDF2HTMLEX_PROGRAM_SRC src/pdf2htmlEX.cc ${PDF2HTMLEX_SRC})
 +set(libPDF2HTMLEX_SRC src/libpdf2htmlEX.cc ${PDF2HTMLEX_SRC} src/pdf2htmlEX.h)
-+add_library(libpdf2htmlEX ${libPDF2HTMLEX_SRC})
++add_library(libpdf2htmlEX SHARED ${libPDF2HTMLEX_SRC})
++target_link_libraries(libpdf2htmlEX ${PDF2HTMLEX_LIBS})
 +target_link_libraries(libpdf2htmlEX tmpfile)
 +set_target_properties(libpdf2htmlEX PROPERTIES PUBLIC_HEADER "src/pdf2htmlEX.h")
 +set_target_properties(libpdf2htmlEX PROPERTIES OUTPUT_NAME pdf2htmlEX)
