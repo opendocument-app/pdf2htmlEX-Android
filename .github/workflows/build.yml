@@ -14,6 +14,13 @@ jobs:
       matrix:
         abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
         buildType: [ Debug, Release ]
+        include:
+          - buildType: Debug
+            CMakeBuildType: Debug
+            GradleBuildType: debug
+          - buildType: Release
+            CMakeBuildType: MinSizeRel
+            GradleBuildType: release
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
@@ -46,19 +53,22 @@ jobs:
           name: licenses
           path: dependency-builder/build/licenses.xml
 
-      - name: Artifact installed dependencies - Debug
-        if: matrix.buildType == 'Debug'
-        uses: actions/upload-artifact@v2
-        with:
-          name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: dependency-builder/build/installed/${{ matrix.buildType }}
+      - name: Cleanup installed dependencies before artifacting
+        run: |
+          mkdir -p i/${{ matrix.abi }}/bin
+          mkdir -p i/${{ matrix.abi }}/include
+          mkdir -p i/${{ matrix.abi }}/lib/pkgconfig
 
-      - name: Artifact installed dependencies - Release
-        if: matrix.buildType == 'Release'
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config i/${{ matrix.abi }}/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig/pdf2htmlEX.pc i/${{ matrix.abi }}/lib/pkgconfig/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
+
+      - name: Artifact installed dependencies
         uses: actions/upload-artifact@v2
         with:
           name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: dependency-builder/build/installed/MinSizeRel
+          path: i/${{ matrix.CMakeBuildType }}
 
       - name: Artifact results for downstream AAR
         uses: actions/upload-artifact@v2
@@ -92,7 +102,7 @@ jobs:
 
       - name: Prepare downloaded artifacts
         run: |
-          ls -lhaR artifacts
+          find dependency-builder/build/installed
 
           mkdir -p dependency-builder/build
           mv artifacts/licenses/licenses.xml dependency-builder/build
