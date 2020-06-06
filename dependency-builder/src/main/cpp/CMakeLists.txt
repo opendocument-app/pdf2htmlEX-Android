@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -33,6 +33,12 @@ SET(THIRDPARTY_PKG_CONFIG_EXECUTABLE ${THIRDPARTY_PREFIX}/bin/pkg-config)
 SET(PKG_CONFIG_EXECUTABLE ${THIRDPARTY_PKG_CONFIG_EXECUTABLE})
 find_package(PkgConfig REQUIRED)
 
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  SET(JNILIBS_FOR_DOWNSTREAM_AAR ${DP_ROOT_DIR}/build/includeTheseInDownstreamAAR/debug/jniLibs/${ANDROID_ABI})
+else()
+  SET(JNILIBS_FOR_DOWNSTREAM_AAR ${DP_ROOT_DIR}/build/includeTheseInDownstreamAAR/release/jniLibs/${ANDROID_ABI})
+endif()
+
 # LIST(PREPEND is unavailable in CMake 3.10)
 LIST(REVERSE CMAKE_FIND_ROOT_PATH)
 LIST(APPEND CMAKE_FIND_ROOT_PATH ${THIRDPARTY_PREFIX})
@@ -57,12 +63,11 @@ option(BUILD_3RDPARTY_BINARIES "Build all 3rd party binaries to catch missing sy
 
 # List of root level packages that we want installed.
 # Defined dependencies will be picked up too.
-
 include(${CMAKE_CURRENT_SOURCE_DIR}/packages/pdf2htmlEX.cmake)
 
 # This will make sure pdf2htmlEX is added to the dependency chain
 add_executable(emptyProgram emptyProgram.cpp)
-if (NOT EXISTS ${THIRDPARTY_PREFIX}/lib/libpdf2htmlEX.a)
+if (TARGET pdf2htmlEX)
   add_dependencies(emptyProgram pdf2htmlEX)
 endif()
 

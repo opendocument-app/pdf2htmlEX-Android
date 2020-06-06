@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -30,8 +30,13 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
       SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
       return()
     endif()
-  endif()
 
+  elseif("${PACKAGE_NAME}" STREQUAL "pdf2htmlEX")
+    if (EXISTS ${JNILIBS_FOR_DOWNSTREAM_AAR}/libpdf2htmlEX.so)
+      SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
+      return()
+    endif()
+  endif()
 
   # Check pkg-config
   pkg_search_module("${PACKAGE_NAME}_PKG" QUIET "${PACKAGE_NAME}")
