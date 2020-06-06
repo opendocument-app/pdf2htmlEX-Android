@@ -53,6 +53,9 @@ jobs:
           name: licenses
           path: dependency-builder/build/licenses.xml
 
+      - name: Some debugging info
+        run: find dependency-builder/build/installed/${{ matrix.CMakeBuildType }}
+
       - name: Cleanup installed dependencies before artifacting
         run: |
           mkdir -p i/${{ matrix.abi }}/bin
