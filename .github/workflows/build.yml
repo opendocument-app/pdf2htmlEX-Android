@@ -102,7 +102,7 @@ jobs:
 
       - name: Prepare downloaded artifacts
         run: |
-          find dependency-builder/build/installed
+          find artifacts
 
           mkdir -p dependency-builder/build
           mv artifacts/licenses/licenses.xml dependency-builder/build
