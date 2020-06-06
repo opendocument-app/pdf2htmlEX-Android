@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: i/${{ matrix.CMakeBuildType }}
+          path: i
 
       - name: Artifact results for downstream AAR
         uses: actions/upload-artifact@v2
