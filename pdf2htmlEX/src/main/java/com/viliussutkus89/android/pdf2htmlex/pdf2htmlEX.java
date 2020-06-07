@@ -147,28 +147,29 @@ public final class pdf2htmlEX {
     return this;
   }
 
-  public pdf2htmlEX setOutline(@NonNull boolean enableOutline) {
+  public pdf2htmlEX setOutline(boolean enableOutline) {
     this.p_outline = enableOutline;
     return this;
   }
 
-  public pdf2htmlEX setDRM(@NonNull boolean enableDRM) {
+  public pdf2htmlEX setDRM(boolean enableDRM) {
     this.p_drm = enableDRM;
     return this;
   }
 
-  public pdf2htmlEX setEmbedFont(@NonNull boolean embedFont) {
+  public pdf2htmlEX setEmbedFont(boolean embedFont) {
+
     this.p_embedFont = embedFont;
     return this;
   }
 
-  public pdf2htmlEX setEmbedExternalFont(@NonNull boolean embedExternalFont) {
+  public pdf2htmlEX setEmbedExternalFont(boolean embedExternalFont) {
     this.p_embedExternalFont = embedExternalFont;
     return this;
   }
 
   /**
-   *  @param backgroundFormat: png (default), jpg or svg
+   * @param backgroundFormat: png (default), jpg or svg
    */
   public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
     this.p_backgroundFormat = backgroundFormat;
@@ -179,7 +180,8 @@ public final class pdf2htmlEX {
    * @deprecated pdf2htmlEX-Android doesn't fork anymore
    */
   @Deprecated
-  public void setNoForking(boolean thisArgumentIsIgnored) { }
+  public void setNoForking(boolean thisArgumentIsIgnored) {
+  }
 
   public File convert() throws IOException, ConversionFailedException {
     if (null == this.p_inputPDF) {
@@ -200,11 +202,11 @@ public final class pdf2htmlEX {
       outputHtml = new File(m_outputHtmlsDir, inputFilenameNoPDFExt + "-" + i.toString() + ".html");
     }
 
-    Integer retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
-      m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
-      this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
-      this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
-      this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
+    int retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
+        m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
+        this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
+        this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
+        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
     );
 
     // retVal values defined in pdf2htmlEX.cc
