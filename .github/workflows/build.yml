@@ -61,6 +61,7 @@ jobs:
           mkdir -p i/${{ matrix.abi }}/share
 
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config i/${{ matrix.abi }}/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config-dynamic i/${{ matrix.abi }}/bin/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig i/${{ matrix.abi }}/lib/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
@@ -121,6 +122,7 @@ jobs:
           mv artifacts/installed-dependencies-Debug-armeabi-v7a/armeabi-v7a dependency-builder/build/installed/Debug/
           mv artifacts/installed-dependencies-Debug-arm64-v8a/arm64-v8a dependency-builder/build/installed/Debug/
           find dependency-builder/build/installed -type f -name 'pkg-config' -exec chmod +x {} \;
+          find dependency-builder/build/installed -type f -name 'pkg-config-dynamic' -exec chmod +x {} \;
 
           mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
           mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
