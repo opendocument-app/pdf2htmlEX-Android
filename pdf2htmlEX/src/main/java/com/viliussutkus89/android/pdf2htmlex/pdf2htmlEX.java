@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX.java
  *
- * Copyright (C) 2019,2020 Vilius Sutkus'89
+ * Copyright (C) 2019, 2020 Vilius Sutkus'89
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,15 +77,31 @@ public final class pdf2htmlEX {
     }
   }
 
-  private synchronized void init(@NonNull Context ctx) {
+  private void init(@NonNull Context ctx) {
+    AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
+
+    File filesDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
+    File cacheDir = new File(ctx.getCacheDir(), "pdf2htmlEX");
+
+    // tmpDir is where pdf2htmlEX (not pdf2htmlEX-Android wrapper) does it's work
+    m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
+    m_outputHtmlsDir = new File(cacheDir, "output-htmls");
+
+    Map<String, String> environment = new HashMap<>();
+
+    File fontforgeHome = new File(cacheDir, "FontforgeHome");
+    environment.put("HOME", fontforgeHome.getAbsolutePath());
+
+    File envTMPDIR = new File(cacheDir, "envTMPDIR");
+    environment.put("TMPDIR", envTMPDIR.getAbsolutePath());
+
+    environment.put("USER", android.os.Build.MODEL);
+
     synchronized (s_initSynchronizer) {
       LegacyCleanup.cleanup(ctx);
 
-      File filesDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
-      File cacheDir = new File(ctx.getCacheDir(), "pdf2htmlEX");
       cacheDir.mkdir();
 
-      AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
       // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
       m_pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/pdf2htmlEX");
@@ -94,29 +110,16 @@ public final class pdf2htmlEX {
       // Poppler requires encoding data
       m_poppler_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/poppler");
 
-      // tmpDir is where pdf2htmlEX (not pdf2htmlEX-Android wrapper) does it's work
-      m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
       m_pdf2htmlEX_tmpDir.mkdir();
-
-      m_outputHtmlsDir = new File(cacheDir, "output-htmls");
       m_outputHtmlsDir.mkdir();
 
-      Map<String, String> environment = new HashMap<>();
-
-      File fontforgeHome = new File(cacheDir, "FontforgeHome");
       fontforgeHome.mkdir();
-      environment.put("HOME", fontforgeHome.getAbsolutePath());
-
-      File envTMPDIR = new File(cacheDir, "envTMPDIR");
       envTMPDIR.mkdir();
-      environment.put("TMPDIR", envTMPDIR.getAbsolutePath());
-
-      environment.put("USER", android.os.Build.MODEL);
 
       FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, environment);
-      for (Map.Entry<String, String> e : environment.entrySet()) {
-        set_environment_value(e.getKey(), e.getValue());
-      }
+    }
+    for (Map.Entry<String, String> e : environment.entrySet()) {
+      set_environment_value(e.getKey(), e.getValue());
     }
   }
 
