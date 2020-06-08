@@ -1,7 +1,7 @@
 /*
  * InstrumentedTests.java
  *
- * Copyright (C) 2019,2020 Vilius Sutkus'89
+ * Copyright (C) 2019, 2020 Vilius Sutkus'89
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,15 +93,22 @@ public class InstrumentedTests {
   @Test
   public void testAllSuppliedPDFs() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    testAllSuppliedPDFs(new pdf2htmlEX(ctx));
+  }
 
-    pdf2htmlEX pdf2htmlEX = new pdf2htmlEX(ctx);
+  @Test
+  public void testAllSuppliedPDFs_exe() throws IOException {
+    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    testAllSuppliedPDFs(new pdf2htmlEX_exe(ctx));
+  }
 
+  public void testAllSuppliedPDFs(pdf2htmlEX converter) throws IOException {
     for (String i: m_PDFsToTest) {
       File pdfFile = extractAssetPDF(i);
       File htmlFile;
 
       try {
-        htmlFile = pdf2htmlEX.convert(pdfFile);
+        htmlFile = converter.convert(pdfFile);
       } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
         pdfFile.delete();
         e.printStackTrace();
@@ -119,11 +126,21 @@ public class InstrumentedTests {
 
   @Test
   public void encryptedPdfTest() throws IOException {
+    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    encryptedPdfTest(new pdf2htmlEX(ctx));
+  }
+
+  @Test
+  public void encryptedPdfTest_exe() throws IOException {
+    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    encryptedPdfTest(new pdf2htmlEX_exe(ctx));
+  }
+
+  public void encryptedPdfTest(pdf2htmlEX converter) throws IOException {
     // encrypted_fontfile3_opentype.pdf was generated using:
     // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
     File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
 
-    pdf2htmlEX converter = new pdf2htmlEX(InstrumentationRegistry.getInstrumentation().getTargetContext());
     converter.setInputPDF(pdfFile);
 
     try {
