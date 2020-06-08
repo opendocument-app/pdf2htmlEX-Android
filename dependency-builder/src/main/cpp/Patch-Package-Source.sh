@@ -24,7 +24,12 @@ fi
 if test -f $BASEDIR/packages/${PACKAGE_NAME}-Patch-Source.sh; then
   $BASEDIR/packages/${PACKAGE_NAME}-Patch-Source.sh ${SOURCE_DIR} ${PREFIX_DIR}
 else
-  find $BASEDIR/packages -name "${PACKAGE_NAME}-Patch-Source*.patch" -exec cat {} \; | patch -p0
+  patches=$(find $BASEDIR/packages -name "${PACKAGE_NAME}-Patch-Source*.patch" -printf "%f\n" | sort)
+  for p in $patches; do
+    echo "Applying patch ${p}"
+    patch -p0 < $BASEDIR/packages/$p
+    echo ""
+  done
 fi
 
-echo "Patching source" > $SOURCE_DIR/source-already-patched
+echo "Source patched" > $SOURCE_DIR/source-already-patched
