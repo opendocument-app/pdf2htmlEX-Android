@@ -38,7 +38,11 @@ import java.util.Map;
 @Deprecated
 public class pdf2htmlEX_exe extends pdf2htmlEX {
 
-  private final Map<String, String> m_arguments = new LinkedHashMap<>();
+  /*
+   * @deprecated m_arguments is exposed, but take caution not to mess it up too much.
+   */
+  @Deprecated
+  protected final Map<String, String> m_arguments = new LinkedHashMap<>();
 
   private final String[] m_argumentsPrefix;
 
