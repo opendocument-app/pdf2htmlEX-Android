@@ -1,13 +1,22 @@
---- pdf2htmlEX.cc	2020-06-08 17:39:30.027000000 +0300
-+++ pdf2htmlEX.cc	2020-06-08 17:55:56.809000000 +0300
-@@ -406,14 +406,24 @@
+--- src/pdf2htmlEX.cc	2020-06-08 17:39:30.027000000 +0300
++++ src/pdf2htmlEX.cc	2020-06-08 18:46:17.304000000 +0300
+@@ -25,6 +25,8 @@
+ 
+ #include "pdf2htmlEX-config.h"
+ 
++#include "poppler/ErrorCodes.h"
++
+ #if ENABLE_SVG
+ #include <cairo.h>
+ #endif
+@@ -406,14 +408,25 @@
          }
  
          if (!doc->isOk())
 -            throw "Cannot read the file";
 +        {
 +            int errCode = doc->getErrorCode();
-+            std::cerr << std::to_string(errCode) << std::endl;
++            std::cerr << "Cannot read the file. " << std::to_string(errCode) << std::endl;
 +            if (errCode == errEncrypted) {
 +                return 2;
 +            } else {
@@ -18,11 +27,11 @@
          // check for copy permission
          if (!doc->okToCopy())
          {
--            if (param.no_drm == 0)
++            std::cerr << "Document has copy-protection bit set." << std::endl;
+             if (param.no_drm == 0)
 -                throw "Copying of text from this document is not allowed.";
 -            cerr << "Document has copy-protection bit set." << endl;
-+            std::cerr << "Document has copy-protection bit set." << std::endl;
-+            if (param->no_drm == 0) {
++            {
 +                std::cerr << "Copying of text from this document is not allowed." << std::endl;
 +                return 3;
 +            }
