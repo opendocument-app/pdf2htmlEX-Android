@@ -37,8 +37,6 @@ public final class pdf2htmlEX {
 
   static private final Object s_initSynchronizer = new Object();
 
-  private static final String TAG = "pdf2htmlEX";
-
   private File m_pdf2htmlEX_dataDir;
   private File m_poppler_dataDir;
   private File m_pdf2htmlEX_tmpDir;
