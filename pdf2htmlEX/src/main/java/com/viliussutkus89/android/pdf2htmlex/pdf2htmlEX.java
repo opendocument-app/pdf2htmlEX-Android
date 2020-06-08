@@ -53,6 +53,8 @@ public final class pdf2htmlEX {
   private boolean p_embedExternalFont = true;
   private String p_backgroundFormat = "";
 
+  private boolean p_wasPasswordEntered = false;
+
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
       super(errorMessage);
@@ -139,11 +141,13 @@ public final class pdf2htmlEX {
 
   public pdf2htmlEX setOwnerPassword(@NonNull String ownerPassword) {
     this.p_ownerPassword = ownerPassword;
+    this.p_wasPasswordEntered = true;
     return this;
   }
 
   public pdf2htmlEX setUserPassword(@NonNull String userPassword) {
     this.p_userPassword = userPassword;
+    this.p_wasPasswordEntered = true;
     return this;
   }
 
@@ -209,22 +213,27 @@ public final class pdf2htmlEX {
         this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
     );
 
+    if (0 == retVal) {
+      return outputHtml;
+    }
+
+    outputHtml.delete();
+
     // retVal values defined in pdf2htmlEX.cc
-    if (0 != retVal) {
-      outputHtml.delete();
-      if (2 == retVal) {
-        if (this.p_ownerPassword.isEmpty() && this.p_userPassword.isEmpty()) {
+    switch (retVal) {
+      case 2:
+        if (!this.p_wasPasswordEntered) {
           throw new PasswordRequiredException("Password is required to decrypt this encrypted document!");
         } else {
           throw new WrongPasswordException("Wrong password is supplied to decrypt this encrypted document!");
         }
-      } else if (3 == retVal) {
+
+      case 3:
         throw new CopyProtectionException("Document is copy protected!");
-      } else {
+
+      default:
         throw new ConversionFailedException("Return value from pdf2htmlEX: " + retVal);
-      }
     }
-    return outputHtml;
   }
 
   private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont);
