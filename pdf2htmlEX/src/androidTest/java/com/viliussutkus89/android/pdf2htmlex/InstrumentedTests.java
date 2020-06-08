@@ -112,7 +112,7 @@ public class InstrumentedTests {
       } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
         pdfFile.delete();
         e.printStackTrace();
-        fail("Failed to convert PDF to HTML: " + i);
+        fail("Failed to convert PDF to HTML: " + i + " : " + e.getMessage());
         continue;
       }
 
@@ -149,7 +149,7 @@ public class InstrumentedTests {
     } catch (pdf2htmlEX.PasswordRequiredException ignored) {
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
 
     try {
@@ -158,7 +158,7 @@ public class InstrumentedTests {
     } catch (pdf2htmlEX.WrongPasswordException ignored) {
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setUserPassword("");
 
@@ -168,7 +168,7 @@ public class InstrumentedTests {
     } catch (pdf2htmlEX.WrongPasswordException ignored) {
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setOwnerPassword("");
 
@@ -179,7 +179,7 @@ public class InstrumentedTests {
       htmlFile.delete();
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setUserPassword("");
 
@@ -190,7 +190,7 @@ public class InstrumentedTests {
       htmlFile.delete();
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setOwnerPassword("");
 
@@ -201,7 +201,7 @@ public class InstrumentedTests {
       htmlFile.delete();
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setUserPassword("");
     converter.setOwnerPassword("");
@@ -213,7 +213,7 @@ public class InstrumentedTests {
       htmlFile.delete();
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
     converter.setUserPassword("");
     converter.setOwnerPassword("");
@@ -225,7 +225,7 @@ public class InstrumentedTests {
       htmlFile.delete();
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
-      fail("Encrypted pdf conversion failed!");
+      fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
 
     pdfFile.delete();
