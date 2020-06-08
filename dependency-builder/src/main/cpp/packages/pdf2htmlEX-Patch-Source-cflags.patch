@@ -1,4 +1,4 @@
---- CMakeLists.txt.orig	2019-09-27 11:36:07.639000000 -0000
+--- CMakeLists.txt	2019-09-27 11:36:07.639000000 -0000
 +++ CMakeLists.txt	2019-09-27 11:36:42.908000000 -0000
 @@ -59,15 +59,6 @@
  link_directories(${FONTFORGE_LIBRARY_DIRS})
