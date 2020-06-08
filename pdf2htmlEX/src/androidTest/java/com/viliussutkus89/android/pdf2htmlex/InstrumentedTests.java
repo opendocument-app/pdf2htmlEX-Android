@@ -147,7 +147,7 @@ public class InstrumentedTests {
 
     try {
       converter.setOwnerPassword("wrong-owner-password").convert().delete();
-      fail("Conversion succeeded when it should have failed because of wrong user password!");
+      fail("Conversion succeeded when it should have failed because of wrong owner password!");
     } catch (pdf2htmlEX.WrongPasswordException ignored) {
     } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
       e.printStackTrace();
