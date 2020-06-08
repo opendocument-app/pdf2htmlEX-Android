@@ -139,13 +139,13 @@ public class pdf2htmlEX {
 
   public pdf2htmlEX setOwnerPassword(@NonNull String ownerPassword) {
     this.p_ownerPassword = ownerPassword;
-    this.p_wasPasswordEntered = true;
+    this.p_wasPasswordEntered = !ownerPassword.isEmpty() | !this.p_userPassword.isEmpty();
     return this;
   }
 
   public pdf2htmlEX setUserPassword(@NonNull String userPassword) {
     this.p_userPassword = userPassword;
-    this.p_wasPasswordEntered = true;
+    this.p_wasPasswordEntered = !this.p_ownerPassword.isEmpty() | !userPassword.isEmpty();
     return this;
   }
 

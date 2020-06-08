@@ -75,15 +75,23 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
 
   @Override
   public pdf2htmlEX setOwnerPassword(@NonNull String ownerPassword) {
-    this.m_arguments.put("--owner-password", ownerPassword);
-    this.p_wasPasswordEntered = true;
+    if (!ownerPassword.isEmpty()){
+      this.m_arguments.put("--owner-password", ownerPassword);
+    } else {
+      this.m_arguments.remove("--owner-password");
+    }
+    this.p_wasPasswordEntered = !ownerPassword.isEmpty() | this.m_arguments.containsKey("--user-password");
     return this;
   }
 
   @Override
   public pdf2htmlEX setUserPassword(@NonNull String userPassword) {
-    this.m_arguments.put("--user-password", userPassword);
-    this.p_wasPasswordEntered = true;
+    if (!userPassword.isEmpty()){
+      this.m_arguments.put("--user-password", userPassword);
+    } else {
+      this.m_arguments.remove("--user-password");
+    }
+    this.p_wasPasswordEntered = this.m_arguments.containsKey("--owner-password") | !userPassword.isEmpty();
     return this;
   }
 
