@@ -22,27 +22,26 @@ package com.viliussutkus89.android.pdf2htmlex;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class pdf2htmlEX {
-  static {
-    System.loadLibrary("pdf2htmlEX-android");
-  }
-
+public class pdf2htmlEX {
   static private final Object s_initSynchronizer = new Object();
 
-  private File m_pdf2htmlEX_dataDir;
-  private File m_poppler_dataDir;
-  private File m_pdf2htmlEX_tmpDir;
-  private File m_outputHtmlsDir;
+  final Map<String, String> m_environment = new LinkedHashMap<>();
 
-  private File p_inputPDF;
+  final File m_pdf2htmlEX_dataDir;
+  final File m_poppler_dataDir;
+  final File m_pdf2htmlEX_tmpDir;
+  final File m_outputHtmlsDir;
+  File p_inputPDF;
+
   private String p_ownerPassword = "";
   private String p_userPassword = "";
   private boolean p_outline = true;
@@ -51,7 +50,7 @@ public final class pdf2htmlEX {
   private boolean p_embedExternalFont = true;
   private String p_backgroundFormat = "";
 
-  private boolean p_wasPasswordEntered = false;
+  boolean p_wasPasswordEntered = false;
 
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
@@ -77,7 +76,17 @@ public final class pdf2htmlEX {
     }
   }
 
-  private void init(@NonNull Context ctx) {
+  public pdf2htmlEX(@NonNull Context ctx) {
+    this(ctx, null);
+
+    System.loadLibrary("pdf2htmlEX-android");
+
+    for (Map.Entry<String, String> e : m_environment.entrySet()) {
+      set_environment_value(e.getKey(), e.getValue());
+    }
+  }
+
+  pdf2htmlEX(@NonNull Context ctx, @Nullable Object nullObjectToHaveDifferentCtor) {
     AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
 
     File filesDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
@@ -87,15 +96,13 @@ public final class pdf2htmlEX {
     m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
     m_outputHtmlsDir = new File(cacheDir, "output-htmls");
 
-    Map<String, String> environment = new HashMap<>();
-
     File fontforgeHome = new File(cacheDir, "FontforgeHome");
-    environment.put("HOME", fontforgeHome.getAbsolutePath());
+    m_environment.put("HOME", fontforgeHome.getAbsolutePath());
 
     File envTMPDIR = new File(cacheDir, "envTMPDIR");
-    environment.put("TMPDIR", envTMPDIR.getAbsolutePath());
+    m_environment.put("TMPDIR", envTMPDIR.getAbsolutePath());
 
-    environment.put("USER", android.os.Build.MODEL);
+    m_environment.put("USER", android.os.Build.MODEL);
 
     synchronized (s_initSynchronizer) {
       LegacyCleanup.cleanup(ctx);
@@ -116,15 +123,8 @@ public final class pdf2htmlEX {
       fontforgeHome.mkdir();
       envTMPDIR.mkdir();
 
-      FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, environment);
+      FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, m_environment);
     }
-    for (Map.Entry<String, String> e : environment.entrySet()) {
-      set_environment_value(e.getKey(), e.getValue());
-    }
-  }
-
-  public pdf2htmlEX(@NonNull Context ctx) {
-    init(ctx);
   }
 
   public pdf2htmlEX setInputPDF(@NonNull File inputPDF) {
@@ -204,12 +204,7 @@ public final class pdf2htmlEX {
       outputHtml = new File(m_outputHtmlsDir, inputFilenameNoPDFExt + "-" + i.toString() + ".html");
     }
 
-    int retVal = call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
-        m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
-        this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
-        this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
-        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
-    );
+    int retVal = convert_MakeTheActualCall(outputHtml);
 
     if (0 == retVal) {
       return outputHtml;
@@ -232,6 +227,15 @@ public final class pdf2htmlEX {
       default:
         throw new ConversionFailedException("Return value from pdf2htmlEX: " + retVal);
     }
+  }
+
+  int convert_MakeTheActualCall(File outputHtml) throws IOException {
+    return call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
+        m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
+        this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
+        this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
+        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
+    );
   }
 
   private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont);
