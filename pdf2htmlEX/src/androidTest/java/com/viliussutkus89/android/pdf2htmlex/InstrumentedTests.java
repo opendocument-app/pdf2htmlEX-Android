@@ -25,16 +25,14 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.viliussutkus89.android.assetextractor.AssetExtractor;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -42,83 +40,46 @@ import static org.junit.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class InstrumentedTests {
 
-  // PDFs must be placed in pdf2htmlEX/src/androidTest/assets/
-  private final String[] m_PDFsToTest = new String[] {
-          "fontfile3_opentype.pdf",
-          "basic_text.pdf",
-          "invalid_unicode_issue477.pdf",
-          "pdf.pdf",
-          "sample.pdf",
-          "geneve_1564.pdf",
-          "svg_background_with_page_rotation_issue402.pdf",
-          "test_fail.pdf",
-          "with_form.pdf",
-          "text_visibility.pdf"
-  };
-
-  private File extractAssetPDF(String filename) throws IOException {
+  @BeforeClass
+  public static void extractPDFs() {
     Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-    Context appContext = instrumentation.getTargetContext();
-    File mInputDir = new File(appContext.getCacheDir(), "PDFs-extracted-from-assets");
-    if (!mInputDir.mkdir()) {
-      assertTrue("Failed to create folder for input PDFs", mInputDir.exists());
-    }
 
-    Context testContext = instrumentation.getContext();
-    InputStream is = testContext.getAssets().open(filename);
-    File fileInCache = new File(mInputDir, filename);
-    copyFile(is, new FileOutputStream(fileInCache));
-    assertTrue("Failed to copy input PDF", fileInCache.exists());
-    return fileInCache;
-  }
+    Context testCtx = instrumentation.getContext();
+    AssetExtractor ae = new AssetExtractor(testCtx.getAssets()).setNoOverwrite();
 
-  private void copyFile(InputStream input, OutputStream output) throws IOException {
-    final int buffer_size = 1024;
-    byte[] buffer = new byte[buffer_size];
-
-    BufferedInputStream in = new BufferedInputStream(input, buffer_size);
-    BufferedOutputStream out = new BufferedOutputStream(output, buffer_size);
-
-    int haveRead;
-    while (-1 != (haveRead = in.read(buffer))) {
-      out.write(buffer, 0, haveRead);
-    }
-    out.flush();
-    out.close();
-    output.close();
-    in.close();
-    input.close();
+    Context appCtx = instrumentation.getTargetContext();
+    File cacheDir = appCtx.getCacheDir();
+    ae.extract(cacheDir, "testPDFs");
+    ae.extract(cacheDir, "encrypted_fontfile3_opentype.pdf");
   }
 
   @Test
   public void testAllSuppliedPDFs() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    testAllSuppliedPDFs(new pdf2htmlEX(ctx));
+    testAllSuppliedPDFs(new pdf2htmlEX(ctx), ctx);
   }
 
   @Test
   public void testAllSuppliedPDFs_exe() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    testAllSuppliedPDFs(new pdf2htmlEX_exe(ctx));
+    testAllSuppliedPDFs(new pdf2htmlEX_exe(ctx), ctx);
   }
 
-  public void testAllSuppliedPDFs(pdf2htmlEX converter) throws IOException {
-    for (String i: m_PDFsToTest) {
-      File pdfFile = extractAssetPDF(i);
+  public void testAllSuppliedPDFs(pdf2htmlEX converter, Context ctx) throws IOException {
+    File testPDFDir = new File(ctx.getCacheDir(), "testPDFs");
+    for (File pdfFile: testPDFDir.listFiles()) {
       File htmlFile;
 
       try {
         htmlFile = converter.convert(pdfFile);
       } catch (IOException | pdf2htmlEX.ConversionFailedException e) {
-        pdfFile.delete();
         e.printStackTrace();
-        fail("Failed to convert PDF to HTML: " + i + " : " + e.getMessage());
+        fail("Failed to convert PDF to HTML: " + pdfFile.getName() + " : " + e.getMessage());
         continue;
       }
 
-      pdfFile.delete();
-      assertTrue("Converted HTML file not found! " + i, htmlFile.exists());
-      assertTrue("Converted HTML file empty! " + i, htmlFile.length() > 0);
+      assertTrue("Converted HTML file not found! " + pdfFile.getName(), htmlFile.exists());
+      assertTrue("Converted HTML file empty! " + pdfFile.getName(), htmlFile.length() > 0);
 
       htmlFile.delete();
     }
@@ -127,19 +88,19 @@ public class InstrumentedTests {
   @Test
   public void encryptedPdfTest() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    encryptedPdfTest(new pdf2htmlEX(ctx));
+    encryptedPdfTest(new pdf2htmlEX(ctx), ctx);
   }
 
   @Test
   public void encryptedPdfTest_exe() throws IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    encryptedPdfTest(new pdf2htmlEX_exe(ctx));
+    encryptedPdfTest(new pdf2htmlEX_exe(ctx), ctx);
   }
 
-  public void encryptedPdfTest(pdf2htmlEX converter) throws IOException {
+  public void encryptedPdfTest(pdf2htmlEX converter, Context ctx) throws IOException {
     // encrypted_fontfile3_opentype.pdf was generated using:
     // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
-    File pdfFile = extractAssetPDF("encrypted_fontfile3_opentype.pdf");
+    File pdfFile = new File(ctx.getCacheDir(), "encrypted_fontfile3_opentype.pdf");
 
     converter.setInputPDF(pdfFile);
 
@@ -227,8 +188,6 @@ public class InstrumentedTests {
       e.printStackTrace();
       fail("Encrypted pdf conversion failed: " + e.getMessage());
     }
-
-    pdfFile.delete();
   }
 
 }
