@@ -160,7 +160,6 @@ public class pdf2htmlEX {
   }
 
   public pdf2htmlEX setEmbedFont(boolean embedFont) {
-
     this.p_embedFont = embedFont;
     return this;
   }
