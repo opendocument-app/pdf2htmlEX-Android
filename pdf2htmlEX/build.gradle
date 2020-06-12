@@ -59,7 +59,7 @@ android {
             assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + ( project.hasProperty('abi') ? project.property('abi') : "x86_64" )
         }
     }
-    ndkVersion "21.2.6472646"
+    ndkVersion "21.3.6528147"
 }
 
 task sourceJar(type: Jar) {
