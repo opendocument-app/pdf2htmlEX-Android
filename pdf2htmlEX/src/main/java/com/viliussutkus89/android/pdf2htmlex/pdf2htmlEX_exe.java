@@ -52,11 +52,6 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
     super(ctx, null);
 
     String nativeLibraryDir = ctx.getApplicationInfo().nativeLibraryDir;
-    String oldLibraryPath = m_environment.put("LD_LIBRARY_PATH", nativeLibraryDir);
-    if (null != oldLibraryPath) {
-      m_environment.put("LD_LIBRARY_PATH", oldLibraryPath + ":" + nativeLibraryDir);
-    }
-
     File externalExecutable = new File(nativeLibraryDir, "libpdf2htmlEX-exe_not_lib.so");
 
     m_argumentsPrefix = new String[]{
