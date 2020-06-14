@@ -57,7 +57,7 @@ jobs:
           git config --local user.name "GitHub Action - Version Incrementer"
           git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
-          git add pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle
+          git add pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle aar-instrumented-tester/pdf2htmlEX/build.gradle
 
           if git commit -m "PostRelease version increment"
           then
