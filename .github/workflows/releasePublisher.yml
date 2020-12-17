@@ -6,7 +6,7 @@ on:
 
 env:
   ANDROID_SDK_TOOLS:  "6514223"
-  ANDROID_NDK:        "21.3.6528147"
+  ANDROID_NDK:        "22.0.7026061"
   ANDROID_CMAKE:      "3.10.2.4988404"
 
 jobs:
