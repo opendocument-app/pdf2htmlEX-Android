@@ -28,6 +28,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
+
+        externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
     buildTypes {
         release.externalNativeBuild {
@@ -42,36 +44,6 @@ android {
         version "3.10.2"
     }
     ndkVersion "21.3.6528147"
-}
-
-dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:1.1.3'
-}
-
-ext.extractTmpfiles = { buildType ->
-    def tmpfileandroid = configurations.releaseRuntimeClasspath.getResolvedConfiguration().getResolvedArtifacts().find {
-        it.name.startsWith("tmpfile-android")
-    }
-    ((null != android.defaultConfig.ndk.abiFilters) ? android.defaultConfig.ndk.abiFilters : ['x86_64', 'x86', 'armeabi-v7a', 'arm64-v8a']).each { abi ->
-        copy {
-            from zipTree(tmpfileandroid.getFile())
-            into "${project.buildDir}/installed/${buildType}/${abi}/lib"
-            include "jni/${abi}/libtmpfile.so"
-            eachFile { it.path = "libtmpfile.so" }
-        }
-    }
-}
-
-task extractTmpfilesDebug {
-    doLast {
-        extractTmpfiles("Debug")
-    }
-}
-
-task extractTmpfilesRelease {
-    doLast {
-        extractTmpfiles("MinSizeRel")
-    }
 }
 
 // Issue #1
@@ -203,9 +175,5 @@ tasks.whenTaskAdded {
 
     else if (it.name == 'externalNativeBuildRelease') {
         gatherLicenses.dependsOn externalNativeBuildRelease
-        it.dependsOn extractTmpfilesRelease
-    }
-    else if (it.name == 'externalNativeBuildDebug') {
-        it.dependsOn extractTmpfilesDebug
     }
 }

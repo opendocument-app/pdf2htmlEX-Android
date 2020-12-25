@@ -34,9 +34,11 @@ add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc)
 
 find_library(log-lib log)
 
+find_package(tmpfile REQUIRED CONFIG)
+
 target_link_libraries(pdf2htmlEX-android
   ${pdf2htmlEX_LIBRARIES}
-  tmpfile
+  tmpfile::tmpfile
   ${log-lib}
 )
 
