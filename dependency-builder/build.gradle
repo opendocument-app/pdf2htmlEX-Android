@@ -44,6 +44,7 @@ android {
         version "3.10.2"
     }
     ndkVersion "21.3.6528147"
+    buildFeatures.prefab true
 }
 
 // Issue #1
@@ -117,6 +118,10 @@ task gatherLicenses {
         }
     }
   }
+}
+
+dependencies {
+    implementation 'com.viliussutkus89:tmpfile-android:2.0.0'
 }
 
 ext.gatherArtifacts = { buildType ->

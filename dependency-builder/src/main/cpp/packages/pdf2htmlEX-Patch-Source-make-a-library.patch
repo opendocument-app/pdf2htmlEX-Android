@@ -47,7 +47,7 @@
      src/pdf2htmlEX-config.h
      src/HTMLRenderer/HTMLRenderer.h
      src/HTMLRenderer/draw.cc
-@@ -172,8 +157,18 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
+@@ -172,8 +157,19 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
      src/TmpFiles.cc
      )
  
@@ -57,7 +57,8 @@
 +set(libPDF2HTMLEX_SRC src/libpdf2htmlEX.cc ${PDF2HTMLEX_SRC} src/pdf2htmlEX.h)
 +add_library(libpdf2htmlEX SHARED ${libPDF2HTMLEX_SRC})
 +target_link_libraries(libpdf2htmlEX ${PDF2HTMLEX_LIBS})
-+#target_link_libraries(libpdf2htmlEX tmpfile)
++find_package(tmpfile REQUIRED CONFIG)
++target_link_libraries(libpdf2htmlEX tmpfile::tmpfile)
 +set_target_properties(libpdf2htmlEX PROPERTIES PUBLIC_HEADER "src/pdf2htmlEX.h")
 +set_target_properties(libpdf2htmlEX PROPERTIES OUTPUT_NAME pdf2htmlEX)
 +
@@ -68,7 +69,7 @@
 
  add_custom_target(pdf2htmlEX_resources ALL DEPENDS
      ${CMAKE_SOURCE_DIR}/share/base.min.css
-@@ -199,6 +190,14 @@ add_custom_command(OUTPUT
+@@ -199,6 +191,14 @@ add_custom_command(OUTPUT
      )
  
  install (TARGETS pdf2htmlEX DESTINATION bin)
