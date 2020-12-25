@@ -1,0 +1,18 @@
+--- glib/gmacros.h	2020-12-18 15:54:08.457000000 +0200
++++ glib/gmacros.h	2020-12-18 15:55:51.860000000 +0200
+@@ -557,11 +557,11 @@
+  *
+  * Since: 2.60
+  */
+-#if    __GNUC__ > 6
++//#if    __GNUC__ > 6
+ #define G_GNUC_FALLTHROUGH __attribute__((fallthrough))
+-#else
+-#define G_GNUC_FALLTHROUGH
+-#endif /* __GNUC__ */
++//#else
++//#define G_GNUC_FALLTHROUGH
++//#endif /* __GNUC__ */
+ 
+ /**
+  * G_GNUC_DEPRECATED:
