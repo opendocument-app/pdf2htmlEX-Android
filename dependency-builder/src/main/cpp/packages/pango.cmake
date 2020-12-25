@@ -2,9 +2,8 @@ include_guard(GLOBAL)
 
 ExternalProjectMeson(pango
   DEPENDS cairo fontconfig freetype fribidi glib-2.0 harfbuzz
-  #URL https://ftp.gnome.org/pub/GNOME/sources/pango/1.44/pango-1.44.7.tar.xz
-  URL https://ftp.gnome.org/pub/GNOME/sources/pango/1.44/pango-1.44.7.tar.xz
-  URL_HASH SHA256=66a5b6cc13db73efed67b8e933584509f8ddb7b10a8a40c3850ca4a985ea1b1f
-  CONFIGURE_ARGUMENTS -Dintrospection=false
+  URL https://download.gnome.org/sources/pango/1.48/pango-1.48.0.tar.xz
+  URL_HASH SHA256=391f26f3341c2d7053e0fb26a956bd42360dadd825efe7088b1e9340a65e74e6
+  CONFIGURE_ARGUMENTS -Dintrospection=disabled
 )
 
