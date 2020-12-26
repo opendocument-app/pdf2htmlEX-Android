@@ -38,10 +38,9 @@ android {
 
         archivesBaseName = rootProject.name
 
-        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
         externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
 
@@ -55,11 +54,11 @@ android {
     sourceSets {
         release {
             jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs"
-            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/assets/" + ( project.hasProperty('abi') ? project.property('abi') : "x86_64" )
+            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/assets/" + android.defaultConfig.ndk.abiFilters[0]
         }
         debug {
             jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs"
-            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + ( project.hasProperty('abi') ? project.property('abi') : "x86_64" )
+            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + android.defaultConfig.ndk.abiFilters[0]
         }
     }
     ndkVersion "22.0.7026061"

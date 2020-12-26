@@ -27,8 +27,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
-        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : null
-
+        ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
         externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
     buildTypes {
@@ -126,7 +125,8 @@ dependencies {
 
 ext.gatherArtifacts = { buildType ->
     def CMakeBuildType = (buildType == "debug") ? "Debug" : "MinSizeRel"
-    ((null != android.defaultConfig.ndk.abiFilters) ? android.defaultConfig.ndk.abiFilters : ['x86_64', 'x86', 'armeabi-v7a', 'arm64-v8a']).each { abi ->
+
+    android.defaultConfig.ndk.abiFilters.each { abi ->
         copy {
             from("$buildDir/installed/$CMakeBuildType/$abi/lib/libpdf2htmlEX.so")
             into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
