@@ -6,11 +6,14 @@ include_guard(GLOBAL)
 
 ExternalProjectAutotools(freetype
   DEPENDS libpng zlib
-  URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.2.tar.xz
-  URL_HASH SHA512=cf45089bd8893d7de2cdcb59d91bbb300e13dd0f0a9ef80ed697464ba7aeaf46a5a81b82b59638e6b21691754d8f300f23e1f0d11683604541d77f0f581affaa
+  URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.xz
+  URL_HASH SHA512=827cda734aa6b537a8bcb247549b72bc1e082a5b32ab8d3cccb7cc26d5f6ee087c19ce34544fa388a1eb4ecaf97600dbabc3e10e950f2ba692617fee7081518f
 
-  CONFIGURE_ARGUMENTS --with-zlib=yes --with-bzip2=no
+  CONFIGURE_ARGUMENTS
+    --with-zlib=yes
     --with-png=yes
+    --with-brotli=no
+    --with-bzip2=no
     --with-harfbuzz=no
 )
 
