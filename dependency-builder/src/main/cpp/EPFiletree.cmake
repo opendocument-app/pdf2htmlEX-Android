@@ -20,6 +20,9 @@
 function(ExternalProjectFiletree EXTERNAL_PROJECT_NAME)
   SET(INSTALLED_CANARY "${THIRDPARTY_PREFIX}/${EXTERNAL_PROJECT_NAME}.installed")
   if (EXISTS ${INSTALLED_CANARY})
+    if (NOT TARGET ${EXTERNAL_PROJECT_NAME})
+      add_custom_target(${EXTERNAL_PROJECT_NAME} COMMAND /bin/true)
+    endif()
     return()
   endif()
 
