@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019 - 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -55,20 +55,7 @@ if (MESON_CROSS_COMPILE_FILE AND NOT EXISTS ${MESON_CROSS_COMPILE_FILE})
 endif()
 
 function(ExternalProjectMeson EXTERNAL_PROJECT_NAME)
-  set(options)
-  set(oneValueArgs URL URL_HASH)
-  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS)
-  cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
-
-  FilterDependsList(EP_DEPENDS)
-  CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
-  if ("${${EXTERNAL_PROJECT_NAME}_FOUND}")
-    return()
-  endif()
-
-  CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
-  GenerateSourcePatchCall(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
-  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
+  ExternalProjectHeaderBoilerplate(${ARGN})
 
   if (CMAKE_BUILD_TYPE STREQUAL Debug)
     set(MESON_BUILD_TYPE debug)

@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019 - 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -53,42 +53,7 @@ function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
   endif()
 
   SET("${PACKAGE_NAME}_FOUND" 0 PARENT_SCOPE)
-
 endfunction(CheckIfPackageAlreadyBuilt)
-
-# DEPEND only on those ExternalProjects that we can actually find as targets
-# No target? Check if it's already installed
-# Not found? Error!
-function(FilterDependsList DEPENDS_LIST)
-  # Expand DEPENDS_LIST variable twice, to get the INPUT value
-  SET(INPUT ${${DEPENDS_LIST}})
-  SET(RESULT)
-
-  if(INPUT)
-    foreach(DEPENDENCY IN ITEMS ${INPUT})
-      # Check if we have a package file for this dependency
-      SET(PACKAGE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/packages/${DEPENDENCY}.cmake)
-      include(${PACKAGE_FILE} OPTIONAL)
-
-      if (TARGET ${DEPENDENCY})
-        list(APPEND RESULT ${DEPENDENCY})
-
-      else()
-        CheckIfPackageAlreadyBuilt(${DEPENDENCY})
-        if (NOT "${${DEPENDENCY}_FOUND}")
-          message(FATAL_ERROR "Missing dependency ${DEPENDENCY}!")
-        endif()
-      endif()
-
-    endforeach(DEPENDENCY IN ITEMS ${INPUT})
-
-    if (RESULT)
-      SET(RESULT DEPENDS ${RESULT})
-    endif(RESULT)
-  endif(INPUT)
-
-  SET(${DEPENDS_LIST} ${RESULT} PARENT_SCOPE)
-endfunction(FilterDependsList)
 
 function(CheckIfTarballCachedLocally EP_NAME URL)
   # Expand URL variable twice, to get the INPUT value
@@ -102,7 +67,6 @@ function(CheckIfTarballCachedLocally EP_NAME URL)
   elseif (EXISTS "${CACHED_FILENAME}.tar")
     SET(${URL} "${CACHED_FILENAME}.tar" PARENT_SCOPE)
   endif()
-
 endfunction(CheckIfTarballCachedLocally)
 
 function(GenerateSourcePatchCall EXTERNAL_PROJECT_NAME OUTPUT_VAR)
@@ -131,4 +95,27 @@ function(CheckIfInstallPatchExists EXTERNAL_PROJECT_NAME OUTPUT_VAR)
     SET(${OUTPUT_VAR} "" PARENT_SCOPE)
   endif()
 endfunction(CheckIfInstallPatchExists)
+
+macro(ExternalProjectHeaderBoilerplate)
+  CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
+  if ("${${EXTERNAL_PROJECT_NAME}_FOUND}")
+    add_custom_target(${PACKAGE_NAME} COMMAND /bin/true)
+    return()
+  endif()
+
+  set(options)
+  set(oneValueArgs URL URL_HASH)
+  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS)
+  cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
+
+  foreach(DEPENDENCY ${EP_DEPENDS})
+    include("${CMAKE_CURRENT_SOURCE_DIR}/packages/${DEPENDENCY}.cmake")
+  endforeach()
+
+  CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
+  GenerateSourcePatchCall(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
+  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
+
+  LIST(INSERT EP_DEPENDS 0 DEPENDS)
+endmacro(ExternalProjectHeaderBoilerplate)
 
