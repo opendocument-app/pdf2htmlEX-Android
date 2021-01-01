@@ -1,3 +1,7 @@
+if (EXISTS ${JNILIBS_FOR_DOWNSTREAM_AAR}/libpdf2htmlEX.so)
+  SET(pdf2htmlEX_FOUND 1)
+endif()
+
 include_guard(GLOBAL)
 
 ExternalProjectCMake(pdf2htmlEX

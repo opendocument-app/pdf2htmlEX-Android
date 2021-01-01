@@ -19,23 +19,10 @@
 
 
 function(CheckIfPackageAlreadyBuilt PACKAGE_NAME)
-  if("${PACKAGE_NAME}" STREQUAL "iconv" AND ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28)
-    # ANDROID-28+ has iconv built in.
+  include(${CMAKE_CURRENT_SOURCE_DIR}/packages/${PACKAGE_NAME}.cmake)
+  if (${${PACKAGE_NAME}_FOUND} MATCHES 1)
     SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
     return()
-
-  elseif("${PACKAGE_NAME}" STREQUAL "libtool")
-    # libtool does not have pkg-config.pc. Check if libltdl.a exists.
-    if (EXISTS ${THIRDPARTY_PREFIX}/lib/libltdl.a)
-      SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
-      return()
-    endif()
-
-  elseif("${PACKAGE_NAME}" STREQUAL "pdf2htmlEX")
-    if (EXISTS ${JNILIBS_FOR_DOWNSTREAM_AAR}/libpdf2htmlEX.so)
-      SET("${PACKAGE_NAME}_FOUND" 1 PARENT_SCOPE)
-      return()
-    endif()
   endif()
 
   # Check pkg-config

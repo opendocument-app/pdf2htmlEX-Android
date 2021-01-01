@@ -1,3 +1,8 @@
+# libtool does not have pkg-config.pc. Check if libltdl.a exists.
+if (EXISTS ${THIRDPARTY_PREFIX}/lib/libltdl.a)
+  SET(libtool_FOUND 1)
+endif()
+
 include_guard(GLOBAL)
 
 ExternalProjectAutotools(libtool

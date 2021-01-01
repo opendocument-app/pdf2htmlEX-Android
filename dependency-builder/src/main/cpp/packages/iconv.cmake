@@ -1,3 +1,8 @@
+# ANDROID-28+ has iconv built in.
+if(ANDROID_NATIVE_API_LEVEL GREATER_EQUAL 28)
+  SET(iconv_FOUND 1)
+endif()
+
 include_guard(GLOBAL)
 
 ExternalProjectAutotools(iconv
