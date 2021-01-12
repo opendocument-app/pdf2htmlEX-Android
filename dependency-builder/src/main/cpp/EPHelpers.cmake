@@ -95,14 +95,19 @@ macro(ExternalProjectHeaderBoilerplate)
   set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS)
   cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
+  SET(EP_DEPENDS_FILTERED DEPENDS)
+
   foreach(DEPENDENCY ${EP_DEPENDS})
-    include("${CMAKE_CURRENT_SOURCE_DIR}/packages/${DEPENDENCY}.cmake")
+    CheckIfPackageAlreadyBuilt(${DEPENDENCY})
+    if(NOT "${DEPENDENCY}_FOUND" AND TARGET ${DEPENDENCY})
+      LIST(APPEND EP_DEPENDS_FILTERED ${DEPENDENCY})
+    endif()
   endforeach()
 
   CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
   GenerateSourcePatchCall(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
   CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
 
-  LIST(INSERT EP_DEPENDS 0 DEPENDS)
+  SET(EP_DEPENDS ${EP_DEPENDS_FILTERED})
 endmacro(ExternalProjectHeaderBoilerplate)
 
