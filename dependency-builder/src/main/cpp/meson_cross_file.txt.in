@@ -20,7 +20,7 @@ c_link_args='@LDFLAGS@'
 cpp_link_args='@LDFLAGS@'
 
 [host_machine]
-system = '@MESON_SYSTEM@'
+system = 'android'
 cpu_family = '@MESON_CPU_FAMILY@'
 cpu = '@MESON_CPU@'
 endian = '@MESON_ENDIAN@'
