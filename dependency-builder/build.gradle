@@ -120,7 +120,7 @@ task gatherLicenses {
 }
 
 dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:2.0.0'
+    implementation 'com.viliussutkus89:tmpfile-android:3.0.0'
 }
 
 ext.gatherArtifacts = { buildType ->

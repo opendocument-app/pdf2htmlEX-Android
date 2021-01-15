@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
+import com.viliussutkus89.android.tmpfile.Tmpfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,6 +80,7 @@ public class pdf2htmlEX {
   public pdf2htmlEX(@NonNull Context ctx) {
     this(ctx, null);
 
+    Tmpfile.init(ctx.getCacheDir());
     System.loadLibrary("pdf2htmlEX-android");
 
     for (Map.Entry<String, String> e : m_environment.entrySet()) {
