@@ -51,18 +51,10 @@ jobs:
 
       - run: ./doincrementversion
 
-      - name: git commit
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action - Version Incrementer"
-          git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-
-          git add pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle aar-instrumented-tester/pdf2htmlEX/build.gradle
-
-          if git commit -m "PostRelease version increment"
-          then
-            git push
-          fi
+      - uses: ViliusSutkus89/git-auto-commit-action@v4
+        with:
+          commit_message: "Post release version increment"
+          file_pattern: pdf2htmlEX/build.gradle README.md android-sample-app/app/build.gradle aar-instrumented-tester/pdf2htmlEX/build.gradle
 
   sampleApp:
     needs: versionIncrementer
