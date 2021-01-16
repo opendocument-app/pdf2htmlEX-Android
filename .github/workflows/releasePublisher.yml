@@ -22,7 +22,7 @@ jobs:
       - run: .github/installAndroidTools.sh
 
       - name: Download assets from this Release
-        uses: ViliusSutkus89/release-asset-downloader@v1.0.3
+        uses: ViliusSutkus89/release-asset-downloader@v1.0
         with:
           outputDirectory: 'releaseAssets'
 
