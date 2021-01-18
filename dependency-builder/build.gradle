@@ -120,13 +120,17 @@ task gatherLicenses {
 }
 
 dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.0'
+    implementation 'com.viliussutkus89:tmpfile-android:3.0.1'
 }
 
 ext.gatherArtifacts = { buildType ->
     def CMakeBuildType = (buildType == "debug") ? "Debug" : "MinSizeRel"
 
     android.defaultConfig.ndk.abiFilters.each { abi ->
+        copy {
+            from("$buildDir/installed/$CMakeBuildType/$abi/lib/libintl.so")
+            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
+        }
         copy {
             from("$buildDir/installed/$CMakeBuildType/$abi/lib/libpdf2htmlEX.so")
             into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
