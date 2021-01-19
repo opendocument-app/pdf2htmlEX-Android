@@ -63,7 +63,7 @@
 +set_target_properties(libpdf2htmlEX PROPERTIES OUTPUT_NAME pdf2htmlEX)
 +
 +add_executable(pdf2htmlEX ${PDF2HTMLEX_PROGRAM_SRC})
-+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='\${ORIGIN}'")
++#SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='\${ORIGIN}'")
 +target_link_libraries(pdf2htmlEX libpdf2htmlEX)
 +set_target_properties(pdf2htmlEX PROPERTIES OUTPUT_NAME libpdf2htmlEX-exe_not_lib.so)
 
