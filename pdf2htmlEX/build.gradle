@@ -179,6 +179,7 @@ dependencies {
     implementation 'com.viliussutkus89:assetextractor-android:1.2.1'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.1'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

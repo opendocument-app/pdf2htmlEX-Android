@@ -24,6 +24,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.getkeepsafe.relinker.ReLinker;
+import com.getkeepsafe.relinker.ReLinkerInstance;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 import com.viliussutkus89.android.tmpfile.Tmpfile;
 
@@ -81,7 +83,14 @@ public class pdf2htmlEX {
     this(ctx, null);
 
     Tmpfile.init(ctx.getCacheDir());
-    System.loadLibrary("pdf2htmlEX-android");
+
+    ReLinkerInstance reLinker = ReLinker.recursively();
+
+    // https://github.com/KeepSafe/ReLinker/issues/77
+    // Manually load dependencies, because ReLinker.recursively() doesn't actually load recursively
+    reLinker.loadLibrary(ctx, "c++_shared");
+    reLinker.loadLibrary(ctx, "pdf2htmlEX");
+    reLinker.loadLibrary(ctx, "pdf2htmlEX-android");
 
     for (Map.Entry<String, String> e : m_environment.entrySet()) {
       set_environment_value(e.getKey(), e.getValue());
