@@ -75,9 +75,10 @@ task gatherLicenses {
                         if ((depName == "cairo" && licenseFilename == "COPYING-LGPL-2.1") ||
                             (depName == "Fonts-SymbolAndZapfDingbats" && licenseFilename == "COPYING") ||
                             (depName == "freetype" && licenseFilename == "docs/GPLv2.TXT") ||
-                            (depName == "glib-2.0" ) ||
+                            (depName == "glib-2.0" && licenseFilename == "COPYING") ||
                             (depName == "fribidi" && licenseFilename == "COPYING") ||
                             (depName == "iconv" && licenseFilename == "COPYING.LIB") ||
+                            (depName == "intl" && licenseFilename == "COPYING") ||
                             (depName == "pango" && licenseFilename == "COPYING")) {
                             urlVal.append(licenseText.replace("\u000C", ""))
                         } else {
@@ -94,9 +95,10 @@ task gatherLicenses {
             addLicense("Fonts-SymbolAndZapfDingbats", ["COPYING"])
             addLicense("freetype", ["docs/LICENSE.TXT", "docs/GPLv2.TXT", "docs/FTL.TXT"])
             addLicense("fribidi", ["COPYING"])
-            addLicense("glib-2.0", ["COPYING", "subprojects/proxy-libintl/COPYING"])
+            addLicense("glib-2.0", ["COPYING"])
             addLicense("harfbuzz", ["COPYING"])
             addLicense("iconv", ["README", "COPYING", "COPYING.LIB"])
+            addLicense("intl", ["COPYING"])
             addLicense("lcms2", ["COPYING"])
             addLicense("libffi", ["LICENSE"])
             addLicense("libfontforge", ["LICENSE", "COPYING.gplv3"])

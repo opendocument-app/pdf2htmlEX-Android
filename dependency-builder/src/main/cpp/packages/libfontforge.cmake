@@ -17,7 +17,7 @@ set(EXTRA_ENVVARS
 )
 
 ExternalProjectAutotools(libfontforge
-  DEPENDS cairo freetype glib-2.0 iconv libjpeg libpng libtool libuninameslist libxml-2.0 pango zlib #intl
+  DEPENDS cairo freetype glib-2.0 iconv libjpeg libpng libtool libuninameslist libxml-2.0 pango zlib intl
 
   URL https://github.com/fontforge/fontforge/releases/download/20170731/fontforge-dist-20170731.tar.xz
   URL_HASH SHA256=840adefbedd1717e6b70b33ad1e7f2b116678fa6a3d52d45316793b9fd808822
