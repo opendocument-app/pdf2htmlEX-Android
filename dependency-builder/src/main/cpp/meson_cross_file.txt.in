@@ -14,10 +14,6 @@ ranlib = '@CMAKE_RANLIB@'
 
 [properties]
 needs_exe_wrapper = true
-c_args='@CFLAGS@'
-cpp_args='@CXXFLAGS@'
-c_link_args='@LDFLAGS@'
-cpp_link_args='@LDFLAGS@'
 
 [host_machine]
 system = 'android'
@@ -25,7 +21,10 @@ cpu_family = '@MESON_CPU_FAMILY@'
 cpu = '@MESON_CPU@'
 endian = '@MESON_ENDIAN@'
 
-[paths]
+[built-in options]
 prefix = '@THIRDPARTY_PREFIX@/'
-libdir = 'lib/'
-bindir = 'bin/'
+c_args='@CFLAGS@'
+cpp_args='@CXXFLAGS@'
+c_link_args='@LDFLAGS@'
+cpp_link_args='@LDFLAGS@'
+
