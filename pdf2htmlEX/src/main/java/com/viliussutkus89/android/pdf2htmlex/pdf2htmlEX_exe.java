@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX_exe.java
  *
- * Copyright (C) 2020 Vilius Sutkus'89
+ * Copyright (C) 2020 - 2021 Vilius Sutkus'89
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
     return retVal;
   }
 
-  private int Process_waitFor_Loop(Process p) {
+  private static int Process_waitFor_Loop(Process p) {
     // Process.isAlive() is only available from API 26
     while (true) {
       try {
