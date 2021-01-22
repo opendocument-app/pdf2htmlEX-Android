@@ -103,7 +103,7 @@ new file mode 100644
 new file mode 100644
 --- /dev/null
 +++ src/libpdf2htmlEX.cc
-@@ -0,0 +1,648 @@
+@@ -0,0 +1,652 @@
 +/*
 + * libpdf2htmlEX.cc
 + *
@@ -751,12 +751,16 @@ new file mode 100644
 +    return *this;
 +  }
 +
++  ConversionFailedException::~ConversionFailedException() = default;
++  DocumentCopyProtectedException::~DocumentCopyProtectedException() = default;
++  EncryptionPasswordException::~EncryptionPasswordException() = default;
++
 +} // namespace pdf2htmlEX
 \ No newline at end of file
 new file mode 100644
 --- /dev/null
 +++ src/pdf2htmlEX.h
-@@ -0,0 +1,191 @@
+@@ -0,0 +1,197 @@
 +/*
 + * pdf2htmlEX.h
 + *
@@ -936,15 +940,21 @@ new file mode 100644
 +  };
 +
 +  class ConversionFailedException : public std::runtime_error {
++  public:
 +    using std::runtime_error::runtime_error;
++    virtual ~ConversionFailedException();
 +  };
 +
 +  class DocumentCopyProtectedException : public ConversionFailedException {
++  public:
 +    using ConversionFailedException::ConversionFailedException;
++    virtual ~DocumentCopyProtectedException();
 +  };
 +
 +  class EncryptionPasswordException : public ConversionFailedException {
++  public:
 +    using ConversionFailedException::ConversionFailedException;
++    virtual ~EncryptionPasswordException();
 +  };
 +
 +} // namespace pdf2htmlEX
