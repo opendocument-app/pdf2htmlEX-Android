@@ -23,13 +23,14 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.viliussutkus89.android.executablerunner.ExecutableRunner;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /*
@@ -44,21 +45,18 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
   @Deprecated
   protected final Map<String, String> m_arguments = new LinkedHashMap<>();
 
-  private final String[] m_argumentsPrefix;
-
   private final File m_conversionLog = new File(m_pdf2htmlEX_tmpDir, "conversion.log");
+  private final File m_executable;
 
   public pdf2htmlEX_exe(@NonNull Context ctx) {
     super(ctx, null);
 
-    String nativeLibraryDir = ctx.getApplicationInfo().nativeLibraryDir;
-    File externalExecutable = new File(nativeLibraryDir, "libpdf2htmlEX-exe_not_lib.so");
+    m_executable = new File(ctx.getApplicationInfo().nativeLibraryDir, "libpdf2htmlEX-exe_not_lib.so");
+  }
 
-    m_environment.put("LD_LIBRARY_PATH", nativeLibraryDir);
-
-    m_argumentsPrefix = new String[]{
-        externalExecutable.getAbsolutePath(),
-
+  @Override
+  int convert_MakeTheActualCall(File outputHtml) throws IOException {
+    ArrayList<String> arguments = new ArrayList<>(Arrays.asList(
         "--data-dir",
         m_pdf2htmlEX_dataDir.getAbsolutePath(),
 
@@ -67,7 +65,26 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
 
         "--poppler-data-dir",
         m_poppler_dataDir.getAbsolutePath()
-    };
+    ));
+    arguments.ensureCapacity(arguments.size() +  this.m_arguments.size() * 2 + 2);
+
+    for (Map.Entry<String, String> it : this.m_arguments.entrySet()) {
+      arguments.add(it.getKey());
+      String val = it.getValue();
+      if (!val.isEmpty()) {
+        arguments.add(val);
+      }
+    }
+
+    arguments.add(this.p_inputPDF.getAbsolutePath());
+    arguments.add(outputHtml.getName());
+
+    FileOutputStream conversionStream = new FileOutputStream(this.m_conversionLog);
+
+    ExecutableRunner runner = new ExecutableRunner(this.m_executable, this.m_outputHtmlsDir);
+    runner.setStdout(conversionStream).setStderr(conversionStream);
+    runner.addEnvironmentValues(this.m_environment);
+    return runner.run(arguments);
   }
 
   @Override
@@ -123,57 +140,6 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
   public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
     this.m_arguments.put("--bg_format", backgroundFormat);
     return this;
-  }
-
-  @Override
-  int convert_MakeTheActualCall(File outputHtml) throws IOException {
-    List<String> args = new ArrayList<>(this.m_argumentsPrefix.length + this.m_arguments.size() * 2 + 2);
-
-    for (String it : this.m_argumentsPrefix) {
-      args.add(it);
-    }
-
-    for (Map.Entry<String, String> it : this.m_arguments.entrySet()) {
-      args.add(it.getKey());
-      String val = it.getValue();
-      if (!val.isEmpty()) {
-        args.add(val);
-      }
-    }
-
-    args.add(this.p_inputPDF.getAbsolutePath());
-    args.add(outputHtml.getName());
-
-    ProcessBuilder pb = new ProcessBuilder(args).redirectErrorStream(true);
-    pb.directory(m_outputHtmlsDir);
-
-    Map<String, String> env = pb.environment();
-    for (Map.Entry<String, String> e : this.m_environment.entrySet()) {
-      env.put(e.getKey(), e.getValue());
-    }
-    Process p = pb.start();
-    int retVal = Process_waitFor_Loop(p);
-
-    FileOutputStream os = new FileOutputStream(this.m_conversionLog);
-    InputStream is = p.getInputStream();
-    int bytesRead;
-    byte[] buff = new byte[16 * 1024];
-    while (-1 < (bytesRead = is.read(buff))) {
-      os.write(buff, 0, bytesRead);
-    }
-
-    return retVal;
-  }
-
-  private static int Process_waitFor_Loop(Process p) {
-    // Process.isAlive() is only available from API 26
-    while (true) {
-      try {
-        int retVal = p.waitFor();
-        return retVal;
-      } catch (InterruptedException ignored) {
-      }
-    }
   }
 
 }

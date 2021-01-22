@@ -178,6 +178,7 @@ dependencies {
     implementation 'com.viliussutkus89:tmpfile-android:3.0.1'
     implementation 'com.viliussutkus89:assetextractor-android:1.2.1'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.0'
+    implementation 'com.viliussutkus89:ExecutableRunner:1.0.1'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.1'
 
