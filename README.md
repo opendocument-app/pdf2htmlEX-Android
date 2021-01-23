@@ -12,6 +12,11 @@ Supported ABIs: armeabi-v7a, arm64-v8a, x86, x86_64.
 * Keeping installed footprint low.  
 Sample application consumes under 30MB.
 
+### C++ runtime dependency:
+[Using mismatched prebuilt libraries](https://android.googlesource.com/platform/ndk/+/master/docs/user/common_problems.md#using-mismatched-prebuilt-libraries) is less problematic if all the libraries used in the application are:
+* Built with the same toolchain - ndk-22.0.7026061
+* Linked against shared C++ STL - `android.defaultConfig.externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"` in app's (and all JNI dependencies) build.gradle.
+
 ### How to install:
 [android-sample-app/app/build.gradle](android-sample-app/app/build.gradle) contains code to load the library as a dependency in Gradle.
 ```gradle
