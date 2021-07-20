@@ -4,7 +4,7 @@
  * pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
  * Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
  *
- * Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
+ * Copyright (c) 2019 - 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -119,7 +119,7 @@ task gatherLicenses {
 }
 
 dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.1'
+    implementation 'com.viliussutkus89:tmpfile-android:3.0.4'
 }
 
 ext.gatherArtifacts = { buildType ->
