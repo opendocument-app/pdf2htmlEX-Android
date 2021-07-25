@@ -130,7 +130,7 @@ jobs:
           name: results-for-downstream-aar-${{ matrix.buildType }}-${{ matrix.abi }}
           path: dependency-builder/build/includeTheseInDownstreamAAR
 
-  build:
+  buildLibrary:
     needs: buildDependencies
     runs-on: ubuntu-20.04
     steps:
@@ -208,7 +208,7 @@ jobs:
           path: ~/.m2
 
   buildSampleApp:
-    needs: build
+    needs: buildLibrary
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -241,7 +241,7 @@ jobs:
           path: build/sampleapp-staging/app/build/reports/lint-results.html
 
   runInstrumentedTests:
-    needs: build
+    needs: buildLibrary
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-10.15
     strategy:
