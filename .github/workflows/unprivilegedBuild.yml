@@ -283,7 +283,7 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.arch }}
-          target: ${{ matrix.target }}
+          target: ${{ matrix.api-type-target }}
           script: ./gradlew connectedCheck
           working-directory: build/lib-staging
 
