@@ -73,9 +73,10 @@ jobs:
           java-version: 8
       - uses: android-actions/setup-android@v2
       - run: sdkmanager "ndk;${{env.ANDROID_NDK}}" "cmake;${{env.ANDROID_CMAKE}}"
-      - run: pip3 install --user meson
       # gperf is required by fontconfig, gettext is required by libfontforge
       - run: sudo apt-get install --yes gperf gettext
+      # apt-get offers meson-0.53.2, pdf2htmlEX-Android requires meson-0.54.2 or newer
+      - run: pip3 install --user meson
 
       - name: Cache tarballs
         uses: actions/cache@v2
