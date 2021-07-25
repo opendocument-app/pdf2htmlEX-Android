@@ -87,9 +87,9 @@ abstract class GatherLicenses extends DefaultTask {
                                 (depName == "iconv" && licenseFilename == "COPYING.LIB") ||
                                 (depName == "intl" && licenseFilename == "COPYING") ||
                                 (depName == "pango" && licenseFilename == "COPYING")) {
-                                urlVal.append(licenseText.replace("\u000C", ""))
+                                licenseTextVal.append(licenseText.replace("\u000C", ""))
                             } else {
-                                urlVal.append(licenseText)
+                                licenseTextVal.append(licenseText)
                             }
                             licenseTextVal.append("\n\n")
                         }
