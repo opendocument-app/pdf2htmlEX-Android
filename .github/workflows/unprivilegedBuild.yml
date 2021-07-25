@@ -86,6 +86,14 @@ jobs:
       - name: Build dependencies of pdf2htmlEX-Android
         run: ./gradlew dependency-builder:assemble${{ matrix.buildType }} -Pabi=${{ matrix.abi }}
 
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: dependencyBuildLogs-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: |
+            dependency-builder/.cxx/cmake/**/*-configure-*.log
+            dependency-builder/.cxx/cmake/**/*-build-*.log
+
       - name: Gather licenses
         if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
         run: ./gradlew gatherLicenses -Pabi=${{ matrix.abi }}
