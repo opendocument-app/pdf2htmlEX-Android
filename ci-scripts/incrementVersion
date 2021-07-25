@@ -1,0 +1,110 @@
+#!/usr/bin/env perl
+#  MIT License
+#
+#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#
+#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
+#  ci-scripts/incrementVersion - v1.1.5
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+#
+###########################################################################################
+### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The ###
+###########################################################################################
+#  The purpose of this script is to increment project version in library files.
+###########################################################################################
+### ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The~ #
+###########################################################################################
+
+use warnings;
+use strict;
+
+use File::Basename;
+use Getopt::Long;
+use lib File::Basename::dirname(__FILE__) . '/lib';
+use fileUpdater;
+use getVersion;
+
+sub usage {
+    my $bn = File::Basename::basename(__FILE__);
+    print STDERR "./$bn --major | --minor | --patch\n";
+    print STDERR "\t--major to increment major number, set minor and patch numbers to zero and increment versionCode by 100.\n";
+    print STDERR "\t--minor to increment minor number, set patch to zero and increment versionCode by 10.\n";
+    print STDERR "\t--patch to increment patch number and increment versionCode by 1.\n";
+    print STDERR "\n";
+    print STDERR "./$bn requestedVersion requestedVersionCode\n";
+    print STDERR "\t to set a specific version and versionCode, for example \"./$bn 0.4.2 55\".\n";
+    exit 1;
+}
+
+# $oldVersion, $oldVersionCode - pre increment, possibly released
+# $newVersion, $newVersionCode - post increment, to be used for upcoming dev builds
+my $oldVersion = getVersion::getVersion();
+my $oldVersionCode = getVersion::getVersionCode();
+my ($newVersion, $newVersionCode);
+
+my ($upMajor, $upMinor, $upPatch, $help, $requestedVersion, $requestedVersionCode);
+Getopt::Long::GetOptions(major => \$upMajor, minor => \$upMinor, patch => \$upPatch, 'help' => \$help) or usage;
+if (defined $help) {
+    usage();
+}
+
+my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
+if (defined $upMajor) {
+    $major = $major + 1;
+    $newVersion = "${major}.0.0";
+    $newVersionCode = $oldVersionCode + 100;
+}
+elsif (defined $upMinor) {
+    $minor = $minor + 1;
+    $newVersion = "${major}.${minor}.0";
+    $newVersionCode = $oldVersionCode + 10;
+}
+elsif (defined $upPatch) {
+    $patch_ = $patch_ + 1;
+    $newVersion = "${major}.${minor}.${patch_}";
+    $newVersionCode = $oldVersionCode + 1;
+}
+else {
+    $newVersion = shift or usage();
+    $newVersionCode = shift or usage();
+}
+usage if (@ARGV);
+
+print "::set-output name=oldVersion::$oldVersion\n";
+print "::set-output name=oldVersionCode::$oldVersionCode\n";
+print "::set-output name=newVersion::$newVersion\n";
+print "::set-output name=newVersionCode::$newVersionCode\n";
+
+my $rootDirectory = File::Basename::dirname(pathResolver::getAbsolutePath(File::Basename::dirname(__FILE__)));
+my $versionIncrementer = fileUpdater->new({ rootDirectory => $rootDirectory });
+
+$versionIncrementer->update('build.gradle', sub {
+    $_ = shift;
+    s/^(version\s*=\s*['"])${oldVersion}(['"])$/${1}${newVersion}$2/;
+    return $_;
+});
+
+$versionIncrementer->update('pdf2htmlEX/build.gradle', sub {
+    $_ = shift;
+    s/^(\s+versionCode\s+)${oldVersionCode}$/${1}${newVersionCode}/;
+    return $_;
+});
+
+print "::set-output name=files::build.gradle pdf2htmlEX/build.gradle\n";

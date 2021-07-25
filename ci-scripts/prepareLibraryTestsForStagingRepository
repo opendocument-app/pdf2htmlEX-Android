@@ -1,0 +1,114 @@
+#!/usr/bin/env perl
+#  MIT License
+#
+#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#
+#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
+#  ci-scripts/prepareLibraryTestsForStagingRepository - v1.1.5
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+#
+###########################################################################################
+### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The ###
+###########################################################################################
+#  The purpose of this script is to run instrumented tests from some project against
+#  a library published in a repository.
+#  This is needed because of two reasons:
+#  1. Assurance that the library published in a repository can actually pass the tests.
+#  2. Separation of build and instrumented testing phases, enabling parallel testing jobs.
+###########################################################################################
+### ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The~ #
+###########################################################################################
+
+use warnings;
+use strict;
+
+use File::Basename;
+use Getopt::Long;
+use lib File::Basename::dirname(__FILE__) . '/lib';
+use fileUpdater;
+use getVersion;
+use pathResolver;
+use repositoryInputParser;
+
+sub usage {
+    print STDERR './', File::Basename::basename(__FILE__), " projectName [--repository=mavenLocal] [--output=build/lib-staging] [--suffix=aartesting]\n";
+    print STDERR "\tMandatory: projectName is the project containing instrumented tests\n";
+    print STDERR "\tOptional: repository can be either mavenLocal or https://www.example.org\n";
+    print STDERR "\tOptional: output is the path of generated output. Absolute or relative.\n";
+    print STDERR "\tOptional: suffix is applied to processed java classes, rootProject.name and package name in AndroidManifest.xml\n";
+    exit 1;
+}
+
+my $rootDirectory = getAbsolutePathOfBasedir(__FILE__, 2);
+my ($projectName, $help);
+my $repository = 'mavenLocal';
+my $outputDirectory = 'build/lib-staging';
+my $suffix = 'aartesting';
+my $version = getVersion();
+Getopt::Long::GetOptions('repository=s' => \$repository, 'output=s' => \$outputDirectory, 'suffix=s' => \$suffix, 'help' => \$help) or usage;
+if (defined $help) {
+    usage();
+}
+$projectName = shift @ARGV or do {
+    print STDERR "Missing mandatory argument projectName!\n";
+    usage();
+};
+$repository = repositoryInputParser::parseRepository($repository) or usage();
+
+my $aarStaging = fileUpdater->new({
+    rootDirectory   => $rootDirectory,
+    outputDirectory => $outputDirectory
+});
+$aarStaging->update([ 'gradle', 'gradlew', 'gradle.properties' ]);
+$aarStaging->update('build.gradle', sub {
+    $_ = shift;
+    s/\/\/#STAGING-REPOSITORY#/$repository/;
+    return $_;
+});
+$aarStaging->update('settings.gradle', sub {
+    $_ = shift;
+    s/^(rootProject\.name\s*=\s*["'].+)(["'])$/${1}${suffix}${2}/;
+    return $_;
+});
+
+$aarStaging->update("$projectName/build.gradle", sub {
+    $_ = shift;
+    s@//#UNCOMMENT-DURING-STAGING#@@;
+    s@#STAGING-VERSION#@$version@;
+    return $_;
+});
+
+$aarStaging->update("$projectName/src/main/AndroidManifest.xml", sub {
+    $_ = shift;
+    s/(package=["'].+)(["'])/${1}.${suffix}${2}/;
+    return $_;
+});
+
+$aarStaging->update("$projectName/src/androidTest/java", sub {
+    $_ = shift;
+    s/^package (.+);$/package ${1}.${suffix};\nimport $1.*;/;
+    return $_;
+}, sub {
+    $_ = shift;
+    $_ = dirname($_) . '/' . $suffix . '/' . basename($_);
+    return $_;
+});
+
+$aarStaging->update(["$projectName/src/androidTest/assets", "$projectName/src/main/assets"]);

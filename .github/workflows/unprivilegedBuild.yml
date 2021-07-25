@@ -1,0 +1,281 @@
+#  MIT License
+#
+#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#
+#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
+#  .github/workflows/unprivilegedBuild.yml - v1.1.5
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
+name: unprivilegedBuild
+on:
+  workflow_dispatch:
+  push:
+#    branches-ignore: master
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/manualVersionIncrement*.yml'
+      - '.github/workflows/privilegedBuild.yml'
+
+env:
+  ANDROID_NDK:        "22.1.7171670"
+  ANDROID_CMAKE:      "3.10.2.4988404"
+  TARBALL_CACHE_KEY:  "tarballs-key-3"
+
+permissions:
+  actions: none
+  checks: none
+  contents: none
+  deployments: none
+  issues: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  buildDependencies:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        abi: [ x86, x86_64, armeabi-v7a, arm64-v8a ]
+        buildType: [ Debug, Release ]
+        include:
+          - buildType: Debug
+            CMakeBuildType: Debug
+          - buildType: Release
+            CMakeBuildType: MinSizeRel
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 8
+      - uses: android-actions/setup-android@v2
+      - run: sdkmanager "ndk;${{env.ANDROID_NDK}}" "cmake;${{env.ANDROID_CMAKE}}"
+      - run: sudo -H pip3 install meson
+
+      - name: Cache tarballs
+        uses: actions/cache@v2
+        with:
+          key: ${{ env.TARBALL_CACHE_KEY }}
+          path: dependency-builder/src/main/cpp/tarballs
+
+      - run: ./dodownloadtarballs --serial
+
+      - name: Build dependencies of pdf2htmlEX-Android
+        run: ./gradlew dependency-builder:assemble${{ matrix.buildType }} -Pabi=${{ matrix.abi }}
+
+      - name: Gather licenses
+        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
+        run: ./gradlew gatherLicenses -Pabi=${{ matrix.abi }}
+
+      - name: Artifact gathered licenses
+        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: licenses
+          path: dependency-builder/build/licenses.xml
+
+      - name: Prepare built dependencies for artifacting
+        run: |
+          mkdir -p i/${{ matrix.abi }}/{bin,include,lib,share}
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config i/${{ matrix.abi }}/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config-dynamic i/${{ matrix.abi }}/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig i/${{ matrix.abi }}/lib/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pkgconfig i/${{ matrix.abi }}/share/
+
+      - name: Artifact built dependencies
+        uses: actions/upload-artifact@v2
+        with:
+          name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: i
+
+      - name: Artifact assets
+        uses: actions/upload-artifact@v2
+        with:
+          name: results-for-downstream-aar-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: dependency-builder/build/includeTheseInDownstreamAAR
+
+  build:
+    needs: buildDependencies
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 8
+      - uses: android-actions/setup-android@v2
+      - run: sdkmanager "ndk;${{env.ANDROID_NDK}}" "cmake;${{env.ANDROID_CMAKE}}"
+
+      - name: Cache tarballs
+        uses: actions/cache@v2
+        with:
+          key: ${{ env.TARBALL_CACHE_KEY }}
+          path: dependency-builder/src/main/cpp/tarballs
+
+      - run: ./dodownloadtarballs --serial
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Print out downloaded artifacts for debugging purposes
+        run: find artifacts
+
+      - name: Prepare downloaded artifacts
+        run: |
+          mkdir -p dependency-builder/build
+          mv artifacts/licenses/licenses.xml dependency-builder/build
+
+          mkdir -p dependency-builder/build/installed/{Debug,MinSizeRel}
+          mv artifacts/installed-dependencies-Debug-x86/x86                   dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-x86_64/x86_64             dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-armeabi-v7a/armeabi-v7a   dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Debug-arm64-v8a/arm64-v8a       dependency-builder/build/installed/Debug/
+          mv artifacts/installed-dependencies-Release-x86/x86                 dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-x86_64/x86_64           dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-armeabi-v7a/armeabi-v7a dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/installed-dependencies-Release-arm64-v8a/arm64-v8a     dependency-builder/build/installed/MinSizeRel/
+
+          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/{debug,release}/{assets,jniLibs}
+          mv artifacts/results-for-downstream-aar-Debug-x86/debug/assets/x86                      dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/assets/x86_64                dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/assets/armeabi-v7a      dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/assets/arm64-v8a          dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
+          mv artifacts/results-for-downstream-aar-Debug-x86/debug/jniLibs/x86                     dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/jniLibs/x86_64               dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/jniLibs/armeabi-v7a     dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/jniLibs/arm64-v8a         dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-x86/release/assets/x86                  dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-x86_64/release/assets/x86_64            dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/assets/armeabi-v7a  dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/assets/arm64-v8a      dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
+          mv artifacts/results-for-downstream-aar-Release-x86/release/jniLibs/x86                 dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-x86_64/release/jniLibs/x86_64           dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/jniLibs/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/jniLibs/arm64-v8a     dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+
+          find dependency-builder/build/installed -type f -name 'pkg-config' -exec chmod +x {} \;
+          find dependency-builder/build/installed -type f -name 'pkg-config-dynamic' -exec chmod +x {} \;
+
+      - run: ./gradlew build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: library-lint-report.html
+          path: pdf2htmlEX/build/reports/lint-results.html
+
+      - run: ./gradlew publishToMavenLocal
+      - uses: actions/upload-artifact@v2
+        with:
+          name: maven-local
+          path: ~/.m2
+
+  buildSampleApp:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 8
+      - uses: android-actions/setup-android@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: maven-local
+          path: ~/.m2
+
+      - name: Prepare sample app for staging repository
+        run: ./ci-scripts/prepareSampleAppForStagingRepository android-sample-app app --output=build/sampleapp-staging --repository=mavenLocal
+
+      - name: Build sample app from staging library
+        run: ./gradlew build
+        working-directory: build/sampleapp-staging
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sampleapp-staging-apks
+          path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sampleapp-lint-report.html
+          path: build/sampleapp-staging/app/build/reports/lint-results.html
+
+  staging:
+    needs: build
+    # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
+    runs-on: macos-10.15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest API supported by NDK
+          - arch: x86
+            api-level: 16
+            api-type-target: default
+          # Oldest x86_64 image
+          - arch: x86_64
+            api-level: 21
+            api-type-target: default
+          # Latest x86 image
+          - arch: x86
+            api-level: 30
+            api-type-target: google_apis
+          # Latest image
+          - arch: x86_64
+            api-level: 31
+            api-type-target: google_apis
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 8
+      - uses: android-actions/setup-android@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: maven-local
+          path: ~/.m2
+
+      - run: ./ci-scripts/prepareLibraryTestsForStagingRepository pdf2htmlEX --output=build/lib-staging --repository=mavenLocal
+
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.arch }}
+          target: ${{ matrix.target }}
+          script: ./gradlew connectedCheck
+          working-directory: build/lib-staging
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}
+          path: build/lib-staging/lib/build/reports/androidTests/connected

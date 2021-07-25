@@ -23,7 +23,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        
+        //#STAGING-REPOSITORY#
+        // The line above is a placeholder token for ci-scripts/prepareSampleAppForStagingRepository
+        // It will be replaced by either "mavenLocal()" or
+        // "maven { url 'https://oss.sonatype.org/service/local/repositories/comviliussutkus89-????/content/' }"
     }
 }
 

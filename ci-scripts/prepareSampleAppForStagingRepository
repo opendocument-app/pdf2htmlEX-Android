@@ -1,0 +1,113 @@
+#!/usr/bin/env perl
+#  MIT License
+#
+#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#
+#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
+#  ci-scripts/prepareSampleAppForStagingRepository - v1.1.5
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+#
+###########################################################################################
+### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The ###
+###########################################################################################
+#  The purpose of this script is to build an application against a library in staging state.
+#  This is needed to verify that the library either in mavenLocal or a remote staging
+#  repository can be used to build the application.
+#  Version of the sample application is set to library version with a s '-STAGING' suffix.
+###########################################################################################
+### ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The~ #
+###########################################################################################
+
+use warnings;
+use strict;
+
+use File::Basename;
+use Getopt::Long;
+use lib File::Basename::dirname(__FILE__) . '/lib';
+use fileUpdater;
+use getVersion;
+use repositoryInputParser;
+
+sub usage {
+    print STDERR './', File::Basename::basename(__FILE__), " rootDirectory appProjectName [--repository=mavenLocal] [--output=build/staging-app]\n";
+    print STDERR "\tMandatory: rootDirectory is the root directory containing the app. Absolute or relative.\n";
+    print STDERR "\tMandatory: appProjectName is the android app project in the rootDirectory.\n";
+    print STDERR "\tOptional: repository can be either mavenLocal or https://www.example.org.\n";
+    print STDERR "\tOptional: output is the path of generated output. Absolute or relative.\n";
+    exit 1;
+}
+
+my ($rootDirectory, $appProjectName, $help);
+my $repository = 'mavenLocal';
+my $outputDirectory = 'build/staging-app';
+my $version = getVersion();
+my $appVersion = $version . '-STAGING';
+
+Getopt::Long::GetOptions('repository=s' => \$repository, 'output=s' => \$outputDirectory, 'help' => \$help) or usage;
+if (defined $help) {
+    usage();
+}
+$rootDirectory = shift @ARGV or do {
+    print STDERR "Missing mandatory argument rootDirectory!\n";
+    usage();
+};
+$appProjectName = shift @ARGV or do {
+    print STDERR "Missing mandatory argument appProjectName!\n";
+    usage();
+};
+-e "${rootDirectory}/${appProjectName}" || die("Project $appProjectName was not found in root directory $rootDirectory!\n");
+$repository = repositoryInputParser::parseRepository($repository) or usage();
+
+my $sampleAppStaging = fileUpdater->new({
+    rootDirectory   => $rootDirectory,
+    outputDirectory => $outputDirectory
+});
+
+$sampleAppStaging->update([ 'gradle', 'gradlew', 'gradle.properties' ]);
+$sampleAppStaging->update('build.gradle', sub {
+    $_ = shift;
+    s/\/\/#STAGING-REPOSITORY#/$repository/;
+    return $_;
+});
+$sampleAppStaging->update('settings.gradle', sub {
+    $_ = shift;
+    s/^(rootProject\.name\s*=\s*[\"\'].+)([\"\'])$/${1}-staging-aar${2}/;
+    return $_;
+});
+
+$sampleAppStaging->update($appProjectName, undef, sub {
+    $_ = shift;
+    # Exclude sampleapp/app/build/
+    if (/$appProjectName\/build\//) {
+        return undef;
+    }
+    # Exclude sampleapp/app/build.gradle, because it will be added by the next update call
+    if (/$appProjectName\/build\.gradle$/) {
+        return undef;
+    }
+    return $_;
+});
+
+$sampleAppStaging->update("$appProjectName/build.gradle", sub {
+    $_ = shift;
+    s/(versionName\s+["']).+(["'])/${1}${appVersion}${2}/;
+    s/(implementation\s+["']com\.viliussutkus89:pdf2htmlex-android:).+(["'])/${1}${version}${2}/;
+    return $_;
+});

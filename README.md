@@ -1,7 +1,6 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
-![Build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/workflows/Build/badge.svg)
-[![Download](https://api.bintray.com/packages/viliussutkus89/maven-repo/pdf2htmlex-android/images/download.svg)](https://bintray.com/viliussutkus89/maven-repo/pdf2htmlex-android/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
 
 ### Goals:
 * Providing easy to use interface for downstream users.  
@@ -25,12 +24,13 @@ dependencies {
 }
 ```
 
-pdf2htmlEX-Android is distributed using [JCenter](https://jcenter.bintray.com) Maven repository.  
+pdf2htmlEX-Android is distributed using [Maven Central](https://search.maven.org/artifact/com.viliussutkus89/pdf2htmlex-android) repository.  
 It needs be added to [top level build.gradle](android-sample-app/build.gradle)
 ```gradle
 allprojects {
   repositories {
-      jcenter()
+      // ...
+      mavenCentral()
   }
 }
 ```

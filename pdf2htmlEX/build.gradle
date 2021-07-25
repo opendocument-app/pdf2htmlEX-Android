@@ -19,12 +19,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-version = '0.18.13'
 group = 'com.viliussutkus89'
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -43,7 +43,7 @@ android {
         ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
         externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
-
+    //#UNCOMMENT-DURING-STAGING# /*
     buildTypes.release.externalNativeBuild {
       cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
     }
@@ -51,6 +51,7 @@ android {
         path "src/main/cpp/CMakeLists.txt"
         version "3.10.2"
     }
+    ndkVersion "22.0.7026061"
     sourceSets {
         release {
             jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs"
@@ -61,127 +62,126 @@ android {
             assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + android.defaultConfig.ndk.abiFilters[0]
         }
     }
-    ndkVersion "22.0.7026061"
+    //#UNCOMMENT-DURING-STAGING# */
     buildFeatures.prefab true
 }
 
+configurations {
+    javadocDependenciesToObtainClasspath
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
+    implementation 'com.viliussutkus89:tmpfile-android:3.0.4'
+    implementation 'com.viliussutkus89:assetextractor-android:1.3.2'
+    implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
+    implementation 'com.viliussutkus89:ExecutableRunner:1.0.3'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    javadocDependenciesToObtainClasspath 'androidx.annotation:annotation:1.2.0'
+    javadocDependenciesToObtainClasspath 'com.getkeepsafe.relinker:relinker:1.4.4'
+    javadocDependenciesToObtainClasspath 'com.viliussutkus89:tmpfile-android:3.0.4'
+    javadocDependenciesToObtainClasspath 'com.viliussutkus89:assetextractor-android:1.3.2'
+    javadocDependenciesToObtainClasspath 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
+    javadocDependenciesToObtainClasspath 'com.viliussutkus89:ExecutableRunner:1.0.3'
+
+    //#UNCOMMENT-DURING-STAGING# /*
+    compileOnly project(":dependency-builder")
+    //#UNCOMMENT-DURING-STAGING# */ implementation 'com.viliussutkus89:pdf2htmlex-android:#STAGING-VERSION#'
+    // The line above is used by the ci-scripts/prepareLibraryForStagingRepository
+}
+
 task sourceJar(type: Jar) {
+    archiveClassifier.set('sources')
     into ("", { from android.sourceSets.main.java.srcDirs} )
     into ("", { from file("../LICENSE")})
     into ("cpp", { from fileTree(dir: "src/main/cpp/") } )
     into ("dependency-builder", { from fileTree(dir: "../dependency-builder/src/main/cpp/") } )
-    archiveBaseName = rootProject.name
-    archiveClassifier = 'sources'
 }
 
 task javadoc(type: Javadoc) {
     options.encoding = 'UTF-8'
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.javadocDependenciesToObtainClasspath
     title = "${rootProject.name} ${project.version} API"
+    failOnError = false
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
 
-    publications = ['projectRelease']
+                artifactId rootProject.name
+                version = rootProject.version
 
-    pkg {
-        repo = 'maven-repo'
-        name = rootProject.name
-        desc = 'Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format'
+                artifact sourceJar
+                artifact javadocJar
 
-        websiteUrl = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
-        vcsUrl = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
-        issueTrackerUrl = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues'
+                pom {
+                    name = rootProject.name
+                    description = 'Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format'
+                    url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
+                    packaging = 'aar'
+                    inceptionYear = '2019'
+                    developers {
+                        developer {
+                            id = "ViliusSutkus89"
+                            name = "Vilius Sutkus"
+                            email = "ViliusSutkus89@gmail.com"
+                        }
+                    }
+                    scm {
+                        url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
+                        connection = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
+                    }
+                }
+            }
+        }
+    }
 
-        licenses = ['GPL-3.0-only']
-        labels = ['pdf', 'html', 'pdf-document-processor', 'android', 'library', 'pdf-conversion-library']
-
-        publish = true
-
-        version {
-            name = this.version
-            released = new Date()
-            vcsTag = "v${this.version}"
+    // This may look ugly...
+    // but useInMemoryPgpKeys expects valid keys even with required { false }
+    if (System.getenv('SIGNING_KEY')) {
+        signing {
+            required { true }
+            useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
+            sign publishing.publications.release
         }
     }
 }
 
-publishing{
-    publications {
-        projectRelease(MavenPublication) {
-            artifactId rootProject.name
-            artifact "$buildDir/outputs/aar/${rootProject.name}-release.aar"
-            artifact sourceJar
-            artifact javadocJar
-            pom {
-                packaging = 'aar'
-                url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
-                inceptionYear = '2019'
-                developers {
-                    developer {
-                        id = "ViliusSutkus89"
-                        name = "Vilius Sutkus"
-                        email = "ViliusSutkus89@gmail.com"
-                    }
-                }
-                scm {
-                    url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
-                    connection = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
-                }
-            }
+//#UNCOMMENT-DURING-STAGING# /*
+tasks.whenTaskAdded { task ->
+    if (task.name == 'generatePomFileForReleasePublication') {
+        def gatherLicenses = tasks.getByPath(":dependency-builder:gatherLicenses")
+        task.dependsOn(gatherLicenses)
+        task.doFirst {
             pom.withXml {
-                def node = asNode()
-
-                def licensesNode = node.appendNode("licenses")
+                def licensesNode = asNode().appendNode('licenses')
                 def thisProjLicense = licensesNode.appendNode('license')
-
                 thisProjLicense.appendNode('name', 'pdf2htmlEX-Android')
-                thisProjLicense.appendNode('url', "pdf2htmlEX-Android/LICENSE\n\n" + new File("$projectDir/../LICENSE").getText('UTF-8') + "\n\n")
+                thisProjLicense.appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
                 thisProjLicense.appendNode('distribution', 'repo')
 
-                new XmlSlurper().parse("$projectDir/../dependency-builder/build/licenses.xml").license.each {
+                new XmlSlurper().parse(gatherLicenses.getOutputXmlFile().get().asFile).license.each {
                     def license = licensesNode.appendNode('license')
-                    license.appendNode('name', it.name)
-                    license.appendNode('url', it.url)
-                    if (it.distribution) {
-                        license.appendNode('distribution', it.distribution)
-                    }
-                }
-
-                def dependenciesNode = node.appendNode('dependencies')
-                // Iterate over the implementation dependencies (we don't want the test ones),
-                // adding a <dependency> node for each
-                configurations.implementation.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included in the pom.
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
+                    license.appendNode('name', it.dependencyName)
+                    license.appendNode('url', it.licenseText)
+                    license.appendNode('distribution', 'repo')
                 }
             }
         }
     }
 }
-
-dependencies {
-    compileOnly project(":dependency-builder")
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.4'
-    implementation 'com.viliussutkus89:assetextractor-android:1.3.2'
-    implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
-    implementation 'com.viliussutkus89:ExecutableRunner:1.0.3'
-    implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-}
+//#UNCOMMENT-DURING-STAGING# */

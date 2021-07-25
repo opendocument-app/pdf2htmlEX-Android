@@ -1,0 +1,25 @@
+# Why three similar workflows?
+# https://github.community/t/can-workflow-dispatch-input-be-option-list/127338
+
+name: versionIncrement_minor
+on: workflow_dispatch
+
+jobs:
+  versionIncrement_minor:
+    permissions:
+      # Needed to make a version increment commit
+      contents: write
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # A branch is required for post release version increment commit
+          ref: ${{ github.event.ref }}
+
+      - run: ./ci-scripts/incrementVersion --minor
+        id: version
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Increment version to ${{ steps.version.outputs.unreleasedVersion }} (from ${{ steps.version.outputs.releasedVersion }})"
+          file_pattern: ${{ steps.version.outputs.files }}
