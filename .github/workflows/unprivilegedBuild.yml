@@ -73,7 +73,7 @@ jobs:
           java-version: 8
       - uses: android-actions/setup-android@v2
       - run: sdkmanager "ndk;${{env.ANDROID_NDK}}" "cmake;${{env.ANDROID_CMAKE}}"
-      - run: sudo -H pip3 install meson
+      - run: pip3 install --user meson
 
       - name: Cache tarballs
         uses: actions/cache@v2
