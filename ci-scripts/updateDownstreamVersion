@@ -70,4 +70,4 @@ $versionUpdater->update('android-sample-app/app/build.gradle', sub {
     return $_;
 });
 
-print "::set-output name=files::README.md android-sampleapp/app/build.gradle\n";
+print "::set-output name=files::README.md android-sample-app/app/build.gradle\n";
