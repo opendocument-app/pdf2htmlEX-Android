@@ -303,7 +303,7 @@ jobs:
           script: ./gradlew connectedCheck
           working-directory: build/lib-staging
 
-      - run: tar -cvf instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar build/lib-staging/lib/build/reports/androidTests/connected
+      - run: tar -cvf instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar build/lib-staging/pdf2htmlEX/build/reports/androidTests/connected
         if: always()
       - uses: actions/upload-artifact@v2
         if: always()
