@@ -21,6 +21,7 @@ android {
         }
     }
     lintOptions.abortOnError false
+    buildTypes.release.minifyEnabled true
 
     if (System.getenv('APP_SIGNING_KEYFILE') && System.getenv('APP_SIGNING_ALIAS') && System.getenv('APP_SIGNING_PASS')) {
         signingConfigs {
