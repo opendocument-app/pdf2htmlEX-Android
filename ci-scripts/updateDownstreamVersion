@@ -58,7 +58,7 @@ $versionUpdater->update('README.md', sub {
     return $_;
 });
 
-$versionUpdater->update('android-sampleapp/app/build.gradle', sub {
+$versionUpdater->update('android-sample-app/app/build.gradle', sub {
     $_ = shift;
     # Update versionName and versionCode of sample application to have the same version as the library.
     # Purely for semantic reasons.
