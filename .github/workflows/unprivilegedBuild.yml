@@ -27,7 +27,7 @@ name: unprivilegedBuild
 on:
   workflow_dispatch:
   push:
-#    branches-ignore: master
+    branches-ignore: master
     paths-ignore:
       - '**.md'
       - '.github/workflows/manualVersionIncrement*.yml'
