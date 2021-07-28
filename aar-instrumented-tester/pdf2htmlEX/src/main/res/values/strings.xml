@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">pdf2htmlEX sample app</string>
-    <string name="open_pdf">Convert and open</string>
-    <string name="save_converted_pdf">Convert and save</string>
-    <string name="show_licenses">Show licenses</string>
-</resources>

@@ -1,2 +1,0 @@
-include ":pdf2htmlEX"
-rootProject.name = "aar-instrumented-tester"
