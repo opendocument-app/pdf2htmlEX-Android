@@ -20,7 +20,6 @@ android {
             universalApk true
         }
     }
-    ndkVersion "22.0.7026061"
     lintOptions.abortOnError false
 
     if (System.getenv('APP_SIGNING_KEYFILE') && System.getenv('APP_SIGNING_ALIAS') && System.getenv('APP_SIGNING_PASS')) {
