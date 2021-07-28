@@ -3,7 +3,7 @@
 #  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/privilegedBuild.yml - v1.1.7
+#  .github/workflows/privilegedBuild.yml - v1.1.8
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -421,6 +421,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
-          name: "${{ github.event.repository.name }} v${{ steps.updateDownstreamVersion.outputs.version }}"
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
           allowUpdates: true
           artifacts: "android-sample-app/app/build/outputs/apk/**/*.apk,sampleapp-lint-report.html"
