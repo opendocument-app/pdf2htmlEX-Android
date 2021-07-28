@@ -3,7 +3,7 @@
 #  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/unprivilegedBuild.yml - v1.1.5
+#  .github/workflows/unprivilegedBuild.yml - v1.1.7
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -196,10 +196,11 @@ jobs:
 
       - run: ./gradlew build
 
+      - run: mv pdf2htmlEX/build/reports/lint-results.html library-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: library-lint-report.html
-          path: pdf2htmlEX/build/reports/lint-results.html
+          path: library-lint-report.html
 
       - run: ./gradlew publishToMavenLocal
       - uses: actions/upload-artifact@v2
@@ -235,10 +236,11 @@ jobs:
           name: sampleapp-staging-apks
           path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
 
+      - run: mv build/sampleapp-staging/app/build/reports/lint-results.html sampleapp-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: sampleapp-lint-report.html
-          path: build/sampleapp-staging/app/build/reports/lint-results.html
+          path: sampleapp-lint-report.html
 
   runInstrumentedTests:
     needs: buildLibrary
