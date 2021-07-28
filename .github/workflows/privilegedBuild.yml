@@ -344,6 +344,9 @@ jobs:
       - uses: ViliusSutkus89/WaitForURLsToBeAvailable@v1
         with:
           URLs: ${{ needs.releaseSonatype.outputs.ARTIFACTS }}
+          # First attempt to promote pdf2htmlEX-Android didn't go through in 30 minutes
+          # Raise the timeout to TenMinuteWait + tryCount
+          tryCount: 60
 
       - run: ./ci-scripts/updateDownstreamVersion
         id: updateDownstreamVersion
