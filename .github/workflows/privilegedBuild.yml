@@ -240,7 +240,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: zulu
-          java-version: 8
+          java-version: 11
       - uses: android-actions/setup-android@v2
 
       - name: Prepare sample app for staging repository
@@ -397,7 +397,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: zulu
-          java-version: 8
+          java-version: 11
       - uses: android-actions/setup-android@v2
 
       - id: decodeSampleAppKeystore
