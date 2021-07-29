@@ -3,7 +3,7 @@
 #  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/unprivilegedBuild.yml - v1.1.7
+#  .github/workflows/unprivilegedBuild.yml - v1.1.8
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -227,8 +227,8 @@ jobs:
       - name: Prepare sample app for staging repository
         run: ./ci-scripts/prepareSampleAppForStagingRepository android-sample-app app --output=build/sampleapp-staging --repository=mavenLocal
 
-      - name: Build sample app from staging library
-        run: ./gradlew build
+      - name: Build and lint sample app from staging library
+        run: ./gradlew build lintRelease
         working-directory: build/sampleapp-staging
 
       - uses: actions/upload-artifact@v2
@@ -236,7 +236,7 @@ jobs:
           name: sampleapp-staging-apks
           path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
 
-      - run: mv build/sampleapp-staging/app/build/reports/lint-results.html sampleapp-lint-report.html
+      - run: mv build/sampleapp-staging/app/build/reports/lint-results-release.html sampleapp-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: sampleapp-lint-report.html

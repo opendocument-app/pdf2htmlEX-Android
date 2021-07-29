@@ -246,8 +246,8 @@ jobs:
       - name: Prepare sample app for staging repository
         run: ./ci-scripts/prepareSampleAppForStagingRepository android-sample-app app --output=build/sampleapp-staging --repository=${{ needs.buildLibrary.outputs.STAGING_REPO_URL }}
 
-      - name: Build sample app from staging library
-        run: ./gradlew build
+      - name: Build and lint sample app from staging library
+        run: ./gradlew build lintRelease
         working-directory: build/sampleapp-staging
 
       - uses: actions/upload-artifact@v2
@@ -255,7 +255,7 @@ jobs:
           name: sampleapp-staging-apks
           path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
 
-      - run: mv build/sampleapp-staging/app/build/reports/lint-results.html sampleapp-staging-lint-report.html
+      - run: mv build/sampleapp-staging/app/build/reports/lint-results-release.html sampleapp-staging-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: sampleapp-staging-lint-report.html
@@ -407,14 +407,14 @@ jobs:
         env:
           APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
 
-      - run: ./gradlew build
+      - run: ./gradlew build lintRelease
         working-directory: android-sample-app
         env:
           APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
           APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
           APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
-      - run: mv android-sample-app/app/build/reports/lint-results.html sampleapp-lint-report.html
+      - run: mv android-sample-app/app/build/reports/lint-results-release.html sampleapp-lint-report.html
 
       - name: Attach sample application to GitHub Release
         uses: ncipollo/release-action@v1
