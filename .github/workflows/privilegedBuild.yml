@@ -35,7 +35,7 @@ on:
 
 env:
   ANDROID_NDK:        "22.1.7171670"
-  ANDROID_CMAKE:      "3.10.2.4988404"
+  ANDROID_CMAKE:      "3.18.1"
   TARBALL_CACHE_KEY:  "tarballs-key-3"
 
 permissions:
