@@ -94,8 +94,8 @@ jobs:
         with:
           name: dependencyBuildLogs-${{ matrix.buildType }}-${{ matrix.abi }}
           path: |
-            dependency-builder/.cxx/cmake/**/*-configure-*.log
-            dependency-builder/.cxx/cmake/**/*-build-*.log
+            dependency-builder/.cxx/**/*-configure-*.log
+            dependency-builder/.cxx/**/*-build-*.log
 
       - name: Gather licenses
         if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
