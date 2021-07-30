@@ -83,7 +83,7 @@ Debug build of sample application is available in [Releases Page](https://github
 ### Tools to build from source:
 * Meson Build system (version 0.54.2 or newer)
 * pkg-config
-* CMake-3.18.1
+* CMake-3.21.0
 * ndk-22.1.7171670
 * gettext
 * gperf

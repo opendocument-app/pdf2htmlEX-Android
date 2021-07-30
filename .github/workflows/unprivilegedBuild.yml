@@ -194,9 +194,9 @@ jobs:
           find dependency-builder/build/installed -type f -name 'pkg-config' -exec chmod +x {} \;
           find dependency-builder/build/installed -type f -name 'pkg-config-dynamic' -exec chmod +x {} \;
 
-      - run: ./gradlew build
+      - run: ./gradlew build lintRelease
 
-      - run: mv pdf2htmlEX/build/reports/lint-results.html library-lint-report.html
+      - run: mv pdf2htmlEX/build/reports/lint-results-release.html library-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: library-lint-report.html

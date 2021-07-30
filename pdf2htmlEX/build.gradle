@@ -27,7 +27,7 @@ apply plugin: 'signing'
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    buildToolsVersion "31.0.0"
 
     defaultConfig {
         minSdkVersion 16
@@ -49,7 +49,7 @@ android {
     }
     externalNativeBuild.cmake {
         path "src/main/cpp/CMakeLists.txt"
-        version "3.18.1"
+        version "3.21.0"
     }
     ndkVersion "22.1.7171670"
     sourceSets {
