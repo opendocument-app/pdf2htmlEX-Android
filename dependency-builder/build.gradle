@@ -141,10 +141,6 @@ ext.gatherArtifacts = { buildType ->
 
     android.defaultConfig.ndk.abiFilters.each { abi ->
         copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/lib/libintl.so")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
-        }
-        copy {
             from("$buildDir/installed/$CMakeBuildType/$abi/lib/libpdf2htmlEX.so")
             into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
         }
