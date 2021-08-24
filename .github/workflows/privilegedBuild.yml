@@ -139,6 +139,7 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
       - run: sdkmanager "ndk;${{env.ANDROID_NDK}}"
+      - run: pip3 install --user ninja
 
       - name: Cache tarballs
         uses: actions/cache@v2
