@@ -101,28 +101,28 @@ jobs:
 
       - name: Prepare built dependencies for artifacting
         run: |
-          mkdir -p i/${{ matrix.abi }}/{bin,etc,include,lib,share}
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config i/${{ matrix.abi }}/bin/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config-dynamic i/${{ matrix.abi }}/bin/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig i/${{ matrix.abi }}/lib/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pkgconfig i/${{ matrix.abi }}/share/
+          mkdir -p installed/{bin,etc,include,lib,share}
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config         installed/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config-dynamic installed/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig          installed/lib/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pkgconfig        installed/share/
 
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/libpdf2htmlEX-exe_not_lib.so i/${{ matrix.abi }}/bin/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h   installed/include/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so   installed/lib/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/libpdf2htmlEX-exe_not_lib.so installed/bin/
 
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pdf2htmlEX i/${{ matrix.abi }}/share/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/poppler i/${{ matrix.abi }}/share/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/fonts i/${{ matrix.abi }}/share/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/etc/fonts i/${{ matrix.abi }}/etc/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pdf2htmlEX installed/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/poppler    installed/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/fonts      installed/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/etc/fonts        installed/etc/
 
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/licenses i/${{ matrix.abi }}
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/licenses installed/
 
       - name: Artifact assets
         uses: actions/upload-artifact@v2
         with:
           name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: i/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}
+          path: installed
           if-no-files-found: error
 
   buildLibrary:
