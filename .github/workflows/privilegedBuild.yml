@@ -136,7 +136,7 @@ jobs:
           distribution: zulu
           java-version: 11
       - uses: android-actions/setup-android@v2
-      - run: sdkmanager "ndk;${{env.ANDROID_NDK}}" "cmake;${{env.ANDROID_CMAKE}}"
+      - run: sdkmanager "ndk;${{env.ANDROID_NDK}}"
 
       - name: Cache tarballs
         uses: actions/cache@v2
