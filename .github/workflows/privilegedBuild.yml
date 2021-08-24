@@ -27,11 +27,11 @@ name: privilegedBuild
 on:
   workflow_dispatch:
   push:
-    branches: master
+    branches: [ master ]
     paths-ignore:
       - '**.md'
-      - '.github/workflows/manualVersionIncrement*.yml'
-      - '.github/workflows/unprivilegedBuild.yml'
+      - '.github/**'
+      - '!.github/workflows/privilegedBuild.yml'
 
 env:
   ANDROID_NDK:        "22.1.7171670"
