@@ -97,6 +97,7 @@ jobs:
             dependency-builder/.cxx/**/*-configure-*.log
             dependency-builder/.cxx/**/*-build-*.log
             dependency-builder/.cxx/**/*-install-*.log
+          if-no-files-found: error
 
       - name: Prepare built dependencies for artifacting
         run: |
@@ -122,6 +123,7 @@ jobs:
         with:
           name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
           path: i/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}
+          if-no-files-found: error
 
   buildLibrary:
     needs: buildDependencies
@@ -170,6 +172,7 @@ jobs:
         with:
           name: library-lint-report.html
           path: library-lint-report.html
+          if-no-files-found: error
 
       - name: 'Publish to Sonatype'
         run: ./gradlew publishToSonatype closeSonatypeStagingRepository | tee publishToSonatype.log
@@ -197,6 +200,7 @@ jobs:
         with:
           name: maven-local.tar
           path: maven-local.tar
+          if-no-files-found: error
 
   buildSampleAppStaging:
     needs: buildLibrary
@@ -220,12 +224,14 @@ jobs:
         with:
           name: sampleapp-staging-apks
           path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
 
       - run: mv build/sampleapp-staging/app/build/reports/lint-results-release.html sampleapp-staging-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
           name: sampleapp-staging-lint-report.html
           path: sampleapp-staging-lint-report.html
+          if-no-files-found: error
 
   runInstrumentedTests:
     needs: buildLibrary
@@ -276,6 +282,7 @@ jobs:
         with:
           name: instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar
           path: instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar
+          if-no-files-found: error
 
   releaseSonatype:
     environment: SonatypeAccess
