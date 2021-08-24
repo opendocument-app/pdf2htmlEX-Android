@@ -40,7 +40,7 @@ android {
     }
     externalNativeBuild.cmake {
         path "src/main/cpp/CMakeLists.txt"
-        version "3.21.0"
+        version '3.21.1'
     }
     ndkVersion "22.1.7171670"
     buildFeatures.prefab true
