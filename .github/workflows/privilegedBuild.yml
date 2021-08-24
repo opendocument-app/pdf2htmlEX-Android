@@ -195,7 +195,7 @@ jobs:
       - run: tar -cvf maven-local.tar ~/.m2
       - uses: actions/upload-artifact@v2
         with:
-          name: maven-local
+          name: maven-local.tar
           path: maven-local.tar
 
   buildSampleAppStaging:
