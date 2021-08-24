@@ -25,6 +25,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+def gatherReleaseArtifactsTask = tasks.getByPath(':dependency-builder:gatherReleaseArtifacts')
+def gatherDebugArtifactsTask = tasks.getByPath(':dependency-builder:gatherDebugArtifacts')
+
 android {
     compileSdkVersion 31
     buildToolsVersion "31.0.0"
@@ -44,8 +47,13 @@ android {
         externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
     //#UNCOMMENT-DURING-STAGING# /*
-    buildTypes.release.externalNativeBuild {
-      cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
+    buildTypes {
+        release.externalNativeBuild {
+            cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel', "-DINSTALLED_PREFIX=${gatherReleaseArtifactsTask.installed.get()}"
+        }
+        debug.externalNativeBuild {
+            cmake.arguments "-DINSTALLED_PREFIX=${gatherDebugArtifactsTask.installed.get()}"
+        }
     }
     externalNativeBuild.cmake {
         path "src/main/cpp/CMakeLists.txt"
@@ -54,12 +62,12 @@ android {
     ndkVersion "22.1.7171670"
     sourceSets {
         release {
-            jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs"
-            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/release/assets/" + android.defaultConfig.ndk.abiFilters[0]
+            jniLibs.srcDirs += gatherReleaseArtifactsTask.jniLibs.get()
+            assets.srcDirs += gatherReleaseArtifactsTask.assets.get()
         }
         debug {
-            jniLibs.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs"
-            assets.srcDirs += "${projectDir}/../dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/" + android.defaultConfig.ndk.abiFilters[0]
+            jniLibs.srcDirs += gatherDebugArtifactsTask.jniLibs.get()
+            assets.srcDirs += gatherDebugArtifactsTask.assets.get()
         }
     }
     //#UNCOMMENT-DURING-STAGING# */
@@ -117,6 +125,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 afterEvaluate {
+    tasks.named('mergeReleaseJniLibFolders').get().dependsOn(gatherReleaseArtifactsTask)
+    tasks.named('generateReleaseAssets').get().dependsOn(gatherReleaseArtifactsTask)
+    tasks.named('mergeDebugJniLibFolders').get().dependsOn(gatherDebugArtifactsTask)
+    tasks.named('generateDebugAssets').get().dependsOn(gatherDebugArtifactsTask)
+
     publishing {
         publications {
             release(MavenPublication) {
@@ -150,8 +163,6 @@ afterEvaluate {
         }
     }
 
-    // This may look ugly...
-    // but useInMemoryPgpKeys expects valid keys even with required { false }
     if (System.getenv('SIGNING_KEY')) {
         signing {
             required { true }
@@ -159,29 +170,34 @@ afterEvaluate {
             sign publishing.publications.release
         }
     }
-}
 
-//#UNCOMMENT-DURING-STAGING# /*
-tasks.whenTaskAdded { task ->
-    if (task.name == 'generatePomFileForReleasePublication') {
-        def gatherLicenses = tasks.getByPath(":dependency-builder:gatherLicenses")
-        task.dependsOn(gatherLicenses)
-        task.doFirst {
+    tasks.named('generatePomFileForReleasePublication').configure {
+        dependsOn(gatherReleaseArtifactsTask)
+        doFirst {
             pom.withXml {
                 def licensesNode = asNode().appendNode('licenses')
+
                 def thisProjLicense = licensesNode.appendNode('license')
                 thisProjLicense.appendNode('name', 'pdf2htmlEX-Android')
                 thisProjLicense.appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
                 thisProjLicense.appendNode('distribution', 'repo')
 
-                new XmlSlurper().parse(gatherLicenses.getOutputXmlFile().get().asFile).license.each {
-                    def license = licensesNode.appendNode('license')
-                    license.appendNode('name', it.dependencyName)
-                    license.appendNode('url', it.licenseText)
-                    license.appendNode('distribution', 'repo')
+                fileTree(dir: gatherReleaseArtifactsTask.licenses.get(), include: '*').visit { depVisitor ->
+                    String depName = depVisitor.getName()
+                    List<String> licenseText = new ArrayList<String>()
+
+                    fileTree(depVisitor.getFile().getAbsolutePath()).visit { depLicenseFileVisitor ->
+                        if (!depLicenseFileVisitor.isDirectory()) {
+                            licenseText.add(depLicenseFileVisitor.getRelativePath() + "\n\n" + depLicenseFileVisitor.getFile().getText('UTF-8'))
+                        }
+                    }
+
+                    def depLicenseNode = licensesNode.appendNode('license')
+                    depLicenseNode.appendNode('name', depName)
+                    depLicenseNode.appendNode('url', licenseText.join("\n\n"))
+                    depLicenseNode.appendNode('distribution', 'repo')
                 }
             }
         }
     }
 }
-//#UNCOMMENT-DURING-STAGING# */

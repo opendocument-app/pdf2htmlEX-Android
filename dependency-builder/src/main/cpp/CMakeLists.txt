@@ -3,7 +3,7 @@
 # pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
 # Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
 #
-# Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
+# Copyright (c) 2019 - 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -31,12 +31,6 @@ SET(THIRDPARTY_PKG_CONFIG_PATH ${THIRDPARTY_PREFIX}/share/pkgconfig)
 SET(THIRDPARTY_PKG_CONFIG_LIBDIR ${THIRDPARTY_PREFIX}/lib/pkgconfig)
 SET(PKG_CONFIG_EXECUTABLE_STATIC ${THIRDPARTY_PREFIX}/bin/pkg-config)
 SET(PKG_CONFIG_EXECUTABLE_DYNAMIC ${THIRDPARTY_PREFIX}/bin/pkg-config-dynamic)
-
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  SET(JNILIBS_FOR_DOWNSTREAM_AAR ${DP_ROOT_DIR}/build/includeTheseInDownstreamAAR/debug/jniLibs/${ANDROID_ABI})
-else()
-  SET(JNILIBS_FOR_DOWNSTREAM_AAR ${DP_ROOT_DIR}/build/includeTheseInDownstreamAAR/release/jniLibs/${ANDROID_ABI})
-endif()
 
 # LIST(PREPEND is unavailable in CMake 3.10)
 LIST(REVERSE CMAKE_FIND_ROOT_PATH)

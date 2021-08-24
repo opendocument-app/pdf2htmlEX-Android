@@ -21,6 +21,7 @@ ExternalProjectAutotools(libfontforge
 
   URL https://github.com/fontforge/fontforge/releases/download/20170731/fontforge-dist-20170731.tar.xz
   URL_HASH SHA256=840adefbedd1717e6b70b33ad1e7f2b116678fa6a3d52d45316793b9fd808822
+  LICENSE_FILES LICENSE COPYING.gplv3
 
   EXTRA_ENVVARS ${EXTRA_ENVVARS}
 

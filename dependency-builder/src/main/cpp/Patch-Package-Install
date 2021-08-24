@@ -1,0 +1,34 @@
+#!/usr/bin/env perl
+# (C) 2021 ViliusSutkus89@gmail.com
+
+use warnings;
+use strict;
+
+use Getopt::Long;
+use File::Basename;
+use File::Copy;
+use File::Path;
+
+my ($project, $cmakeBinaryDir, $installPrefix);
+
+Getopt::Long::GetOptions('project=s' => \$project, 'cmakeBinaryDir=s' => \$cmakeBinaryDir, 'installPrefix=s' => \$installPrefix) or die("BAD USAGE!\n");
+
+my $projectSrcDir = "${cmakeBinaryDir}/${project}-prefix/src/${project}";
+foreach my $licenseFile (@ARGV) {
+    my $srcFullPath = "${projectSrcDir}/${licenseFile}";
+    my $dstFullPath = "${installPrefix}/licenses/${project}/${licenseFile}";
+
+    # Could be a sub dir, for example freetype/docs/GPLv2.TXT,
+    # which would be placed in licenses/freetype/docs/GPLv2.TXT, not licenses/freetype/GPLv2.TXT
+    my $dstFolder = File::Basename::dirname($dstFullPath);
+
+    File::Path::make_path($dstFolder, { chmod => 0755 });
+
+    copy($srcFullPath, $dstFullPath) or die ("Copy failed: $! $srcFullPath\n");
+}
+
+my $installPatchFile = File::Basename::dirname(__FILE__) . '/packages/' . $project . '-Patch-Install.sh';
+if (-e $installPatchFile) {
+    print "Executing $installPatchFile\n";
+    exec("$installPatchFile $projectSrcDir $installPrefix") or die $!;
+}

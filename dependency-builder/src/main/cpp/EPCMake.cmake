@@ -86,6 +86,7 @@ function(ExternalProjectCMake EXTERNAL_PROJECT_NAME)
     LOG_CONFIGURE 1
     LOG_BUILD 1
     LOG_INSTALL 1
+    LOG_TEST 1
   )
 endfunction(ExternalProjectCMake)
 

@@ -67,22 +67,6 @@ function(GenerateSourcePatchCall EXTERNAL_PROJECT_NAME OUTPUT_VAR)
     PARENT_SCOPE)
 endfunction(GenerateSourcePatchCall)
 
-function(CheckIfInstallPatchExists EXTERNAL_PROJECT_NAME OUTPUT_VAR)
-  SET(PATCH_ENV ANDROID=${ANDROID} ANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL})
-
-  set(PATCH_FILENAME ${CMAKE_CURRENT_SOURCE_DIR}/packages/${EXTERNAL_PROJECT_NAME}-Patch-Install.sh)
-  set(PROJECT_SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/${EXTERNAL_PROJECT_NAME}-prefix/src/${EXTERNAL_PROJECT_NAME})
-  if (EXISTS ${PATCH_FILENAME})
-    SET(${OUTPUT_VAR} TEST_COMMAND
-      ${CMAKE_COMMAND} -E env ${PATCH_ENV}
-      ${PATCH_FILENAME} ${PROJECT_SRC_DIR} ${THIRDPARTY_PREFIX}
-      LOG_TEST 1
-      PARENT_SCOPE)
-  else()
-    SET(${OUTPUT_VAR} "" PARENT_SCOPE)
-  endif()
-endfunction(CheckIfInstallPatchExists)
-
 macro(ExternalProjectHeaderBoilerplate)
   CheckIfPackageAlreadyBuilt(${EXTERNAL_PROJECT_NAME})
   if ("${${EXTERNAL_PROJECT_NAME}_FOUND}")
@@ -92,7 +76,7 @@ macro(ExternalProjectHeaderBoilerplate)
 
   set(options)
   set(oneValueArgs URL URL_HASH)
-  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS)
+  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS LICENSE_FILES)
   cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
   SET(EP_DEPENDS_FILTERED DEPENDS)
@@ -106,7 +90,15 @@ macro(ExternalProjectHeaderBoilerplate)
 
   CheckIfTarballCachedLocally(${EXTERNAL_PROJECT_NAME} EP_URL)
   GenerateSourcePatchCall(${EXTERNAL_PROJECT_NAME} EP_PATCH_SOURCE_COMMAND)
-  CheckIfInstallPatchExists(${EXTERNAL_PROJECT_NAME} EP_PATCH_INSTALL_COMMAND)
+
+  SET(INSTALL_PATCH_ENV ANDROID=${ANDROID} ANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL})
+  SET(EP_PATCH_INSTALL_COMMAND TEST_COMMAND
+    ${CMAKE_COMMAND} -E env ${INSTALL_PATCH_ENV}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Patch-Package-Install
+    --cmakeBinaryDir=${CMAKE_CURRENT_BINARY_DIR}
+    --installPrefix=${THIRDPARTY_PREFIX}
+    --project=${EXTERNAL_PROJECT_NAME}
+    ${EP_LICENSE_FILES})
 
   SET(EP_DEPENDS ${EP_DEPENDS_FILTERED})
 endmacro(ExternalProjectHeaderBoilerplate)

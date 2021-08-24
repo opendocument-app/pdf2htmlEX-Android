@@ -53,144 +53,72 @@ task touchGlibPackage(type: Exec) {
 }
 preBuild.dependsOn touchGlibPackage
 
-abstract class GatherLicenses extends DefaultTask {
-    @OutputFile
-    abstract RegularFileProperty getOutputXmlFile()
-
-    @Input
-    abstract Property<String> getInputDirectory()
-
-    @TaskAction
-    void gather() {
-        outputXmlFile.get().asFile.withWriter { writer ->
-            def xml = new groovy.xml.MarkupBuilder(writer)
-
-            xml.doubleQuotes = true
-            xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
-
-            xml.licenses() {
-                def addLicense = { depName, licenseFiles ->
-                    license {
-                        dependencyName(depName)
-                        def licenseTextVal = new StringBuilder()
-                        licenseFiles.each() { licenseFilename ->
-                            licenseTextVal.append("$depName/$licenseFilename\n\n")
-                            def licenseFile = new File(inputDirectory.get() + "/$depName-prefix/src/$depName/$licenseFilename")
-                            def licenseText = licenseFile.getText('UTF-8')
-                            // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
-                            // XML does not take kindly to form feed characters.
-                            if ((depName == "cairo" && licenseFilename == "COPYING-LGPL-2.1") ||
-                                (depName == "Fonts-SymbolAndZapfDingbats" && licenseFilename == "COPYING") ||
-                                (depName == "freetype" && licenseFilename == "docs/GPLv2.TXT") ||
-                                (depName == "glib-2.0" && licenseFilename == "COPYING") ||
-                                (depName == "fribidi" && licenseFilename == "COPYING") ||
-                                (depName == "iconv" && licenseFilename == "COPYING.LIB") ||
-                                (depName == "intl" && licenseFilename == "COPYING") ||
-                                (depName == "pango" && licenseFilename == "COPYING")) {
-                                licenseTextVal.append(licenseText.replace("\u000C", ""))
-                            } else {
-                                licenseTextVal.append(licenseText)
-                            }
-                            licenseTextVal.append("\n\n")
-                        }
-                        licenseText(licenseTextVal)
-                    }
-                }
-                addLicense("pdf2htmlEX", ["LICENSE", "LICENSE_GPLv3"])
-                addLicense("cairo", ["COPYING", "COPYING-LGPL-2.1", "COPYING-MPL-1.1"])
-                addLicense("fontconfig", ["COPYING"])
-                addLicense("Fonts-SymbolAndZapfDingbats", ["COPYING"])
-                addLicense("freetype", ["docs/LICENSE.TXT", "docs/GPLv2.TXT", "docs/FTL.TXT"])
-                addLicense("fribidi", ["COPYING"])
-                addLicense("glib-2.0", ["COPYING"])
-                addLicense("harfbuzz", ["COPYING"])
-                addLicense("iconv", ["README", "COPYING", "COPYING.LIB"])
-                addLicense("intl", ["COPYING"])
-                addLicense("lcms2", ["COPYING"])
-                addLicense("libffi", ["LICENSE"])
-                addLicense("libfontforge", ["LICENSE", "COPYING.gplv3"])
-                addLicense("libjpeg", ["LICENSE.md", "README.ijg"])
-                addLicense("libopenjp2", ["LICENSE"])
-                addLicense("libpng", ["LICENSE"])
-                addLicense("libtiff-4", ["COPYRIGHT"])
-                addLicense("libtool", ["COPYING"])
-                addLicense("libuninameslist", ["LICENSE"])
-                addLicense("libxml-2.0", ["Copyright"])
-                addLicense("pango", ["COPYING"])
-                addLicense("pixman-1", ["COPYING"])
-                addLicense("poppler-data", ["COPYING", "COPYING.adobe", "COPYING.gpl2"])
-                addLicense("poppler", ["COPYING", "COPYING3"])
-            }
-        }
-    }
-}
-
-tasks.register("gatherLicenses", GatherLicenses).configure {
-    def abi = project.hasProperty('abi') ? project.property('abi') : 'armeabi-v7a'
-    inputDirectory = "$projectDir/.cxx/cmake/release/" + abi
-    outputXmlFile = file("$buildDir/licenses.xml")
-    onlyIf { !file("$buildDir/licenses.xml").exists() }
-}
-
 dependencies {
     implementation 'com.viliussutkus89:tmpfile-android:3.0.4'
 }
 
-ext.gatherArtifacts = { buildType ->
-    def CMakeBuildType = (buildType == "debug") ? "Debug" : "MinSizeRel"
+abstract class GatherArtifacts extends DefaultTask {
+    @Input
+    abstract Property<String> getCMakeBuildType()
 
-    android.defaultConfig.ndk.abiFilters.each { abi ->
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/lib/libpdf2htmlEX.so")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
-        }
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/bin/libpdf2htmlEX-exe_not_lib.so")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/jniLibs/$abi")
+    @Input
+    abstract Property<String> getGradleBuildType()
+
+    @Input
+    abstract ListProperty<String> getABIs()
+
+    @OutputDirectory
+    final Provider<Directory> jniLibs = gradleBuildType.map {project.file("build/outputs/$it/jniLibs") }
+
+    @OutputDirectory
+    final Provider<Directory> assets = gradleBuildType.map {project.file("build/outputs/$it/assets") }
+
+    @OutputDirectory
+    final Provider<Directory> licenses = gradleBuildType.map {project.file("build/outputs/$it/licenses") }
+
+    @InputDirectory
+    final Provider<Directory> installed = CMakeBuildType.map { project.file("build/installed/$it") }
+
+    @TaskAction
+    void gather() {
+        ABIs.get().each { abi ->
+            project.copy {
+                into("${jniLibs.get()}/$abi")
+                from("${installed.get()}/$abi/lib/libpdf2htmlEX.so")
+                from("${installed.get()}/$abi/bin/libpdf2htmlEX-exe_not_lib.so")
+            }
         }
 
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/share/pdf2htmlEX")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/pdf2htmlEX")
-        }
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/share/poppler")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/poppler")
-        }
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/etc/fonts")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/etc/fonts")
+        project.copy {
+            into("${assets.get()}/pdf2htmlEX")
+            from("${installed.get()}/${ABIs.get()[0]}")
+            include 'share/pdf2htmlEX/**'
+            include 'share/poppler/**'
+            include 'share/fonts/**'
+            include 'etc/fonts/**'
         }
 
-        copy {
-            from("$buildDir/installed/$CMakeBuildType/$abi/share/fonts")
-            into("$buildDir/includeTheseInDownstreamAAR/$buildType/assets/$abi/pdf2htmlEX/share/fonts")
+        project.copy {
+            into(licenses.get())
+            from("${installed.get()}/${ABIs.get()[0]}/licenses")
         }
     }
 }
 
-task gatherReleaseArtifacts {
-    dependsOn ":dependency-builder:externalNativeBuildRelease"
-    doLast {
-        gatherArtifacts("release")
-    }
+tasks.register('gatherReleaseArtifacts', GatherArtifacts).configure {
+    tasks.named('generateReleaseAssets').get().dependsOn(it)
+    it.dependsOn 'externalNativeBuildRelease'
+
+    CMakeBuildType = 'MinSizeRel'
+    gradleBuildType = 'release'
+    ABIs = project.android.defaultConfig.ndk.abiFilters
 }
 
-task gatherDebugArtifacts {
-    dependsOn ":dependency-builder:externalNativeBuildDebug"
-    doLast {
-        gatherArtifacts("debug")
-    }
-}
+tasks.register('gatherDebugArtifacts', GatherArtifacts).configure {
+    tasks.named('generateDebugAssets').get().dependsOn(it)
+    it.dependsOn 'externalNativeBuildDebug'
 
-tasks.whenTaskAdded {
-    if (it.name == 'generateReleaseAssets') {
-        it.dependsOn gatherReleaseArtifacts
-    }
-    else if (it.name == 'generateDebugAssets') {
-        it.dependsOn gatherDebugArtifacts
-    }
-    else if (it.name == 'externalNativeBuildRelease') {
-        gatherLicenses.dependsOn externalNativeBuildRelease
-    }
+    CMakeBuildType = 'Debug'
+    gradleBuildType = 'debug'
+    ABIs = project.android.defaultConfig.ndk.abiFilters
 }

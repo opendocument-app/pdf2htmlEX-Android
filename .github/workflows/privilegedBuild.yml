@@ -98,38 +98,30 @@ jobs:
             dependency-builder/.cxx/**/*-build-*.log
             dependency-builder/.cxx/**/*-install-*.log
 
-      - name: Gather licenses
-        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
-        run: ./gradlew gatherLicenses -Pabi=${{ matrix.abi }}
-
-      - name: Artifact gathered licenses
-        if: matrix.abi == 'armeabi-v7a' && matrix.buildType == 'Release'
-        uses: actions/upload-artifact@v2
-        with:
-          name: licenses
-          path: dependency-builder/build/licenses.xml
-
       - name: Prepare built dependencies for artifacting
         run: |
-          mkdir -p i/${{ matrix.abi }}/{bin,include,lib,share}
+          mkdir -p i/${{ matrix.abi }}/{bin,etc,include,lib,share}
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config i/${{ matrix.abi }}/bin/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/pkg-config-dynamic i/${{ matrix.abi }}/bin/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/pkgconfig i/${{ matrix.abi }}/lib/
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pkgconfig i/${{ matrix.abi }}/share/
 
-      - name: Artifact built dependencies
-        uses: actions/upload-artifact@v2
-        with:
-          name: installed-dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: i
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/include/pdf2htmlEX.h i/${{ matrix.abi }}/include/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/lib/libpdf2htmlEX.so i/${{ matrix.abi }}/lib/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/bin/libpdf2htmlEX-exe_not_lib.so i/${{ matrix.abi }}/bin/
+
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/pdf2htmlEX i/${{ matrix.abi }}/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/poppler i/${{ matrix.abi }}/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/fonts i/${{ matrix.abi }}/share/
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/etc/fonts i/${{ matrix.abi }}/etc/
+
+          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/licenses i/${{ matrix.abi }}
 
       - name: Artifact assets
         uses: actions/upload-artifact@v2
         with:
-          name: results-for-downstream-aar-${{ matrix.buildType }}-${{ matrix.abi }}
-          path: dependency-builder/build/includeTheseInDownstreamAAR
+          name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
+          path: i/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}
 
   buildLibrary:
     needs: buildDependencies
@@ -164,36 +156,9 @@ jobs:
 
       - name: Prepare downloaded artifacts
         run: |
-          mkdir -p dependency-builder/build
-          mv artifacts/licenses/licenses.xml dependency-builder/build
-
           mkdir -p dependency-builder/build/installed/{Debug,MinSizeRel}
-          mv artifacts/installed-dependencies-Debug-x86/x86                   dependency-builder/build/installed/Debug/
-          mv artifacts/installed-dependencies-Debug-x86_64/x86_64             dependency-builder/build/installed/Debug/
-          mv artifacts/installed-dependencies-Debug-armeabi-v7a/armeabi-v7a   dependency-builder/build/installed/Debug/
-          mv artifacts/installed-dependencies-Debug-arm64-v8a/arm64-v8a       dependency-builder/build/installed/Debug/
-          mv artifacts/installed-dependencies-Release-x86/x86                 dependency-builder/build/installed/MinSizeRel/
-          mv artifacts/installed-dependencies-Release-x86_64/x86_64           dependency-builder/build/installed/MinSizeRel/
-          mv artifacts/installed-dependencies-Release-armeabi-v7a/armeabi-v7a dependency-builder/build/installed/MinSizeRel/
-          mv artifacts/installed-dependencies-Release-arm64-v8a/arm64-v8a     dependency-builder/build/installed/MinSizeRel/
-
-          mkdir -p dependency-builder/build/includeTheseInDownstreamAAR/{debug,release}/{assets,jniLibs}
-          mv artifacts/results-for-downstream-aar-Debug-x86/debug/assets/x86                      dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
-          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/assets/x86_64                dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
-          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/assets/armeabi-v7a      dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
-          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/assets/arm64-v8a          dependency-builder/build/includeTheseInDownstreamAAR/debug/assets/
-          mv artifacts/results-for-downstream-aar-Debug-x86/debug/jniLibs/x86                     dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
-          mv artifacts/results-for-downstream-aar-Debug-x86_64/debug/jniLibs/x86_64               dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
-          mv artifacts/results-for-downstream-aar-Debug-armeabi-v7a/debug/jniLibs/armeabi-v7a     dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
-          mv artifacts/results-for-downstream-aar-Debug-arm64-v8a/debug/jniLibs/arm64-v8a         dependency-builder/build/includeTheseInDownstreamAAR/debug/jniLibs/
-          mv artifacts/results-for-downstream-aar-Release-x86/release/assets/x86                  dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
-          mv artifacts/results-for-downstream-aar-Release-x86_64/release/assets/x86_64            dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
-          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/assets/armeabi-v7a  dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
-          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/assets/arm64-v8a      dependency-builder/build/includeTheseInDownstreamAAR/release/assets/
-          mv artifacts/results-for-downstream-aar-Release-x86/release/jniLibs/x86                 dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
-          mv artifacts/results-for-downstream-aar-Release-x86_64/release/jniLibs/x86_64           dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
-          mv artifacts/results-for-downstream-aar-Release-armeabi-v7a/release/jniLibs/armeabi-v7a dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
-          mv artifacts/results-for-downstream-aar-Release-arm64-v8a/release/jniLibs/arm64-v8a     dependency-builder/build/includeTheseInDownstreamAAR/release/jniLibs/
+          mv artifacts/dependencies-Release-*/* dependency-builder/build/installed/MinSizeRel/
+          mv artifacts/dependencies-Debug-*/*   dependency-builder/build/installed/Debug/
 
           find dependency-builder/build/installed -type f -name 'pkg-config' -exec chmod +x {} \;
           find dependency-builder/build/installed -type f -name 'pkg-config-dynamic' -exec chmod +x {} \;
