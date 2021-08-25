@@ -188,10 +188,12 @@ afterEvaluate {
 
                     fileTree(depVisitor.getFile().getAbsolutePath()).visit { depLicenseFileVisitor ->
                         if (!depLicenseFileVisitor.isDirectory()) {
-                            licenseText.add(depLicenseFileVisitor.getRelativePath() + "\n\n" + depLicenseFileVisitor.getFile().getText('UTF-8'))
+                            // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
+                            // XML does not take kindly to form feed characters.
+                            def licenseTextWithoutFormFeedChar = depLicenseFileVisitor.getFile().getText('UTF-8').replace("\u000C", "\n")
+                            licenseText.add(depLicenseFileVisitor.getRelativePath() + "\n\n" + licenseTextWithoutFormFeedChar)
                         }
                     }
-
                     def depLicenseNode = licensesNode.appendNode('license')
                     depLicenseNode.appendNode('name', depName)
                     depLicenseNode.appendNode('url', licenseText.join("\n\n"))
