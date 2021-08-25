@@ -23,7 +23,6 @@ group = 'com.viliussutkus89'
 apply plugin: 'com.android.library'
 android {
     compileSdkVersion 31
-    buildToolsVersion "31.0.0"
 
     defaultConfig {
         minSdkVersion 16
