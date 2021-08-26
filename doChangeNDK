@@ -4,7 +4,7 @@ set -eu
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-NDK="22.1.7171670"
+NDK="23.0.7599858"
 
 version_format='([0-9\.]+)'
 
@@ -14,5 +14,5 @@ sed -E "--expression=$expression" -i $BASEDIR/.github/workflows/privilegedBuild.
 expression="s/ndk-$version_format/ndk-$NDK/"
 sed -E "--expression=$expression" -i $BASEDIR/README.md
 
-expression="s/ndkVersion \"$version_format\"/ndkVersion \"$NDK\"/"
+expression="s/ndkVersion [\"\']$version_format[\"\']/ndkVersion '$NDK'/"
 sed -E "--expression=$expression" -i $BASEDIR/pdf2htmlEX/build.gradle $BASEDIR/dependency-builder/build.gradle
