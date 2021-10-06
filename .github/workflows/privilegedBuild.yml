@@ -237,7 +237,7 @@ jobs:
   runInstrumentedTests:
     needs: buildLibrary
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
-    runs-on: macos-10.15
+    runs-on: macos-11
     strategy:
       fail-fast: false
       matrix:
