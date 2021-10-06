@@ -1,0 +1,153 @@
+#  MIT License
+#
+#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#
+#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
+#  .github/workflows/release.yml - v1.2.0
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      STAGING_REPO_URL:
+        description: 'Provided by privilegedBuild.yml (example: https://oss.sonatype.org/service/local/repositories/comviliussutkus89-????/content/)'
+        required: true
+
+permissions:
+  actions: none
+  checks: none
+  contents: none
+  deployments: none
+  issues: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  releaseSonatype:
+    environment: SonatypeAccess
+    runs-on: ubuntu-20.04
+    outputs:
+      ARTIFACTS: ${{ steps.promote.outputs.artifacts }}
+    steps:
+      - uses: ViliusSutkus89/promote-Nexus-repository-to-MavenCentral@v1
+        id: promote
+        with:
+          repositoryURL: ${{ github.event.inputs.STAGING_REPO_URL }}
+          sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+
+  releaseGitHub:
+    environment: TenMinuteWait
+    needs: releaseSonatype
+    permissions:
+      # Permission needed to create GitHub release and version increment commit.
+      contents: write
+    outputs:
+      RELEASE_TAG: "v${{ steps.updateDownstreamVersion.outputs.version }}"
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # A branch is required for post release version increment commit
+          ref: ${{ github.event.ref }}
+
+      - uses: ViliusSutkus89/WaitForURLsToBeAvailable@v1
+        with:
+          URLs: ${{ needs.releaseSonatype.outputs.ARTIFACTS }}
+          # First attempt to promote pdf2htmlEX-Android didn't go through in 30 minutes
+          # Raise the timeout to TenMinuteWait + tryCount
+          tryCount: 60
+
+      - run: ./ci-scripts/updateDownstreamVersion
+        id: updateDownstreamVersion
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update README.md and sample app to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
+          file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "v${{ steps.updateDownstreamVersion.outputs.version }}"
+          name: "${{ github.event.repository.name }} v${{ steps.updateDownstreamVersion.outputs.version }}"
+          bodyFile: "UpcomingReleaseNotes.md"
+
+      - run: ./ci-scripts/incrementVersion --patch
+        id: postReleaseVersionIncrement
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
+          file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
+
+      - run: echo -n > UpcomingReleaseNotes.md
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Post release truncation of UpcomingReleaseNotes.md"
+          file_pattern: UpcomingReleaseNotes.md
+
+  buildSampleApp:
+    environment: SampleAppKeystore
+    needs: releaseGitHub
+    permissions:
+      # Permission needed to attach artifact to GitHub release.
+      contents: write
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: refs/tags/${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 11
+      - uses: android-actions/setup-android@v2
+
+      - id: decodeSampleAppKeystore
+        run: |
+          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.pdf2htmlex.sampleapp.jks"
+          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.pdf2htmlex.sampleapp.jks"
+        env:
+          APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
+
+      - run: ./gradlew build lintRelease
+        working-directory: android-sample-app
+        env:
+          APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
+          APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
+          APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
+
+      - run: mv android-sample-app/app/build/reports/lint-results-release.html sampleapp-lint-report.html
+
+      - name: Attach sample application to GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          allowUpdates: true
+          artifacts: "android-sample-app/app/build/outputs/apk/**/*.apk,sampleapp-lint-report.html"
