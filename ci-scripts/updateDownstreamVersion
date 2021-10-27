@@ -58,7 +58,7 @@ $versionUpdater->update('README.md', sub {
     return $_;
 });
 
-$versionUpdater->update('android-sample-app/app/build.gradle', sub {
+$versionUpdater->update('application/app/build.gradle', sub {
     $_ = shift;
     # Update versionName and versionCode of sample application to have the same version as the library.
     # Purely for semantic reasons.
@@ -70,4 +70,4 @@ $versionUpdater->update('android-sample-app/app/build.gradle', sub {
     return $_;
 });
 
-print "::set-output name=files::README.md android-sample-app/app/build.gradle\n";
+print "::set-output name=files::README.md application/app/build.gradle\n";

@@ -4,7 +4,7 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.viliussutkus89.android.pdf2htmlex.sampleapp"
+        applicationId "com.viliussutkus89.android.pdf2htmlex.application"
         minSdkVersion 16
         targetSdkVersion 31
         versionCode 24
