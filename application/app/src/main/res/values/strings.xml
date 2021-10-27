@@ -16,4 +16,11 @@
     <string name="conversion_status_output">Loading HTML file …</string>
 
     <string name="button_cancel">Cancel</string>
+
+    <string name="action_share">Share HTML document</string>
+    <string name="action_save">Save HTML document</string>
+
+    <string name="error_share_failed">Failed to share HTML document!</string>
+    <string name="error_save_failed">Failed to save HTML document!</string>
+    <string name="save_successful">HTML document saved.</string>
 </resources>
