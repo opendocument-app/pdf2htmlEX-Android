@@ -1,4 +1,4 @@
-package com.viliussutkus89.android.pdf2htmlex.sampleapp;
+package com.viliussutkus89.android.pdf2htmlex.application;
 
 import android.content.Intent;
 import android.os.Build;
@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     private final ActivityResultLauncher<String> m_openDocument = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             selectedInputDocument -> {

@@ -3,6 +3,8 @@
 [![privilegedBuild](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/privilegedBuild.yml/badge.svg)](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/privilegedBuild.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
 
+Packaged as a library, but also available as an [Application](/application).
+
 ### Goals:
 * Providing easy to use interface for downstream users.  
 Library is consumed through gradle and used through a Java class, which provides a method to perform conversion.
@@ -18,7 +20,7 @@ Sample application consumes under 30MB.
 * Linked against shared C++ STL - `android.defaultConfig.externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"` in app's (and all JNI dependencies) build.gradle.
 
 ### How to install:
-[android-sample-app/app/build.gradle](android-sample-app/app/build.gradle) contains code to load the library as a dependency in Gradle.
+[application/app/build.gradle](application/app/build.gradle) contains code to load the library as a dependency in Gradle.
 ```gradle
 dependencies {
     implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.13'
@@ -26,7 +28,7 @@ dependencies {
 ```
 
 pdf2htmlEX-Android is distributed using [Maven Central](https://search.maven.org/artifact/com.viliussutkus89/pdf2htmlex-android) repository.  
-It needs be added to [top level build.gradle](android-sample-app/build.gradle)
+It needs be added to [top level build.gradle](application/build.gradle)
 ```gradle
 allprojects {
   repositories {
@@ -75,11 +77,6 @@ Full list of packages and patches to build them is included in [packages](/depen
 Current implementation supports building projects which are based on [Autotools](/dependency-builder/src/main/cpp/EPAutotools.cmake), [CMake](/dependency-builder/src/main/cpp/EPCMake.cmake) and [Meson](/dependency-builder/src/main/cpp/EPMeson.cmake).
 
 [pdf2htmlEX-Android](pdf2htmlEX/src/main/cpp/CMakeLists.txt) consumes previously built libraries and provides a Java wrapper to call pdf2htmlEX.
-
-### [Sample application](/android-sample-app)
-Example demonstrates how to convert PDF files to HTML and either open the result in browser or save to storage.
-Storage Access Framework (SAF) is used for file management, it requires API level 19 (KitKat).
-Debug build of sample application is available in [Releases Page](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/releases)
 
 ### Tools to build from source:
 * Meson Build system (version 0.54.2 or newer)

@@ -11,6 +11,6 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "gradle"
-    directory: "/android-sample-app/"
+    directory: "/application/"
     schedule:
       interval: "daily"

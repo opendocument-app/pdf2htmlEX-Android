@@ -1,4 +1,4 @@
-package com.viliussutkus89.android.pdf2htmlex.sampleapp;
+package com.viliussutkus89.android.pdf2htmlex.application;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
-
 public class AboutActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,5 +25,4 @@ public class AboutActivity extends AppCompatActivity {
 
         findViewById(R.id.button_licenses).setOnClickListener(view -> startActivity(new Intent(this, OssLicensesMenuActivity.class)));
     }
-
 }

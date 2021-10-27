@@ -1,4 +1,4 @@
-package com.viliussutkus89.android.pdf2htmlex.sampleapp;
+package com.viliussutkus89.android.pdf2htmlex.application;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -24,10 +24,8 @@ import java.io.File;
 import java.util.UUID;
 
 public class ConverterActivity extends AppCompatActivity {
-
     private static final String BUNDLE_KEY__WORK_REQUEST_ID = "work request id";
     private UUID m_workRequestId;
-
     private String m_inputFilename;
 
     @Override

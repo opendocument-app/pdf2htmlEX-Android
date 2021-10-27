@@ -1,4 +1,4 @@
-package com.viliussutkus89.android.pdf2htmlex.sampleapp;
+package com.viliussutkus89.android.pdf2htmlex.application;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

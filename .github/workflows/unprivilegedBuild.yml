@@ -179,7 +179,7 @@ jobs:
           path: ~/.m2
           if-no-files-found: error
 
-  buildSampleApp:
+  buildApplication:
     needs: buildLibrary
     runs-on: ubuntu-20.04
     steps:
@@ -195,24 +195,24 @@ jobs:
           name: maven-local
           path: ~/.m2
 
-      - name: Prepare sample app for staging repository
-        run: ./ci-scripts/prepareSampleAppForStagingRepository android-sample-app app --output=build/sampleapp-staging --repository=mavenLocal
+      - name: Prepare app for staging repository
+        run: ./ci-scripts/prepareSampleAppForStagingRepository application app --output=build/application-staging --repository=mavenLocal
 
       - name: Build and lint sample app from staging library
         run: ./gradlew build lintRelease
-        working-directory: build/sampleapp-staging
+        working-directory: build/application-staging
 
       - uses: actions/upload-artifact@v2
         with:
-          name: sampleapp-staging-apks
-          path: build/sampleapp-staging/app/build/outputs/apk/**/*.apk
+          name: application-staging-apks
+          path: build/application-staging/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
 
-      - run: mv build/sampleapp-staging/app/build/reports/lint-results-release.html sampleapp-lint-report.html
+      - run: mv build/application-staging/app/build/reports/lint-results-release.html application-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
-          name: sampleapp-lint-report.html
-          path: sampleapp-lint-report.html
+          name: application-lint-report.html
+          path: application-lint-report.html
           if-no-files-found: error
 
   runInstrumentedTests:

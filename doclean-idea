@@ -22,9 +22,9 @@ rm_folder_if_exists .idea
 rm_file_if_exists pdf2htmlEX-Android.iml
 rm_file_if_exists pdf2htmlEX/pdf2htmlEX.iml
 
-rm_folder_if_exists android-sample-app/.idea
-rm_file_if_exists android-sample-app/android-sample-app.iml
-rm_file_if_exists android-sample-app/app/app.iml
+rm_folder_if_exists application/.idea
+rm_file_if_exists application/application.iml
+rm_file_if_exists application/app/app.iml
 
 rm_file_if_exists dependency-builder/dependency-builder.iml
 

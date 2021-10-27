@@ -84,7 +84,7 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update README.md and sample app to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
+          commit_message: "Update README.md and application to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
 
       - name: Create GitHub Release
@@ -109,7 +109,7 @@ jobs:
           commit_message: "Post release truncation of UpcomingReleaseNotes.md"
           file_pattern: UpcomingReleaseNotes.md
 
-  buildSampleApp:
+  buildApplication:
     environment: SampleAppKeystore
     needs: releaseGitHub
     permissions:
@@ -134,13 +134,13 @@ jobs:
           APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
 
       - run: ./gradlew build lintRelease
-        working-directory: android-sample-app
+        working-directory: application
         env:
           APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
           APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
           APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
-      - run: mv android-sample-app/app/build/reports/lint-results-release.html sampleapp-lint-report.html
+      - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
 
       - name: Attach sample application to GitHub Release
         uses: ncipollo/release-action@v1
@@ -150,4 +150,4 @@ jobs:
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
           allowUpdates: true
-          artifacts: "android-sample-app/app/build/outputs/apk/**/*.apk,sampleapp-lint-report.html"
+          artifacts: "application/app/build/outputs/apk/**/*.apk,application-lint-report.html"
