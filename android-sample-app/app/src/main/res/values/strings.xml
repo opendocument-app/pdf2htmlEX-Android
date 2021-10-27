@@ -1,6 +1,19 @@
 <resources>
-    <string name="app_name">pdf2htmlEX sample app</string>
-    <string name="open_pdf">Convert and open</string>
-    <string name="save_converted_pdf">Convert and save</string>
-    <string name="show_licenses">Show licenses</string>
+    <string name="app_name">pdf2htmlEX-Android</string>
+    <string name="button_open_pdf">Open PDF document</string>
+    <string name="button_show_licenses">Show licenses</string>
+    <string name="button_about">About</string>
+
+    <string name="text_disabled_open_button">
+        Android OS before KitKat 4.4 (API level 19) does not allow opening files without storage permission.
+        This application runs without any permissions.
+        Open files through a proper file manager and share to this application.
+    </string>
+
+    <string name="conversion_status_error">Conversion failed!</string>
+    <string name="conversion_status_input">Copying PDF file to cache …</string>
+    <string name="conversion_status_work">Converting PDF to HTML …</string>
+    <string name="conversion_status_output">Loading HTML file …</string>
+
+    <string name="button_cancel">Cancel</string>
 </resources>

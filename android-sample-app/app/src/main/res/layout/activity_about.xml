@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_main"
+        android:id="@+id/toolbar_about"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -18,22 +18,10 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button_open"
+            android:id="@+id/button_licenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_open_pdf" />
-        <TextView
-            android:id="@+id/text_button_open_pdf_disabled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_disabled_open_button"
-            android:visibility="gone"
-            />
-        <Button
-            android:id="@+id/button_about"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_about" />
+            android:text="@string/button_show_licenses" />
     </LinearLayout>
 
 </LinearLayout>
