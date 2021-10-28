@@ -13,7 +13,6 @@
     <string name="conversion_status_error">Conversion failed!</string>
     <string name="conversion_status_input">Copying PDF file to cache …</string>
     <string name="conversion_status_work">Converting PDF to HTML …</string>
-    <string name="conversion_status_output">Loading HTML file …</string>
 
     <string name="button_cancel">Cancel</string>
 
