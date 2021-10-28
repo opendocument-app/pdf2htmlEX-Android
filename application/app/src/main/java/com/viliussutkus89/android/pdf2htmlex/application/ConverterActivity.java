@@ -124,6 +124,8 @@ public class ConverterActivity extends AppCompatActivity {
             case BLOCKED:
                 switch (ConverterWorker.getProgress(workInfo)) {
                     case INIT:
+                        statusText.setText(R.string.conversion_status_init);
+                        break;
                     case COPYING_INPUT:
                         statusText.setText(R.string.conversion_status_input);
                         break;

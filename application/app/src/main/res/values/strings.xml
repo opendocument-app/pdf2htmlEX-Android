@@ -11,6 +11,7 @@
     </string>
 
     <string name="conversion_status_error">Conversion failed!</string>
+    <string name="conversion_status_init">Initializing pdf2htmlEX …</string>
     <string name="conversion_status_input">Copying PDF file to cache …</string>
     <string name="conversion_status_work">Converting PDF to HTML …</string>
 
