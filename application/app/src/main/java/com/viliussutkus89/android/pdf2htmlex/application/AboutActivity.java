@@ -2,6 +2,7 @@ package com.viliussutkus89.android.pdf2htmlex.application;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,9 @@ public class AboutActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
+
+        TextView versionView = findViewById(R.id.about_version);
+        versionView.setText(BuildConfig.VERSION_NAME);
 
         findViewById(R.id.button_licenses).setOnClickListener(view -> startActivity(new Intent(this, OssLicensesMenuActivity.class)));
     }
