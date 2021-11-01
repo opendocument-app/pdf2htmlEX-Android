@@ -3,7 +3,7 @@
 #  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/release.yml - v1.2.0
+#  .github/workflows/fullRelease.yml - v1.3.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 
-name: release
+name: fullRelease
 on:
   workflow_dispatch:
     inputs:
@@ -75,9 +75,6 @@ jobs:
       - uses: ViliusSutkus89/WaitForURLsToBeAvailable@v1
         with:
           URLs: ${{ needs.releaseSonatype.outputs.ARTIFACTS }}
-          # First attempt to promote pdf2htmlEX-Android didn't go through in 30 minutes
-          # Raise the timeout to TenMinuteWait + tryCount
-          tryCount: 60
 
       - run: ./ci-scripts/updateDownstreamVersion
         id: updateDownstreamVersion
@@ -126,23 +123,23 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
-      - id: decodeSampleAppKeystore
+      - id: decodeAppKeystore
         run: |
-          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.pdf2htmlex.sampleapp.jks"
-          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.pdf2htmlex.sampleapp.jks"
+          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.pdf2htmlex.application.jks"
+          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.pdf2htmlex.application.jks"
         env:
           APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
 
       - run: ./gradlew build lintRelease
         working-directory: application
         env:
-          APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
+          APP_SIGNING_KEYFILE: ${{ steps.decodeAppKeystore.outputs.APP_SIGNING_KEYFILE }}
           APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
           APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
       - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
 
-      - name: Attach sample application to GitHub Release
+      - name: Attach application to GitHub Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

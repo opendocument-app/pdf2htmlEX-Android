@@ -4,7 +4,7 @@
 #  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/getVersion - v1.1.5
+#  ci-scripts/getVersion - v1.4.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,12 @@ use strict;
 use warnings;
 
 use base 'Exporter';
-our $VERSION = '1.03';
+our $VERSION = '1.4.0';
 our @EXPORT = qw(getVersion);
-our @EXPORT_OK = qw(getVersionCode);
+our @EXPORT_OK = qw(getVersionCode getAppVersion getAppVersionCode);
 
 use File::Basename 'dirname';
+use Getopt::Long;
 sub getLibDir {
     my $thisDir = File::Basename::dirname(__FILE__);
     if ('lib' ne substr($thisDir, -3)) {
@@ -67,8 +68,37 @@ sub getVersionCode {
     return $versionCode;
 }
 
+sub getAppVersion {
+    my ($version) = fileParser::grepSingleLine(
+        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
+        qr/versionName\s+["']((\d+\.\d+\.\d+?)(.\d+?)*)["']$/
+    );
+    return $version;
+}
+
+sub getAppVersionCode {
+    my ($versionCode) = fileParser::grepSingleLine(
+        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
+        qr/versionCode\s+(\d+)\s*$/
+    );
+    return $versionCode;
+}
+
 if (not caller()) {
-    print getVersion(), "\n";
+    my ($application, $ci);
+    Getopt::Long::GetOptions(application => \$application, ci => \$ci);
+    if (defined $ci) {
+        print "::set-output name=version::", getVersion(), "\n";
+        print "::set-output name=versionCode::", getVersionCode(), "\n";
+
+        print "::set-output name=appVersion::", getAppVersion(), "\n";
+        print "::set-output name=appVersionCode:", getAppVersionCode(), "\n";
+    }
+    elsif (defined $application) {
+        print getAppVersion(), "\n";
+    } else {
+        print getVersion(), "\n";
+    }
 }
 
 1;
