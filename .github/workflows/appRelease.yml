@@ -104,7 +104,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "appRelease-v${{ steps.version.outputs.appVersion }}"
+          tag: "v${{ steps.version.outputs.appVersion }}-AppRelease"
           name: "[AppRelease] ${{ github.event.repository.name }} v${{ steps.version.outputs.appVersion }}"
           artifacts: "artifacts/APKs/**/*.apk,artifacts/application-lint-report.html/application-lint-report.html"
 
