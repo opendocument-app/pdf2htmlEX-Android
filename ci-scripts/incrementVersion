@@ -105,7 +105,7 @@ if (defined $application) {
     print "::set-output name=oldAppVersionCode::$oldAppVersionCode\n";
     print "::set-output name=newAppVersion::$newAppVersion\n";
     print "::set-output name=newAppVersionCode::$newAppVersionCode\n";
-    print "::set-output name=files::sampleapp/app/build.gradle\n";
+    print "::set-output name=files::application/app/build.gradle\n";
 } else {
     my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
     if (defined $upMajor) {
@@ -145,5 +145,5 @@ if (defined $application) {
     print "::set-output name=oldVersionCode::$oldVersionCode\n";
     print "::set-output name=newVersion::$newVersion\n";
     print "::set-output name=newVersionCode::$newVersionCode\n";
-    print "::set-output name=files::build.gradle lib/build.gradle\n";
+    print "::set-output name=files::build.gradle pdf2htmlEX/build.gradle\n";
 }
