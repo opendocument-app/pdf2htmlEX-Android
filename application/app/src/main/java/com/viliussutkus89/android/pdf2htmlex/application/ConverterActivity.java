@@ -62,7 +62,6 @@ public class ConverterActivity extends AppCompatActivity {
 
         final TextView statusText = findViewById(R.id.status_text);
 
-        // @TODO: implying getIntent() is same when recreating Activity
         Intent intent = getIntent();
         String action = intent.getAction();
 
