@@ -303,8 +303,8 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: application-staging-apks
-          path: build/application-staging/app/build/outputs/apk/**/*.apk
+          name: APKs
+          path: application/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
 
       - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
