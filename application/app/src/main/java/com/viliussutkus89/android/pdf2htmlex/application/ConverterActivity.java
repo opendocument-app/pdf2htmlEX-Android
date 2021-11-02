@@ -142,8 +142,8 @@ public class ConverterActivity extends AppCompatActivity {
                     Intent readerIntent = new Intent(this, HTMLReaderActivity.class);
                     readerIntent.setData(convertedUri);
                     readerIntent.putExtra(HTMLReaderActivity.INTENT_EXTRA_INPUT__FILENAME, m_inputFilename);
-                    readerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
                     startActivity(readerIntent);
+                    finish();
                     break;
                 }
                 // Intentional case fall through without "break"
