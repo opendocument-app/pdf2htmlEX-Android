@@ -268,8 +268,8 @@ jobs:
       - run: mv build/application-staging/app/build/reports/lint-results-release.html application-lint-report.html
       - uses: actions/upload-artifact@v2
         with:
-          name: application-staging-lint-report.html
-          path: application-staging-lint-report.html
+          name: application-lint-report.html
+          path: application-lint-report.html
           if-no-files-found: error
 
   buildApplicationAgainstReleasedLibrary:
