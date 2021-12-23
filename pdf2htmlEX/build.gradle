@@ -100,7 +100,7 @@ dependencies {
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
     implementation 'com.viliussutkus89:ExecutableRunner:1.0.3'
 
-    javadocDependenciesToObtainClasspath 'androidx.annotation:annotation:1.2.0'
+    javadocDependenciesToObtainClasspath 'androidx.annotation:annotation:1.3.0'
     javadocDependenciesToObtainClasspath 'com.getkeepsafe.relinker:relinker:1.4.4'
     javadocDependenciesToObtainClasspath 'com.viliussutkus89:tmpfile-android:3.0.4'
     javadocDependenciesToObtainClasspath 'com.viliussutkus89:assetextractor-android:1.3.2'
