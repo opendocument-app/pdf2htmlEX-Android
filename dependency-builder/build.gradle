@@ -22,10 +22,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 32
         ndk.abiFilters = project.hasProperty('abi') ? [ project.property('abi') ] : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
         externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"
     }
