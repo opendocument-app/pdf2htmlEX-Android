@@ -76,7 +76,7 @@ macro(ExternalProjectHeaderBoilerplate)
 
   set(options)
   set(oneValueArgs URL URL_HASH)
-  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS LICENSE_FILES)
+  set(multipleValueArgs DEPENDS CONFIGURE_ARGUMENTS EXTRA_ARGUMENTS EXTRA_ENVVARS)
   cmake_parse_arguments(EP "${options}" "${oneValueArgs}" "${multipleValueArgs}" ${ARGN})
 
   SET(EP_DEPENDS_FILTERED DEPENDS)
@@ -98,7 +98,7 @@ macro(ExternalProjectHeaderBoilerplate)
     --cmakeBinaryDir=${CMAKE_CURRENT_BINARY_DIR}
     --installPrefix=${THIRDPARTY_PREFIX}
     --project=${EXTERNAL_PROJECT_NAME}
-    ${EP_LICENSE_FILES})
+    )
 
   SET(EP_DEPENDS ${EP_DEPENDS_FILTERED})
 endmacro(ExternalProjectHeaderBoilerplate)

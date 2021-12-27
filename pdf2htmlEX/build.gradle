@@ -108,6 +108,9 @@ dependencies {
     javadocDependenciesToObtainClasspath 'com.viliussutkus89:ExecutableRunner:1.0.3'
 
     compileOnly project(":dependency-builder")
+
+    // License only dependencies. To add cpp dependencies to maven POM
+    implementation 'com.viliussutkus89.licenseOnly:pdf2htmlEX-dependency-tree:0.18.14'
 }
 
 task sourceJar(type: Jar) {
@@ -161,6 +164,13 @@ afterEvaluate {
                         url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
                         connection = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
                     }
+                    licenses {
+                        license {
+                            name = 'GPLv3'
+                            url = 'https://www.gnu.org/licenses/gpl-3.0.html'
+                            distribution = 'repo'
+                        }
+                    }
                 }
             }
         }
@@ -171,38 +181,6 @@ afterEvaluate {
             required { true }
             useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
             sign publishing.publications.release
-        }
-    }
-
-    tasks.named('generatePomFileForReleasePublication').configure {
-        dependsOn(gatherReleaseArtifactsTask)
-        doFirst {
-            pom.withXml {
-                def licensesNode = asNode().appendNode('licenses')
-
-                def thisProjLicense = licensesNode.appendNode('license')
-                thisProjLicense.appendNode('name', 'pdf2htmlEX-Android')
-                thisProjLicense.appendNode('url', 'https://www.gnu.org/licenses/gpl-3.0.en.html')
-                thisProjLicense.appendNode('distribution', 'repo')
-
-                fileTree(dir: gatherReleaseArtifactsTask.licenses.get(), include: '*').visit { depVisitor ->
-                    String depName = depVisitor.getName()
-                    List<String> licenseText = new ArrayList<String>()
-
-                    fileTree(depVisitor.getFile().getAbsolutePath()).visit { depLicenseFileVisitor ->
-                        if (!depLicenseFileVisitor.isDirectory()) {
-                            // LGPL2.1 and GPLv2 licenses include form feed (page break) characters.
-                            // XML does not take kindly to form feed characters.
-                            def licenseTextWithoutFormFeedChar = depLicenseFileVisitor.getFile().getText('UTF-8').replace("\u000C", "\n")
-                            licenseText.add(depLicenseFileVisitor.getRelativePath() + "\n\n" + licenseTextWithoutFormFeedChar)
-                        }
-                    }
-                    def depLicenseNode = licensesNode.appendNode('license')
-                    depLicenseNode.appendNode('name', depName)
-                    depLicenseNode.appendNode('url', licenseText.join("\n\n"))
-                    depLicenseNode.appendNode('distribution', 'repo')
-                }
-            }
         }
     }
 }

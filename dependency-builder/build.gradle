@@ -96,11 +96,6 @@ abstract class GatherArtifacts extends DefaultTask {
             include 'share/fonts/**'
             include 'etc/fonts/**'
         }
-
-        project.copy {
-            into(licenses.get())
-            from("${installed.get()}/${ABIs.get()[0]}/licenses")
-        }
     }
 }
 
