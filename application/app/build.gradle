@@ -1,5 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+plugins {
+    id 'com.android.application'
+    // Requires either Gradle-7.3.3 or gradlePluginPortal buildscript repository
+    id "com.mikepenz.aboutlibraries.plugin" version "8.9.4"
+}
 
 android {
     compileSdkVersion 32
@@ -41,8 +44,13 @@ android {
 
 dependencies {
     implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.13'
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.activity:activity:1.4.0'
     implementation 'androidx.work:work-runtime:2.7.1'
+
+    // AboutLibraries-v10 requires AndroidSDK-21
+    implementation "com.mikepenz:aboutlibraries:8.9.4"
+    // Material required by AboutLibraries
+    implementation 'com.google.android.material:material:1.4.0'
 }
