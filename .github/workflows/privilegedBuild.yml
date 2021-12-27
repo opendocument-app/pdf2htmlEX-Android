@@ -118,8 +118,6 @@ jobs:
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/share/fonts      i/${{ matrix.abi }}/share/
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/etc/fonts        i/${{ matrix.abi }}/etc/
 
-          mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/licenses i/${{ matrix.abi }}/
-
       - name: Artifact assets
         uses: actions/upload-artifact@v2
         with:
