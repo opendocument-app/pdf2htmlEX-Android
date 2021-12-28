@@ -10,8 +10,8 @@ android {
         applicationId "com.viliussutkus89.android.pdf2htmlex.application"
         minSdkVersion 16
         targetSdkVersion 32
-        versionCode 26
-        versionName '0.18.13.2'
+        versionCode 25
+        versionName '0.18.14.0'
     }
     splits {
         abi {
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.13'
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.14'
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.activity:activity:1.4.0'
