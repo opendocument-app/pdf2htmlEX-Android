@@ -1,7 +1,7 @@
 /*
  * ConverterActivity.java
  *
- * Copyright (C) 2021 Vilius Sutkus'89
+ * Copyright (C) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
  */
 
 package com.viliussutkus89.android.pdf2htmlex.application;
+
+import static androidx.work.multiprocess.RemoteListenableWorker.ARGUMENT_CLASS_NAME;
+import static androidx.work.multiprocess.RemoteListenableWorker.ARGUMENT_PACKAGE_NAME;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -95,6 +98,9 @@ public class ConverterActivity extends AppCompatActivity {
         if (null == m_workRequestId) {
             WorkRequest converterWork = new OneTimeWorkRequest.Builder(ConverterWorker.class)
                     .setInputData(new Data.Builder()
+                        .putString(ARGUMENT_PACKAGE_NAME, getPackageName())
+                        .putString(ARGUMENT_CLASS_NAME, ConverterWorkerRemoteService.class.getName())
+
                         .putString(ConverterWorker.INPUT__URI, inputUri.toString())
                         .putString(ConverterWorker.INPUT__DESTINATION_DIR, outputDir.getAbsolutePath())
                         .build())

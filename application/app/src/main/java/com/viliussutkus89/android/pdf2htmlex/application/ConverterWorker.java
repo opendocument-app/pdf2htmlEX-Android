@@ -1,7 +1,7 @@
 /*
  * ConverterWorker.java
  *
- * Copyright (C) 2021 Vilius Sutkus'89
+ * Copyright (C) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@ import android.content.Context;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.concurrent.futures.CallbackToFutureAdapter;
 import androidx.work.Data;
 import androidx.work.WorkInfo;
-import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import androidx.work.multiprocess.RemoteListenableWorker;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
 
 import java.io.File;
@@ -37,7 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ConverterWorker extends Worker {
+public class ConverterWorker extends RemoteListenableWorker {
     public static final String INPUT__URI = "input__uri";
     public static final String INPUT__DESTINATION_DIR = "input__destination_dir";
     public static final String OUTPUT__URI = "output__uri";
@@ -75,49 +77,51 @@ public class ConverterWorker extends Worker {
 
     @NonNull
     @Override
-    public Result doWork() {
-        final Uri inputUri = Uri.parse(getInputData().getString(INPUT__URI));
-        if (null == inputUri) {
-            return Result.failure();
-        }
+    public ListenableFuture<Result> startRemoteWork() {
+        return CallbackToFutureAdapter.getFuture(completer -> {
+            final Uri inputUri = Uri.parse(getInputData().getString(INPUT__URI));
+            if (null == inputUri) {
+                return completer.set(Result.failure());
+            }
 
-        final pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());
-        if (isStopped()) {
-            return Result.failure();
-        }
-
-        setProgress(Progress.COPYING_INPUT);
-        final File inputFileInCache = copyUriToCache(getApplicationContext(), inputUri);
-        if (null == inputFileInCache) {
-            return Result.failure();
-        }
-
-        try {
-            setProgress(Progress.CONVERTING);
-
+            final pdf2htmlEX converter = new pdf2htmlEX(getApplicationContext());
             if (isStopped()) {
-                return Result.failure();
+                return completer.set(Result.failure());
             }
-            File outputFile = converter.convert(inputFileInCache);
 
-            String destinationDirStr = getInputData().getString(INPUT__DESTINATION_DIR);
-            if (null != destinationDirStr) {
-                final File destinationDir = new File(destinationDirStr);
-                destinationDir.mkdir();
-                final File outputFileInDestinationDir = generateNewFileInCache(destinationDir, outputFile.getName());
-                if (null == outputFileInDestinationDir || !outputFile.renameTo(outputFileInDestinationDir)) {
-                    outputFile.delete();
-                    return Result.failure();
+            setProgress(Progress.COPYING_INPUT);
+            final File inputFileInCache = copyUriToCache(getApplicationContext(), inputUri);
+            if (null == inputFileInCache) {
+                return completer.set(Result.failure());
+            }
+
+            try {
+                setProgress(Progress.CONVERTING);
+
+                if (isStopped()) {
+                    return completer.set(Result.failure());
                 }
-                outputFile = outputFileInDestinationDir;
-            }
+                File outputFile = converter.convert(inputFileInCache);
 
-            return Result.success(new Data.Builder().putString(OUTPUT__URI, outputFile.getAbsolutePath()).build());
-        } catch (pdf2htmlEX.ConversionFailedException | IOException e) {
-            return Result.failure();
-        } finally {
-            inputFileInCache.delete();
-        }
+                String destinationDirStr = getInputData().getString(INPUT__DESTINATION_DIR);
+                if (null != destinationDirStr) {
+                    final File destinationDir = new File(destinationDirStr);
+                    destinationDir.mkdir();
+                    final File outputFileInDestinationDir = generateNewFileInCache(destinationDir, outputFile.getName());
+                    if (null == outputFileInDestinationDir || !outputFile.renameTo(outputFileInDestinationDir)) {
+                        outputFile.delete();
+                        return completer.set(Result.failure());
+                    }
+                    outputFile = outputFileInDestinationDir;
+                }
+
+                return completer.set(Result.success(new Data.Builder().putString(OUTPUT__URI, outputFile.getAbsolutePath()).build()));
+            } catch (pdf2htmlEX.ConversionFailedException | IOException e) {
+                return completer.set(Result.failure());
+            } finally {
+                inputFileInCache.delete();
+            }
+        });
     }
 
     private static File generateNewFileInCache(File cacheDir, String filename) {

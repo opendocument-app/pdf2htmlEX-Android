@@ -4,11 +4,22 @@
     package="com.viliussutkus89.android.pdf2htmlex.application">
 
     <application
+        android:name=".pdf2htmlEXapplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+
+        <service
+            android:name=".ConverterWorkerRemoteService"
+            android:exported="false"
+            android:process=":converterWorkerProcess" />
 
         <activity
             android:name=".MainActivity"

@@ -47,7 +47,10 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.activity:activity:1.4.0'
+
     implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'androidx.work:work-multiprocess:2.7.1'
+    implementation 'androidx.concurrent:concurrent-futures:1.1.0'
 
     // AboutLibraries-v10 requires AndroidSDK-21
     implementation "com.mikepenz:aboutlibraries:8.9.4"
