@@ -200,7 +200,7 @@ jobs:
             api-type-target: google_apis
           # Latest image
           - arch: x86_64
-            api-level: 31
+            api-level: 32
             api-type-target: google_apis
     steps:
       - uses: actions/checkout@v2
