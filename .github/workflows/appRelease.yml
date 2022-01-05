@@ -1,9 +1,9 @@
 #  MIT License
 #
-#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/appRelease.yml - v1.3.0
+#  .github/workflows/appRelease.yml - v2.0.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -107,6 +107,16 @@ jobs:
           tag: "v${{ steps.version.outputs.appVersion }}-AppRelease"
           name: "[AppRelease] ${{ github.event.repository.name }} v${{ steps.version.outputs.appVersion }}"
           artifacts: "artifacts/APKs/**/*.apk,artifacts/application-lint-report.html/application-lint-report.html"
+
+  incrementAppVersion:
+    needs: releaseApp
+    permissions:
+      contents: write
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.ref }}
 
       - run: ./ci-scripts/incrementVersion --application
         id: postReleaseVersionIncrement

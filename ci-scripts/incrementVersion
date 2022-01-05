@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 #  MIT License
 #
-#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/incrementVersion - v1.3.0
+#  ci-scripts/incrementVersion - v2.0.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ use Getopt::Long;
 use lib File::Basename::dirname(__FILE__) . '/lib';
 use fileUpdater;
 use getVersion;
+use List::Util qw(max);
 
 sub usage {
     my $bn = File::Basename::basename(__FILE__);
@@ -81,17 +82,17 @@ if (defined $application) {
     usage if (@ARGV);
 
     # oldAppVersion could be either new format:
-    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH.APPLICATION_BUILD_NUMBER"
+    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH.APPLICATION_RELEASE_NUMBER"
     # or old format:
     # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH"
-    my ($major, $minor, $patch_, $buildNumber) = $oldAppVersion =~ /(\d+)\.(\d+)\.(\d+)\.?(\d+)?/;
-    if (!defined $buildNumber) {
+    my ($major, $minor, $patch_, $appReleaseNumber) = $oldAppVersion =~ /(\d+)\.(\d+)\.(\d+)\.?(\d+)?/;
+    if (!defined $appReleaseNumber) {
         # Converting from old to new app version format
-        $buildNumber = 0;
+        $appReleaseNumber = 0;
     }
-    $buildNumber = $buildNumber + 1;
+    $appReleaseNumber = $appReleaseNumber + 1;
 
-    $newAppVersion = "${major}.${minor}.${patch_}.${buildNumber}";
+    $newAppVersion = "${major}.${minor}.${patch_}.${appReleaseNumber}";
     $newAppVersionCode = $oldAppVersionCode + 1;
 
     $versionIncrementer->update('application/app/build.gradle', sub {
@@ -107,21 +108,24 @@ if (defined $application) {
     print "::set-output name=newAppVersionCode::$newAppVersionCode\n";
     print "::set-output name=files::application/app/build.gradle\n";
 } else {
+    # Both app and library versionCode need to be incremental
+    my $vCode = max($oldVersionCode, $oldAppVersionCode);
+
     my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
     if (defined $upMajor) {
         $major = $major + 1;
         $newVersion = "${major}.0.0";
-        $newVersionCode = $oldVersionCode + 10000;
+        $newVersionCode = $vCode + 10000;
     }
     elsif (defined $upMinor) {
         $minor = $minor + 1;
         $newVersion = "${major}.${minor}.0";
-        $newVersionCode = $oldVersionCode + 1000;
+        $newVersionCode = $vCode + 1000;
     }
     elsif (defined $upPatch) {
         $patch_ = $patch_ + 1;
         $newVersion = "${major}.${minor}.${patch_}";
-        $newVersionCode = $oldVersionCode + 100;
+        $newVersionCode = $vCode + 100;
     }
     else {
         $newVersion = shift or usage();

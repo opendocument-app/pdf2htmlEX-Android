@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 #  MIT License
 #
-#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/getVersion - v1.4.0
+#  ci-scripts/getVersion - v2.0.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,9 @@ use strict;
 use warnings;
 
 use base 'Exporter';
-our $VERSION = '1.4.0';
+our $VERSION = '2.0.0';
 our @EXPORT = qw(getVersion);
-our @EXPORT_OK = qw(getVersionCode getAppVersion getAppVersionCode);
+our @EXPORT_OK = qw(getVersionCode getAppVersionCode getAppVersion getAppReleaseNumber);
 
 use File::Basename 'dirname';
 use Getopt::Long;
@@ -69,11 +69,24 @@ sub getVersionCode {
 }
 
 sub getAppVersion {
-    my ($version) = fileParser::grepSingleLine(
+    my ($appVersion) = fileParser::grepSingleLine(
         pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
-        qr/versionName\s+["']((\d+\.\d+\.\d+?)(.\d+?)*)["']$/
+        qr/versionName\s+["'](\d+\.\d+\.\d+(?:\.\d+)?)["']$/
     );
-    return $version;
+    return $appVersion;
+}
+
+sub getAppReleaseNumber {
+    my ($appReleaseNumber) = fileParser::grepSingleLine(
+        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
+        qr/versionName\s+["']\d+\.\d+\.\d+(?:\.(\d+))?["']$/
+    );
+    # App Release Number may or may not be available
+    # Default to 0 if not available (migrating from old format)
+    if (!defined $appReleaseNumber) {
+        $appReleaseNumber = 0;
+    }
+    return $appReleaseNumber;
 }
 
 sub getAppVersionCode {
