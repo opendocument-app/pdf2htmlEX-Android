@@ -51,6 +51,7 @@ public class pdf2htmlEX {
   private boolean p_drm = true;
   private boolean p_embedFont = true;
   private boolean p_embedExternalFont = true;
+  private boolean p_processAnnotation = false;
   private String p_backgroundFormat = "";
 
   boolean p_wasPasswordEntered = false;
@@ -180,6 +181,11 @@ public class pdf2htmlEX {
     return this;
   }
 
+  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
+    this.p_processAnnotation = processAnnotation;
+    return this;
+  }
+
   /**
    * @param backgroundFormat: png (default), jpg or svg
    */
@@ -244,11 +250,12 @@ public class pdf2htmlEX {
         m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
         this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
         this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
-        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont
+        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont,
+        this.p_processAnnotation
     );
   }
 
-  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont);
+  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont, boolean processAnnotation);
 
   // Because Java cannot setenv for the current process
   private static native void set_environment_value(String key, String value);

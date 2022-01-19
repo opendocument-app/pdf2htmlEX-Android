@@ -133,6 +133,11 @@ public class pdf2htmlEX_exe extends pdf2htmlEX {
     return this;
   }
 
+  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
+    this.m_arguments.put("--process-annotation", processAnnotation ? "1" : "0");
+    return this;
+  }
+
   /**
    * @param backgroundFormat: png (default), jpg or svg
    */
