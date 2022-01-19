@@ -32,7 +32,7 @@ task clean(type: Delete) {
 }
 
 group = 'com.viliussutkus89'
-version = '0.18.15'
+version = '0.18.16'
 
 nexusPublishing {
     repositories {
