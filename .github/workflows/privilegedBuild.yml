@@ -34,7 +34,7 @@ on:
       - '!.github/workflows/privilegedBuild.yml'
 
 env:
-  ANDROID_NDK:        "23.0.7599858"
+  ANDROID_NDK:        "23.1.7779620"
   ANDROID_CMAKE:      "3.18.1"
   TARBALL_CACHE_KEY:  "tarballs-key-3"
 

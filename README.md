@@ -16,7 +16,7 @@ Sample application consumes under 30MB.
 
 ### C++ runtime dependency:
 [Using mismatched prebuilt libraries](https://android.googlesource.com/platform/ndk/+/master/docs/user/common_problems.md#using-mismatched-prebuilt-libraries) is less problematic if all the libraries used in the application are:
-* Built with the same toolchain - ndk-23.0.7599858
+* Built with the same toolchain - ndk-23.1.7779620
 * Linked against shared C++ STL - `android.defaultConfig.externalNativeBuild.cmake.arguments "-DANDROID_STL=c++_shared"` in app's (and all JNI dependencies) build.gradle.
 
 ### How to install:
@@ -82,7 +82,7 @@ Current implementation supports building projects which are based on [Autotools]
 * Meson Build system (version 0.54.2 or newer)
 * pkg-config
 * CMake-3.21.0
-* ndk-23.0.7599858
+* ndk-23.1.7779620
 * gettext
 * gperf
 
