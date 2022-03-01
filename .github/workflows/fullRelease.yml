@@ -67,7 +67,7 @@ jobs:
       RELEASE_TAG: "v${{ steps.updateDownstreamVersion.outputs.version }}"
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # A branch is required for post release version increment commit
           ref: ${{ github.event.ref }}
@@ -114,7 +114,7 @@ jobs:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: refs/tags/${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
       - uses: actions/setup-java@v2
@@ -155,7 +155,7 @@ jobs:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.ref }}
 
