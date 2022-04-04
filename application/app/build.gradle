@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     // Requires either Gradle-7.3.3 or gradlePluginPortal buildscript repository
-    id "com.mikepenz.aboutlibraries.plugin" version "8.9.4"
+    id "com.mikepenz.aboutlibraries.plugin" version "10.1.0"
 }
 
 android {
