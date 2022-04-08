@@ -70,13 +70,13 @@ jobs:
           APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
           APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: APKs
           path: application/app/build/outputs/apk/**/*.apk
 
       - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: application-lint-report.html
           path: application-lint-report.html

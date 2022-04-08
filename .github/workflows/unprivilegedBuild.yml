@@ -91,7 +91,7 @@ jobs:
       - name: Build dependencies of pdf2htmlEX-Android
         run: ./gradlew dependency-builder:assemble${{ matrix.buildType }} -Pabi=${{ matrix.abi }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: dependencyBuildLogs-${{ matrix.buildType }}-${{ matrix.abi }}
@@ -119,7 +119,7 @@ jobs:
           mv dependency-builder/build/installed/${{ matrix.CMakeBuildType }}/${{ matrix.abi }}/etc/fonts        i/${{ matrix.abi }}/etc/
 
       - name: Artifact assets
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dependencies-${{ matrix.buildType }}-${{ matrix.abi }}
           path: i
@@ -165,14 +165,14 @@ jobs:
       - run: ./gradlew build lintRelease
 
       - run: mv pdf2htmlEX/build/reports/lint-results-release.html library-lint-report.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: library-lint-report.html
           path: library-lint-report.html
           if-no-files-found: error
 
       - run: ./gradlew publishToMavenLocal
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: maven-local
           path: ~/.m2
@@ -227,7 +227,7 @@ jobs:
 
       - run: tar -cvf instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar build/lib-staging/pdf2htmlEX/build/reports/androidTests/connected
         if: always()
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: instrumentedTestsReport-${{ matrix.api-level }}-${{ matrix.arch }}.tar
@@ -257,14 +257,14 @@ jobs:
         run: ./gradlew build lintRelease
         working-directory: build/application-staging
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: application-staging-apks
           path: build/application-staging/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
 
       - run: mv build/application-staging/app/build/reports/lint-results-release.html application-lint-report.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: application-lint-report.html
           path: application-lint-report.html
@@ -285,14 +285,14 @@ jobs:
         run: ./gradlew build lintRelease
         working-directory: application
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: APKs
           path: application/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
 
       - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: application-lint-report.html
           path: application-lint-report.html
