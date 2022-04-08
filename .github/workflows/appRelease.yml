@@ -93,7 +93,7 @@ jobs:
 #           A branch is required for post release version increment commit
           ref: ${{ needs.buildSampleApp.outputs.GIT_TAG }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: artifacts
 

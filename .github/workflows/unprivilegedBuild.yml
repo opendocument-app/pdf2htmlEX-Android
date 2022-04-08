@@ -146,7 +146,7 @@ jobs:
       - run: ./dodownloadtarballs --serial
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
 
@@ -210,7 +210,7 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: maven-local
           path: ~/.m2
@@ -245,7 +245,7 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: maven-local
           path: ~/.m2
