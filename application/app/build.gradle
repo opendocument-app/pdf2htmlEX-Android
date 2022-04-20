@@ -10,8 +10,8 @@ android {
         applicationId "com.viliussutkus89.android.pdf2htmlex.application"
         minSdkVersion 16
         targetSdkVersion 32
-        versionCode 325
-        versionName '0.18.17.5'
+        versionCode 326
+        versionName '0.18.17.6'
     }
     splits {
         abi {
