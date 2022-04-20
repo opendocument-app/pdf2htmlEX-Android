@@ -11,7 +11,7 @@ if (NOT BUILD_SHARED_LIBS)
 endif (NOT BUILD_SHARED_LIBS)
 
 ExternalProjectCMake(libjpeg
-  URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/2.0.4.tar.gz
-  URL_HASH SHA256=7777c3c19762940cff42b3ba4d7cd5c52d1671b39a79532050c85efb99079064
+  URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/2.1.3.tar.gz
+  URL_HASH SHA256=dbda0c685942aa3ea908496592491e5ec8160d2cf1ec9d5fd5470e50768e7859
   ${LIBJPEG_SHARED_ARGUMENT}
 )
