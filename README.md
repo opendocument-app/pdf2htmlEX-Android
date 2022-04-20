@@ -23,7 +23,7 @@ Sample application consumes under 30MB.
 [application/app/build.gradle](application/app/build.gradle) contains code to load the library as a dependency in Gradle.
 ```gradle
 dependencies {
-    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.16'
+    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.17'
 }
 ```
 
