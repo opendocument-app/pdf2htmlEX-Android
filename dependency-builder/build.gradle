@@ -53,7 +53,7 @@ task touchGlibPackage(type: Exec) {
 preBuild.dependsOn touchGlibPackage
 
 dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.4'
+    implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
 }
 
 abstract class GatherArtifacts extends DefaultTask {
