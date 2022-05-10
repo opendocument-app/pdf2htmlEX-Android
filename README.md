@@ -78,11 +78,3 @@ Current implementation supports building projects which are based on [Autotools]
 
 [pdf2htmlEX-Android](pdf2htmlEX/src/main/cpp/CMakeLists.txt) consumes previously built libraries and provides a Java wrapper to call pdf2htmlEX.
 
-### Tools to build from source:
-* Meson Build system (version 0.54.2 or newer)
-* pkg-config
-* CMake-3.21.0
-* ndk-23.1.7779620
-* gettext
-* gperf
-
