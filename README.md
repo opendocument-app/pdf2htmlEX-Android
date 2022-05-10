@@ -27,17 +27,6 @@ dependencies {
 }
 ```
 
-pdf2htmlEX-Android is distributed using [Maven Central](https://search.maven.org/artifact/com.viliussutkus89/pdf2htmlex-android) repository.  
-It needs be added to [top level build.gradle](application/build.gradle)
-```gradle
-allprojects {
-  repositories {
-      // ...
-      mavenCentral()
-  }
-}
-```
-
 ### Usage:
 Library is interfaced through Java.
 ```Java
