@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 #  MIT License
 #
-#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/prepareSampleAppForStagingRepository - v1.1.5
+#  ci-scripts/prepareSampleAppForStagingRepository - v2.1.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -57,8 +57,8 @@ sub usage {
 my ($rootDirectory, $appProjectName, $help);
 my $repository = 'mavenLocal';
 my $outputDirectory = 'build/staging-app';
-my $version = getVersion();
-my $appVersion = $version . '-STAGING';
+my $libVersion = getVersion::getVersion();
+my $appVersion = getVersion::getAppVersion() . '-STAGING';
 
 Getopt::Long::GetOptions('repository=s' => \$repository, 'output=s' => \$outputDirectory, 'help' => \$help) or usage;
 if (defined $help) {
@@ -80,34 +80,26 @@ my $sampleAppStaging = fileUpdater->new({
     outputDirectory => $outputDirectory
 });
 
-$sampleAppStaging->update([ 'gradle', 'gradlew', 'gradle.properties' ]);
-$sampleAppStaging->update('build.gradle', sub {
-    $_ = shift;
-    s/\/\/#STAGING-REPOSITORY#/$repository/;
-    return $_;
-});
-$sampleAppStaging->update('settings.gradle', sub {
-    $_ = shift;
-    s/^(rootProject\.name\s*=\s*[\"\'].+)([\"\'])$/${1}-staging-aar${2}/;
-    return $_;
-});
+# Copy root project files
+$sampleAppStaging->update([ 'gradle', 'gradlew', 'gradle.properties', 'build.gradle', 'settings.gradle' ]);
 
+# Add mavenLocal or Sonatype repository
+$sampleAppStaging->append('settings.gradle', "dependencyResolutionManagement.repositories { $repository }\n");
+
+# Copy app files
 $sampleAppStaging->update($appProjectName, undef, sub {
     $_ = shift;
-    # Exclude sampleapp/app/build/
+    # Exclude application/app/build/
     if (/$appProjectName\/build\//) {
         return undef;
     }
-    # Exclude sampleapp/app/build.gradle, because it will be added by the next update call
-    if (/$appProjectName\/build\.gradle$/) {
-        return undef;
-    }
     return $_;
 });
 
+# Update app version and depend on unreleased library version
 $sampleAppStaging->update("$appProjectName/build.gradle", sub {
     $_ = shift;
     s/(versionName\s+["']).+(["'])/${1}${appVersion}${2}/;
-    s/(implementation\s+["']com\.viliussutkus89:pdf2htmlex-android:).+(["'])/${1}${version}${2}/;
+    s/(implementation\s+["']com\.viliussutkus89:pdf2htmlex-android:).+(["'])/${1}${libVersion}${2}/;
     return $_;
 });

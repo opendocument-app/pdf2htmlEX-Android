@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 #  MIT License
 #
-#  Copyright (c) 2021 Vilius Sutkus <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/prepareLibraryTestsForStagingRepository - v1.1.5
+#  ci-scripts/prepareLibraryTestsForStagingRepository - v2.1.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -76,31 +76,38 @@ my $aarStaging = fileUpdater->new({
     rootDirectory   => $rootDirectory,
     outputDirectory => $outputDirectory
 });
-$aarStaging->update([ 'gradle', 'gradlew', 'gradle.properties' ]);
-$aarStaging->update('build.gradle', sub {
-    $_ = shift;
-    s/\/\/#STAGING-REPOSITORY#/$repository/;
-    return $_;
-});
+
+# Copy root project files
+$aarStaging->update([ 'gradle', 'gradlew', 'gradle.properties', 'build.gradle' ]);
+
+# Change root project name
 $aarStaging->update('settings.gradle', sub {
     $_ = shift;
+    s/["']\:dependency-builder["'], //;
     s/^(rootProject\.name\s*=\s*["'].+)(["'])$/${1}${suffix}${2}/;
     return $_;
 });
 
+# Add mavenLocal or Sonatype repository
+$aarStaging->append('settings.gradle', "dependencyResolutionManagement.repositories { $repository }\n");
+
+# Add this library to the dependencies list
 $aarStaging->update("$projectName/build.gradle", sub {
     $_ = shift;
+    s@compileOnly project\(\"\:dependency\-builder\"\)@implementation 'com.viliussutkus89:pdf2htmlex-android:$version'@;
     s@//#UNCOMMENT-DURING-STAGING#@@;
-    s@#STAGING-VERSION#@$version@;
     return $_;
+    #
 });
 
+# Copy and update Java package name by adding suffix
 $aarStaging->update("$projectName/src/main/AndroidManifest.xml", sub {
     $_ = shift;
     s/(package=["'].+)(["'])/${1}.${suffix}${2}/;
     return $_;
 });
 
+$aarStaging->update("$projectName/src/androidTest/assets");
 $aarStaging->update("$projectName/src/androidTest/java", sub {
     $_ = shift;
     s/^package (.+);$/package ${1}.${suffix};\nimport $1.*;/;
@@ -110,5 +117,3 @@ $aarStaging->update("$projectName/src/androidTest/java", sub {
     $_ = dirname($_) . '/' . $suffix . '/' . basename($_);
     return $_;
 });
-
-$aarStaging->update(["$projectName/src/androidTest/assets", "$projectName/src/main/assets"]);

@@ -3,7 +3,8 @@
 #  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/unprivilegedBuild.yml - v2.2.0
+#  .github/workflows/build.yml - v2.2.0
+#  Renamed from .github/workflows/privilegedBuild.yml
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +24,18 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 
-name: unprivilegedBuild
+name: build
 on:
   workflow_dispatch:
   push:
-    branches-ignore: [ master ]
+    branches: [ master ]
     paths-ignore:
       - '**.md'
       - '.github/**'
-      - '!.github/workflows/unprivilegedBuild.yml'
-      - 'licenseOnly/**'
-  pull_request:
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - '!.github/workflows/unprivilegedBuild.yml'
+      - '!.github/workflows/build.yml'
+
+env:
+  TARBALL_CACHE_KEY:  "tarballs-key-3"
 
 permissions:
   actions: none
@@ -54,6 +52,9 @@ permissions:
 jobs:
   buildLibrary:
     if: "!contains(github.event.head_commit.message, '[SkipCI]') && !contains(github.event.head_commit.message, '[AppOnly]')"
+    environment: LibraryKeyAndSonatypeAccess
+    outputs:
+      STAGING_REPO_URL: ${{ steps.sonatype.outputs.stagingRepoUrl }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -70,9 +71,27 @@ jobs:
       # ninja is required to build projects, using meson build system
       - run: pip3 install --user meson ninja
 
+      - name: Cache tarballs
+        uses: actions/cache@v3
+        with:
+          key: ${{ env.TARBALL_CACHE_KEY }}
+          path: dependency-builder/src/main/cpp/tarballs
       - run: ./dodownloadtarballs --serial
 
-      - run: ./gradlew lintRelease publishToMavenLocal
+      - run: ./gradlew lintRelease publishToMavenLocal publishToSonatype closeSonatypeStagingRepository | tee publishToSonatype.log
+        # bash has pipefail on by default, which is needed for tee to fail, if gradle fails
+        shell: bash
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
+
+      - name: Parse Sonatype repository
+        id: sonatype
+        # publishToSonatype.log contains a line looking like this:
+        # Created staging repository 'comviliussutkus89-1055' at https://oss.sonatype.org/service/local/repositories/comviliussutkus89-1055/content/
+        run: perl -ne 'print "::set-output name=stagingRepoUrl::$2\n::warning ::$1\n" if /^(Created staging repository .+ at (.+))$/' < publishToSonatype.log
 
       - uses: actions/upload-artifact@v3
         if: always()
@@ -91,10 +110,11 @@ jobs:
           path: pdf2htmlEX/build/reports/lint-results-release.html
           if-no-files-found: error
 
+      - run: tar -cvf maven-local.tar ~/.m2
       - uses: actions/upload-artifact@v3
         with:
-          name: maven-local
-          path: ~/.m2
+          name: maven-local.tar
+          path: maven-local.tar
           if-no-files-found: error
 
   runInstrumentedTests:
@@ -129,12 +149,7 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: maven-local
-          path: ~/.m2
-
-      - run: ./ci-scripts/prepareLibraryTestsForStagingRepository pdf2htmlEX --output=build/lib-staging --repository=mavenLocal
+      - run: ./ci-scripts/prepareLibraryTestsForStagingRepository pdf2htmlEX --output=build/lib-staging --repository=${{ needs.buildLibrary.outputs.STAGING_REPO_URL }}
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -171,8 +186,9 @@ jobs:
           path: build/lib-staging/testResults
           if-no-files-found: error
 
-  buildApplicationAgainstUnreleasedLibrary:
+  buildSampleAppAgainstUnReleasedLibrary:
     needs: buildLibrary
+    environment: SampleAppKeystore
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -182,16 +198,23 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: maven-local
-          path: ~/.m2
+      - name: Prepare sample app for staging repository
+        run: ./ci-scripts/prepareSampleAppForStagingRepository application app --output=build/application-staging --repository=${{ needs.buildLibrary.outputs.STAGING_REPO_URL }}
 
-      - run: ./ci-scripts/prepareSampleAppForStagingRepository application app --output=build/application-staging --repository=mavenLocal
+      - id: decodeSampleAppKeystore
+        run: |
+          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.android.pdf2htmlex.application.jks"
+          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.android.pdf2htmlex.application.jks"
+        env:
+          APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
 
       - name: Build and lint sample app from staging library
         run: ./gradlew build lintRelease
         working-directory: build/application-staging
+        env:
+          APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
+          APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
+          APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -201,12 +224,13 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: application-lint-report
+          name: application-staging-lint-report
           path: build/application-staging/app/build/reports/lint-results-release.html
           if-no-files-found: error
 
-  buildApplicationAgainstReleasedLibrary:
+  buildSampleAppAgainstReleasedLibrary:
     if: "!contains(github.event.head_commit.message, '[SkipCI]') && contains(github.event.head_commit.message, '[AppOnly]')"
+    environment: SampleAppKeystore
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -216,8 +240,19 @@ jobs:
           java-version: 11
       - uses: android-actions/setup-android@v2
 
+      - id: decodeSampleAppKeystore
+        run: |
+          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.android.pdf2htmlex.application.jks"
+          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.android.pdf2htmlex.application.jks"
+        env:
+          APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
+
       - run: ./gradlew build lintRelease
         working-directory: application
+        env:
+          APP_SIGNING_KEYFILE: ${{ steps.decodeSampleAppKeystore.outputs.APP_SIGNING_KEYFILE }}
+          APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
+          APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -228,5 +263,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: application-lint-report
-          path: mv application/app/build/reports/lint-results-release.html
+          path: application/app/build/reports/lint-results-release.html
           if-no-files-found: error

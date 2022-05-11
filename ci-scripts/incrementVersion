@@ -1,37 +1,12 @@
 #!/usr/bin/env perl
-#  MIT License
-#
-#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
-#
-#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  ci-scripts/incrementVersion - v2.0.0
-#
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to deal
-#  in the Software without restriction, including without limitation the rights
-#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#  copies of the Software, and to permit persons to whom the Software is
-#  furnished to do so, subject to the following conditions:
-#
-#  The above copyright notice and this permission notice shall be included in all
-#  copies or substantial portions of the Software.
-#
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#  SOFTWARE.
-#
 ###########################################################################################
 ### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The Purpose ### The ###
 ###########################################################################################
-#  The purpose of this script is to increment project version in library files.
+# The purpose of this script is to increment project version in various files.
+# This script may be triggered manually, or during a release.
 ###########################################################################################
 ### ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The Purpose~ # ~The~ #
 ###########################################################################################
-
 use warnings;
 use strict;
 
@@ -40,20 +15,12 @@ use Getopt::Long;
 use lib File::Basename::dirname(__FILE__) . '/lib';
 use fileUpdater;
 use getVersion;
-use List::Util qw(max);
 
 sub usage {
-    my $bn = File::Basename::basename(__FILE__);
-    print STDERR "./$bn --major | --minor | --patch\n";
-    print STDERR "\t--major to increment major number, set minor and patch numbers to zero and increment versionCode by 100.\n";
-    print STDERR "\t--minor to increment minor number, set patch to zero and increment versionCode by 10.\n";
-    print STDERR "\t--patch to increment patch number and increment versionCode by 1.\n";
-    print STDERR "\n";
-    print STDERR "./$bn requestedVersion requestedVersionCode\n";
-    print STDERR "\t to set a specific version and versionCode, for example \"./$bn 0.4.2 55\".\n";
-    print STDERR "\n";
-    print STDERR "./$bn --application";
-    print STDERR "\t to increment application's version (build number).\n";
+    print STDERR './', File::Basename::basename(__FILE__), " --major|--minor|--patch [--release] [requestedVersion]\n";
+    print STDERR "\tMandatory: major, minor or patch to choose witch version to increment.\n";
+    print STDERR "\tOptional: release to updated README.md and other release files.\n";
+    print STDERR "\tOptional: requestedVersion, to specify new major, minor or patch number.\n";
     exit 1;
 }
 
@@ -61,93 +28,76 @@ sub usage {
 # $newVersion, $newVersionCode - post increment, to be used for upcoming dev builds
 my $oldVersion = getVersion::getVersion();
 my $oldVersionCode = getVersion::getVersionCode();
-my $oldAppVersion = getVersion::getAppVersion();
-my $oldAppVersionCode = getVersion::getAppVersionCode();
-my ($newVersion, $newVersionCode, $newAppVersion, $newAppVersionCode);
+my ($newVersion, $newVersionCode);
 
-my ($upMajor, $upMinor, $upPatch, $application, $help);
-Getopt::Long::GetOptions(major => \$upMajor, minor => \$upMinor, patch => \$upPatch, application => \$application, 'help' => \$help) or usage;
+my ($upMajor, $upMinor, $upPatch, $isRelease, $help, $requestedVersion);
+Getopt::Long::GetOptions(major => \$upMajor, minor => \$upMinor, patch => \$upPatch, release => \$isRelease, 'help' => \$help) or usage;
 if (defined $help) {
+    usage();
+}
+
+if (@ARGV) {
+    $requestedVersion = shift;
+}
+
+my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
+if (defined $upMajor) {
+    $major = (defined $requestedVersion) ? $requestedVersion : $major + 1;
+    $newVersion = "${major}.0.0";
+    $newVersionCode = $oldVersionCode + 100;
+}
+elsif (defined $upMinor) {
+    $minor = (defined $requestedVersion) ? $requestedVersion : $minor + 1;
+    $newVersion = "${major}.${minor}.0";
+    $newVersionCode = $oldVersionCode + 10;
+}
+elsif (defined $upPatch) {
+    $patch_ = (defined $requestedVersion) ? $requestedVersion : $patch_ + 1;
+    $newVersion = "${major}.${minor}.${patch_}";
+    $newVersionCode = $oldVersionCode + 1;
+}
+else {
     usage();
 }
 
 my $rootDirectory = File::Basename::dirname(pathResolver::getAbsolutePath(File::Basename::dirname(__FILE__)));
 my $versionIncrementer = fileUpdater->new({ rootDirectory => $rootDirectory });
 
-if (defined $application) {
-    if (defined $upMajor || defined $upMinor || defined $upPatch) {
-        print STDERR "--application cannot be used with --major, --minor or --patch arguments!\n";
-        exit 1
-    }
-    usage if (@ARGV);
+$versionIncrementer->update('build.gradle', sub {
+    $_ = shift;
+    s/^(version\s*=\s*['"])${oldVersion}(['"])$/${1}${newVersion}$2/;
+    return $_;
+});
 
-    # oldAppVersion could be either new format:
-    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH.APPLICATION_RELEASE_NUMBER"
-    # or old format:
-    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH"
-    my ($major, $minor, $patch_, $appReleaseNumber) = $oldAppVersion =~ /(\d+)\.(\d+)\.(\d+)\.?(\d+)?/;
-    if (!defined $appReleaseNumber) {
-        # Converting from old to new app version format
-        $appReleaseNumber = 0;
-    }
-    $appReleaseNumber = $appReleaseNumber + 1;
+$versionIncrementer->update('pdf2htmlEX/build.gradle', sub {
+    $_ = shift;
+    s/^(\s+versionCode\s+)${oldVersionCode}$/${1}${newVersionCode}/;
+    return $_;
+});
 
-    $newAppVersion = "${major}.${minor}.${patch_}.${appReleaseNumber}";
-    $newAppVersionCode = $oldAppVersionCode + 1;
-
+if (defined $isRelease) {
     $versionIncrementer->update('application/app/build.gradle', sub {
         $_ = shift;
-        s/^(\s+versionName\s+["'])${oldAppVersion}(["'])/${1}${newAppVersion}${2}/;
-        s/^(\s+versionCode\s+)${oldAppVersionCode}$/${1}${newAppVersionCode}/;
+        s/^(\s+versionName\s+['"])[\d\.]+(['"])$/${1}${oldVersion}${2}/;
+        s/^(\s+versionCode\s+)\d+$/${1}${oldVersionCode}/;
+        s/^(\s+implementation\s+['"]com\.viliussutkus89\:pdf2htmlex-android\:)[\d\.]+(['"])$/${1}${oldVersion}${2}/;
         return $_;
     });
 
-    print "::set-output name=oldAppVersion::$oldAppVersion\n";
-    print "::set-output name=oldAppVersionCode::$oldAppVersionCode\n";
-    print "::set-output name=newAppVersion::$newAppVersion\n";
-    print "::set-output name=newAppVersionCode::$newAppVersionCode\n";
-    print "::set-output name=files::application/app/build.gradle\n";
-} else {
-    # Both app and library versionCode need to be incremental
-    my $vCode = max($oldVersionCode, $oldAppVersionCode);
-
-    my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
-    if (defined $upMajor) {
-        $major = $major + 1;
-        $newVersion = "${major}.0.0";
-        $newVersionCode = $vCode + 10000;
-    }
-    elsif (defined $upMinor) {
-        $minor = $minor + 1;
-        $newVersion = "${major}.${minor}.0";
-        $newVersionCode = $vCode + 1000;
-    }
-    elsif (defined $upPatch) {
-        $patch_ = $patch_ + 1;
-        $newVersion = "${major}.${minor}.${patch_}";
-        $newVersionCode = $vCode + 100;
-    }
-    else {
-        $newVersion = shift or usage();
-        $newVersionCode = shift or usage();
-    }
-    usage if (@ARGV);
-
-    $versionIncrementer->update('build.gradle', sub {
+    $versionIncrementer->update('README.md', sub {
         $_ = shift;
-        s/^(version\s*=\s*['"])${oldVersion}(['"])$/${1}${newVersion}$2/;
+        s/(\s+implementation\s+['"]com\.viliussutkus89\:pdf2htmlex-android\:)[\d\.]+(['"])/${1}${oldVersion}${2}/;
         return $_;
     });
-
-    $versionIncrementer->update('pdf2htmlEX/build.gradle', sub {
-        $_ = shift;
-        s/^(\s+versionCode\s+)${oldVersionCode}$/${1}${newVersionCode}/;
-        return $_;
-    });
-
-    print "::set-output name=oldVersion::$oldVersion\n";
-    print "::set-output name=oldVersionCode::$oldVersionCode\n";
-    print "::set-output name=newVersion::$newVersion\n";
-    print "::set-output name=newVersionCode::$newVersionCode\n";
-    print "::set-output name=files::build.gradle pdf2htmlEX/build.gradle\n";
 }
+
+print "::set-output name=releasedVersion::$oldVersion\n";
+print "::set-output name=releasedVersionCode::$oldVersionCode\n";
+print "::set-output name=unreleasedVersion::$newVersion\n";
+print "::set-output name=unreleasedVersionCode::$newVersionCode\n";
+
+print '::set-output name=files::build.gradle pdf2htmlEX/build.gradle';
+if (defined $isRelease) {
+    print ' application/app/build.gradle README.md';
+}
+print "\n";

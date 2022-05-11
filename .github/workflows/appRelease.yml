@@ -1,9 +1,9 @@
 #  MIT License
 #
-#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/appRelease.yml - v2.0.0
+#  .github/workflows/appRelease.yml - v2.1.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -46,11 +46,11 @@ jobs:
       # in case there's a commit between buildSampleApp and releaseApp jobs...
       GIT_TAG: ${{ github.event.ref }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.ref }}
 
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: zulu
           java-version: 11
@@ -70,13 +70,13 @@ jobs:
           APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
           APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: APKs
           path: application/app/build/outputs/apk/**/*.apk
 
       - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: application-lint-report.html
           path: application-lint-report.html
@@ -88,12 +88,12 @@ jobs:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
 #           A branch is required for post release version increment commit
           ref: ${{ needs.buildSampleApp.outputs.GIT_TAG }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: artifacts
 
@@ -108,13 +108,13 @@ jobs:
           name: "[AppRelease] ${{ github.event.repository.name }} v${{ steps.version.outputs.appVersion }}"
           artifacts: "artifacts/APKs/**/*.apk,artifacts/application-lint-report.html/application-lint-report.html"
 
-  incrementAppVersion:
+  postReleaseAppVersionIncrement:
     needs: releaseApp
     permissions:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.ref }}
 

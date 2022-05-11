@@ -1,9 +1,9 @@
 #  MIT License
 #
-#  Copyright (c) 2021, 2022 Vilius Sutkus '89 <ViliusSutkus89@gmail.com>
+#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/fullRelease.yml - v2.0.0
+#  .github/workflows/fullRelease.yml - v2.1.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ jobs:
       RELEASE_TAG: "v${{ steps.updateDownstreamVersion.outputs.version }}"
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # A branch is required for post release version increment commit
           ref: ${{ github.event.ref }}
@@ -114,10 +114,10 @@ jobs:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: refs/tags/${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: zulu
           java-version: 11
@@ -149,13 +149,13 @@ jobs:
           allowUpdates: true
           artifacts: "application/app/build/outputs/apk/**/*.apk,application-lint-report.html"
 
-  incrementAppVersion:
+  postReleaseAppVersionIncrement:
     needs: buildApplication
     permissions:
       contents: write
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.ref }}
 
