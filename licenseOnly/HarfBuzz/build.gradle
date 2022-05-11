@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '4.2.1'
+        versionName '3.2.0'
     }
     publishing {
         singleVariant("release") {
@@ -41,7 +41,7 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'Old MIT'
-                            url = 'https://github.com/harfbuzz/harfbuzz/blob/4.2.1/COPYING'
+                            url = 'https://github.com/harfbuzz/harfbuzz/blob/3.2.0/COPYING'
                             distribution = 'repo'
                         }
                     }
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://github.com/harfbuzz/harfbuzz/blob/4.2.1/AUTHORS
+                        // https://github.com/harfbuzz/harfbuzz/blob/3.2.0/AUTHORS
                         developer {
                             name = 'Behdad Esfahbod'
                         }
