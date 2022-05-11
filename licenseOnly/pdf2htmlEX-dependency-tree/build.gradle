@@ -37,7 +37,7 @@ dependencies {
     // Dependencies of cairo
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+    implementation 'com.viliussutkus89.licenseOnly:GLib:2.72.1'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
     implementation 'com.viliussutkus89.licenseOnly:libxml:2.9.9'
@@ -49,7 +49,7 @@ dependencies {
     // Dependencies of FontForge
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+//    implementation 'com.viliussutkus89.licenseOnly:GLib:'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:2.0.4'
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+//    implementation 'com.viliussutkus89.licenseOnly:GLib:'
     implementation 'com.viliussutkus89.licenseOnly:LCMS:2.9'
     implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:2.0.4'
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
@@ -88,7 +88,7 @@ dependencies {
 
     // Dependencies of pixman
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+//    implementation 'com.viliussutkus89.licenseOnly:GLib:'
 
     // Dependencies of libpng
     // none
@@ -107,7 +107,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.7'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+//    implementation 'com.viliussutkus89.licenseOnly:GLib:'
     implementation 'com.viliussutkus89.licenseOnly:HarfBuzz:2.6.6'
 
     // Dependencies of proxy-libintl
@@ -139,7 +139,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
+//    implementation 'com.viliussutkus89.licenseOnly:GLib:'
 }
 
 afterEvaluate {

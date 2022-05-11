@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.66.4'
+        versionName '2.72.1'
     }
     publishing {
         singleVariant("release") {
@@ -52,7 +52,7 @@ afterEvaluate {
 
                     developers {
                         // Developer list obtained from:
-                        // https://gitlab.gnome.org/GNOME/glib/-/blob/2.66.4/AUTHORS
+                        // https://gitlab.gnome.org/GNOME/glib/-/blob/2.72.1/AUTHORS
                         developer {
                             name = 'Hans Breuer'
                             email = 'hans@breuer.org'
@@ -149,7 +149,6 @@ afterEvaluate {
                             name = 'Josh MacDonald'
                             email = 'jmacd@xcf.berkeley.edu'
                         }
-
                     }
                 }
             }
