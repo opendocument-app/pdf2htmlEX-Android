@@ -11,6 +11,6 @@ include_guard(GLOBAL)
 
 ExternalProjectAutotools(libtiff-4
   DEPENDS libjpeg
-  URL http://download.osgeo.org/libtiff/tiff-4.1.0.tar.gz
-  URL_HASH SHA512=fd541dcb11e3d5afaa1ec2f073c9497099727a52f626b338ef87dc93ca2e23ca5f47634015a4beac616d4e8f05acf7b7cd5797fb218758cc2ad31b390491c5a6
+  URL https://download.osgeo.org/libtiff/tiff-4.3.0.tar.gz
+  URL_HASH SHA256=0e46e5acb087ce7d1ac53cf4f56a09b221537fc86dfc5daaad1c2e89e1b37ac8
 )

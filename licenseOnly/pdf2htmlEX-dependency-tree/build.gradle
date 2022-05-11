@@ -68,7 +68,7 @@ dependencies {
 //    implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:'
 //    implementation 'com.viliussutkus89.licenseOnly:libpng:'
     implementation 'com.viliussutkus89.licenseOnly:OpenJPEG:2.4.0'
-    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:4.1.0'
+    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:4.3.0'
     implementation 'com.viliussutkus89.licenseOnly:poppler-data:0.4.9'
 
     // Dependencies of fontconfig
@@ -115,13 +115,13 @@ dependencies {
 
     // Dependencies of LCMS
 //    implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:'
-    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:4.1.0'
+//    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:'
 
     // Dependencies of OpenJPEG
 //    implementation 'com.viliussutkus89.licenseOnly:LCMS:'
 //    implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:'
 //    implementation 'com.viliussutkus89.licenseOnly:libpng:'
-    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:4.1.0'
+//    implementation 'com.viliussutkus89.licenseOnly:LibTIFF:'
 
     // Dependencies of LibTIFF
 //    implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:'
