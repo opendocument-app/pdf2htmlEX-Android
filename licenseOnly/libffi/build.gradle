@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '3.3'
+        versionName '3.4.2'
     }
     publishing {
         singleVariant("release") {
@@ -41,12 +41,12 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'MIT'
-                            url = 'https://github.com/libffi/libffi/blob/v3.3/LICENSE'
+                            url = 'https://github.com/libffi/libffi/blob/v3.4.2/LICENSE'
                             distribution = 'repo'
                         }
                         license {
                             name = 'GPLv2'
-                            url = 'https://github.com/libffi/libffi/blob/v3.3/LICENSE-BUILDTOOLS'
+                            url = 'https://github.com/libffi/libffi/blob/v3.4.2/LICENSE-BUILDTOOLS'
                             distribution = 'repo'
                         }
                     }
