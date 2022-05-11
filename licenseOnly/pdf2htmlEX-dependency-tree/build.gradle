@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:libtool:2.4.6'
     implementation 'com.viliussutkus89.licenseOnly:libuninameslist:20190701'
 //    implementation 'com.viliussutkus89.licenseOnly:libxml:'
-    implementation 'com.viliussutkus89.licenseOnly:pango:1.48.0'
+    implementation 'com.viliussutkus89.licenseOnly:pango:1.49.4'
     implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.4.1'
 
     // Dependencies of poppler

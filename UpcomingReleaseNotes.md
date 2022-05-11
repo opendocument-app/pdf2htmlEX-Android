@@ -9,3 +9,4 @@ Update dependencies:
 - libexpat-2.4.8
 - libffi-3.4.2
 - libxml2-2.9.14
+- pango-1.49.4

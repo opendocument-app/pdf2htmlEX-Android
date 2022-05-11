@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '1.48.0'
+        versionName '1.49.4'
     }
     publishing {
         singleVariant("release") {
@@ -41,7 +41,7 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'LGPLv2'
-                            url = 'https://gitlab.gnome.org/GNOME/pango/-/blob/1.48.0/COPYING'
+                            url = 'https://gitlab.gnome.org/GNOME/pango/-/blob/1.49.4/COPYING'
                             distribution = 'repo'
                         }
                     }
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://gitlab.gnome.org/GNOME/pango/-/blob/1.48.0/THANKS
+                        // https://gitlab.gnome.org/GNOME/pango/-/blob/1.49.4/THANKS
                         developer {
                             name = 'Abigail Brady'
                         }
@@ -91,7 +91,6 @@ afterEvaluate {
                         developer {
                             name = 'Chookij Vanatham'
                         }
-
                     }
                 }
             }
