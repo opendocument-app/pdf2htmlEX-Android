@@ -1,4 +1,5 @@
 Update dependencies:
+- Fontconfig-2.13.96
 - FreeType-2.12.1
 - GLib-2.66.8
 - proxy-libintl-0.4.1

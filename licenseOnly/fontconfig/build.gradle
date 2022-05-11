@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.13.93'
+        versionName '2.13.96'
     }
     publishing {
         singleVariant("release") {
@@ -41,7 +41,7 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'MIT'
-                            url = 'https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.13.93/COPYING'
+                            url = 'https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.13.96/COPYING'
                             distribution = 'repo'
                         }
                     }
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.13.93/AUTHORS
+                        // https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.13.96/AUTHORS
                         developer {
                             name = "Keith Packard"
                             email = "keithp@keithp.com"

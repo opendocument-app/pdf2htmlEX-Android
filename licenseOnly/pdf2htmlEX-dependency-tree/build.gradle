@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:SymbolAndZapfDingbatsFonts:1.00'
 
     // Dependencies of cairo
-    implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
+    implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.96'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.8'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'

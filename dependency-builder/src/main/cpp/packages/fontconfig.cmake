@@ -2,8 +2,8 @@ include_guard(GLOBAL)
 
 ExternalProjectMeson(fontconfig
   DEPENDS freetype libexpat
-  URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.93.tar.xz
-  URL_HASH SHA256=ea968631eadc5739bc7c8856cef5c77da812d1f67b763f5e51b57b8026c1a0a0
+  URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.96.tar.xz
+  URL_HASH SHA256=d816a920384aa91bc0ebf20c3b51c59c2153fdf65de0b5564bf9e8473443d637
 
   CONFIGURE_ARGUMENTS
     -Dnls=enabled
