@@ -3,6 +3,7 @@ Update dependencies:
 - FriBidi-1.0.12
 - FreeType-2.12.1
 - GLib-2.66.8
+- HarfBuzz-4.2.1
 - proxy-libintl-0.4.1
 - libffi-3.4.2
 - libxml2-2.9.14
