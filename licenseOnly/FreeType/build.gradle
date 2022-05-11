@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.10.4'
+        versionName '2.12.1'
     }
     publishing {
         singleVariant("release") {
@@ -41,12 +41,12 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'FreeType License'
-                            url = 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-10-4/docs/LICENSE.TXT'
+                            url = 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-12-1/LICENSE.TXT'
                             distribution = 'repo'
                         }
                         license {
                             name = 'FreeType License'
-                            url = 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-10-4/docs/FTL.TXT'
+                            url = 'https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-12-1/docs/FTL.TXT'
                             distribution = 'repo'
                         }
                         license {
@@ -61,20 +61,46 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-10-4/.mailmap
+                        // https://gitlab.freedesktop.org/freetype/freetype/-/blob/VER-2-12-1/.mailmap
+                        developer {
+                            name = 'Behdad Esfahbod (بهداد اسفهبد)'
+                            email = 'behdad@behdad.org'
+                            email = 'behdad.esfahbod@gmail.com'
+                        }
+                        developer {
+                            name = 'Alexander Borsuk'
+                            email = 'me@alex.bio'
+                            email = 'alexander.borsuk@qnective.com'
+                        }
+                        developer {
+                            name = 'Ewald Hew (Hew Yih Shiuan 丘毅宣)'
+                            email = 'ewaldhew@gmail.com'
+                        }
+                        developer {
+                            name = 'Moazin Khatti (موؤذن کھٹی)'
+                            email = 'moazinkhatri@gmail.com'
+                        }
+                        developer {
+                            name = 'Priyesh Kumar (प्रियेश कुमार)'
+                            email = 'priyeshkkumar@gmail.com'
+                        }
                         developer {
                             name = 'Alexei Podtelezhnikov (Алексей Подтележников)'
                             email = 'apodtele@gmail.com'
                         }
                         developer {
-                            name = 'Behdad Esfahbod'
-                            email = 'behdad@behdad.org'
-                            email = 'behdad.esfahbod@gmail.com'
+                            name = 'Nikhil Ramakrishnan (निखिल रामकृष्णन)'
+                            email = 'ramakrishnan.nikhil@gmail.com'
                         }
                         developer {
-                            name = 'Bram Tassyns'
-                            email = 'BramT@enfocus.be'
-                            email = 'BramT@enfocus.com'
+                            name = 'Dominik Röttsches'
+                            email = 'drott@chromium.org'
+                            email = 'drott@google.com'
+                        }
+                        developer {
+                            name = 'Kostya Serebryany'
+                            email = 'kcc@google.com'
+                            email = 'konstantin.s.serebryany@gmail.com'
                         }
                         developer {
                             name = 'Suzuki, Toshiya (鈴木俊哉)'
@@ -84,17 +110,29 @@ afterEvaluate {
                             email = 'mpsuzuki@hiroshima-u.ac.jp'
                         }
                         developer {
-                            id = 'Bungeman'
+                            name = 'Bram Tassyns'
+                            email = 'BramT@enfocus.be'
+                            email = 'BramT@enfocus.com'
+                        }
+                        developer {
+                            name = 'David Turner'
+                            email = 'david@freetype.org'
+                            email = 'david.turner.dev@gmail.com'
+                        }
+                        developer {
+                            name = 'Anuj Verma (अनुज वर्मा)'
+                            email = 'anujv@iitbhilai.ac.in'
+                        }
+                        developer {
                             name = 'Ben Wagner'
                             email = 'bungeman@gmail.com'
+                            email = 'bungeman@google.com'
+                            email = 'bungeman@chromium.org'
                         }
                         developer {
-                            name = 'Ewald Hew (Hew Yih Shiuan 丘毅宣)'
-                            email = 'ewaldhew@gmail.com'
-                        }
-                        developer {
-                            name = 'Nikhil Ramakrishnan (निखिल रामकृष्णन)'
-                            email = 'ramakrishnan.nikhil@gmail.com'
+                            name = 'Nikolaus Waxweiler'
+                            email = 'madigens@gmail.com'
+                            email = 'nikolaus.waxweiler@daltonmaag.com'
                         }
                     }
                 }

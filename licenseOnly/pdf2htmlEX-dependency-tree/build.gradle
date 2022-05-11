@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '0.18.14'
+        versionName '0.18.18'
     }
     publishing {
         singleVariant("release") {
@@ -29,14 +29,14 @@ dependencies {
 
     // Dependencies of pdf2htmlEX
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.12.1'
     implementation 'com.viliussutkus89.licenseOnly:FontForge:20170731'
     implementation 'com.viliussutkus89.licenseOnly:poppler:0.81.0'
     implementation 'com.viliussutkus89.licenseOnly:SymbolAndZapfDingbatsFonts:1.00'
 
     // Dependencies of cairo
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
@@ -48,7 +48,7 @@ dependencies {
 
     // Dependencies of FontForge
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:2.0.4'
@@ -62,7 +62,7 @@ dependencies {
     // Dependencies of poppler
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
     implementation 'com.viliussutkus89.licenseOnly:LCMS:2.9'
     implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:2.0.4'
@@ -72,7 +72,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:poppler-data:0.4.9'
 
     // Dependencies of fontconfig
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:libexpat:2.2.10'
 
     // Dependencies of GLib
@@ -105,7 +105,7 @@ dependencies {
     // Dependencies of pango
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.7'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
     implementation 'com.viliussutkus89.licenseOnly:HarfBuzz:2.6.6'
@@ -138,7 +138,7 @@ dependencies {
     // Dependencies of HarfBuzz
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
-    implementation 'com.viliussutkus89.licenseOnly:FreeType:2.10.4'
+//    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.66.4'
 }
 
