@@ -10,5 +10,6 @@ Update dependencies:
 - libffi-3.4.2
 - OpenJPEG-2.4.0
 - LibTIFF-4.3.0
+- libuninameslist-20211114
 - libxml2-2.9.14
 - pango-1.49.4
