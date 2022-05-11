@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.9'
+        versionName '2.13.1'
     }
     publishing {
         singleVariant("release") {
@@ -41,7 +41,7 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'MIT'
-                            url = 'https://github.com/mm2/Little-CMS/blob/lcms2.9/COPYING'
+                            url = 'https://github.com/mm2/Little-CMS/blob/lcms2.13.1/COPYING'
                             distribution = 'repo'
                         }
                     }
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://github.com/mm2/Little-CMS/blob/lcms2.9/AUTHORS
+                        // https://github.com/mm2/Little-CMS/blob/lcms2.13.1/AUTHORS
                         developer {
                             name = 'Marti Maria'
                         }
@@ -147,6 +147,12 @@ afterEvaluate {
                         }
                         developer {
                             name = 'Noel Carboni'
+                        }
+                        developer {
+                            name = 'Sergei Trofimovic'
+                        }
+                        developer {
+                            name = 'Philipp Knechtges'
                         }
                         developer {
                             name = 'Artifex software'

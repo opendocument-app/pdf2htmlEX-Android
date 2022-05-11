@@ -5,5 +5,6 @@ Update dependencies:
 - GLib-2.66.8
 - HarfBuzz-4.2.1
 - proxy-libintl-0.4.1
+- LCMS2-2.13.1
 - libffi-3.4.2
 - libxml2-2.9.14
