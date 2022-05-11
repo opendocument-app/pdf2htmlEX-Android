@@ -153,8 +153,8 @@ afterEvaluate {
 
                 pom {
                     name = project.name
-                    description = 'Dependency tree for pdfh2mltEX-Android'
-                    url = 'https://github.com/ViliusSutkus89/licenseOnly'
+                    description = 'Dependency tree for pdf2htmlEX-Android'
+                    url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android/tree/master/licenseOnly'
                     packaging = 'aar'
                     inceptionYear = '2021'
                     licenses {
@@ -165,8 +165,8 @@ afterEvaluate {
                         }
                     }
                     scm {
-                        url = 'https://github.com/ViliusSutkus89/licenseOnly'
-                        connection = 'https://github.com/ViliusSutkus89/licenseOnly.git'
+                        url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
+                        connection = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
                     }
                     developers {
                         developer {
