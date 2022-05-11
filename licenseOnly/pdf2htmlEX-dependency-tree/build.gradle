@@ -12,7 +12,7 @@ android {
         minSdk 16
         targetSdk 32
 
-        versionCode 1
+        versionCode 2
         versionName '0.18.18'
     }
     publishing {
@@ -47,10 +47,10 @@ dependencies {
 //    implementation 'com.viliussutkus89.licenseOnly:libpng:'
 
     // Dependencies of FontForge
-    implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
+//    implementation 'com.viliussutkus89.licenseOnly:cairo:'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
-    implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
+//    implementation 'com.viliussutkus89.licenseOnly:libiconv:'
     implementation 'com.viliussutkus89.licenseOnly:libjpeg-turbo:2.1.3'
 //    implementation 'com.viliussutkus89.licenseOnly:libpng:'
     implementation 'com.viliussutkus89.licenseOnly:libtool:2.4.6'
@@ -60,8 +60,8 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.4.1'
 
     // Dependencies of poppler
-    implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
-    implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.93'
+//    implementation 'com.viliussutkus89.licenseOnly:cairo:'
+//    implementation 'com.viliussutkus89.licenseOnly:fontconfig:'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
     implementation 'com.viliussutkus89.licenseOnly:LCMS:2.13.1'
@@ -76,7 +76,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:libexpat:2.4.8'
 
     // Dependencies of GLib
-    implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
+//    implementation 'com.viliussutkus89.licenseOnly:libiconv:'
     implementation 'com.viliussutkus89.licenseOnly:libffi:3.4.2'
 //    implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:'
 
@@ -84,7 +84,7 @@ dependencies {
     // none
 
     // Dependencies of libxml
-    implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
+//    implementation 'com.viliussutkus89.licenseOnly:libiconv:'
 
     // Dependencies of pixman
 //    implementation 'com.viliussutkus89.licenseOnly:libpng:'
@@ -103,8 +103,8 @@ dependencies {
     // none
 
     // Dependencies of pango
-    implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
-    implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.96'
+//    implementation 'com.viliussutkus89.licenseOnly:cairo:'
+    implementation 'com.viliussutkus89.licenseOnly:fontconfig:'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.12'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
@@ -136,7 +136,7 @@ dependencies {
     // none
 
     // Dependencies of HarfBuzz
-    implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
+//    implementation 'com.viliussutkus89.licenseOnly:cairo:'
 //    implementation 'com.viliussutkus89.licenseOnly:fontconfig:'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
