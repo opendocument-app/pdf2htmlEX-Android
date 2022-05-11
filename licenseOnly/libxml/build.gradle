@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.viliussutkus89.licenseOnly'
+
+android {
+    compileSdk 32
+    defaultConfig {
+        minSdk 16
+        targetSdk 32
+
+        versionCode 1
+        versionName '2.9.9'
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifactId project.name
+                version = android.defaultConfig.versionName
+
+                pom {
+                    name = project.name
+                    description = 'The XML C parser and toolkit of Gnome'
+                    url = 'http://xmlsoft.org'
+                    packaging = 'aar'
+                    inceptionYear = '1999'
+                    licenses {
+                        license {
+                            name = 'MIT'
+                            url = 'https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.9/Copyright'
+                            distribution = 'repo'
+                        }
+                    }
+                    scm {
+                        url = 'https://gitlab.gnome.org/GNOME/libxml2'
+                        connection = 'https://gitlab.gnome.org/GNOME/libxml2.git'
+                    }
+                    developers {
+                        // Developer list obtained from:
+                        // https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.9/AUTHORS
+                        developer {
+                            name = 'Daniel Veillard'
+                            email = 'daniel@veillard.com'
+                        }
+                        developer {
+                            name = 'Bjorn Reese'
+                            email = 'breese@users.sourceforge.net'
+                        }
+                        developer {
+                            name = 'William Brack'
+                            email = 'wbrack@mmm.com.hk'
+                        }
+                        developer {
+                            name = 'Igor Zlatkovic'
+                            email = 'igor@zlatkovic.com'
+                        }
+                        developer {
+                            name = 'Aleksey Sanin'
+                            email = 'aleksey@aleksey.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (System.getenv('SIGNING_KEY')) {
+        signing {
+            required { true }
+            useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
+            sign publishing.publications.release
+        }
+    }
+}

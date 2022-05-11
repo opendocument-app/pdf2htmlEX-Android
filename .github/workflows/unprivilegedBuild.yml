@@ -33,11 +33,13 @@ on:
       - '.github/**'
       - '!.github/workflows/unprivilegedBuild.yml'
       - 'licenseOnly/**'
+      - 'licenseOnly/**'
   pull_request:
     paths-ignore:
       - '**.md'
       - '.github/**'
       - '!.github/workflows/unprivilegedBuild.yml'
+      - 'licenseOnly/**'
 
 permissions:
   actions: none

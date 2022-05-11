@@ -1,0 +1,180 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.viliussutkus89.licenseOnly'
+
+android {
+    compileSdk 32
+    defaultConfig {
+        minSdk 16
+        targetSdk 32
+
+        versionCode 1
+        versionName '2.0.4'
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifactId project.name
+                version = android.defaultConfig.versionName
+
+                pom {
+                    name = project.name
+                    description = 'libjpeg-turbo is a JPEG image codec that uses SIMD instructions to accelerate baseline JPEG compression and decompression on x86, x86-64, Arm, PowerPC, and MIPS systems, as well as progressive JPEG compression on x86, x86-64, and Arm systems'
+                    url = 'https://libjpeg-turbo.org'
+                    packaging = 'aar'
+                    inceptionYear = '2010'
+                    licenses {
+                        license {
+                            name = 'BSD-modified-3-clause'
+                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.0.4/LICENSE.md'
+                            distribution = 'repo'
+                        }
+                        license {
+                            name = 'IJG'
+                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.0.4/README.ijg'
+                            distribution = 'repo'
+                        }
+                        license {
+                            name = 'zlib'
+                            url = 'https://opensource.org/licenses/Zlib'
+                            distribution = 'repo'
+                        }
+                    }
+                    scm {
+                        url = 'https://github.com/libjpeg-turbo/libjpeg-turbo'
+                        connection = 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
+                    }
+                    developers {
+                        // Developer list obtained from:
+                        // https://github.com/libjpeg-turbo/libjpeg-turbo/graphs/contributors
+                        developer {
+                            id = 'dcommander'
+                        }
+                        developer {
+                            id = 'jwright-arm'
+                        }
+                        developer {
+                            id = 'CendioOssman'
+                        }
+                        developer {
+                            id = 'mayeut'
+                        }
+                        developer {
+                            id = 'mattsarett'
+                        }
+                        developer {
+                            id = 'kornelski'
+                        }
+                        developer {
+                            id = 'oerdnj'
+                        }
+                        developer {
+                            id = 'pkasting'
+                        }
+                        developer {
+                            id = 'ProgramMax'
+                        }
+                        developer {
+                            id = 'stephengroat'
+                        }
+                        developer {
+                            id = 'jcowgill'
+                        }
+                        developer {
+                            id = 'fbossen'
+                        }
+                        developer {
+                            id = 'mathstuf'
+                        }
+                        developer {
+                            id = 'Hello71'
+                        }
+                        developer {
+                            id = 'y-guyon'
+                        }
+                        developer {
+                            id = 'thefloweringash'
+                        }
+                        developer {
+                            id = 'MartynJacques-Arm'
+                        }
+                        developer {
+                            id = 'robertocr'
+                        }
+                        developer {
+                            id = 'chris-y'
+                        }
+                        developer {
+                            id = 'AdrianBunk'
+                        }
+                        developer {
+                            id = 'masal64'
+                        }
+                        developer {
+                            id = 'rouault'
+                        }
+                        developer {
+                            id = 'richard-townsend-arm'
+                        }
+                        developer {
+                            id = 'ccawley2011'
+                        }
+                        developer {
+                            id = 'nyg'
+                        }
+                        developer {
+                            id = 'colincross'
+                        }
+                        developer {
+                            id = 'dwatteau'
+                        }
+                        developer {
+                            id = 'pkubaj'
+                        }
+                        developer {
+                            id = 'arichardson'
+                        }
+                        developer {
+                            id = 'orivej'
+                        }
+                        developer {
+                            id = 'walisser'
+                        }
+                        developer {
+                            id = 'neheb'
+                        }
+                        developer {
+                            id = 'luzpaz'
+                        }
+                        developer {
+                            id = 'chandlerc'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (System.getenv('SIGNING_KEY')) {
+        signing {
+            required { true }
+            useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
+            sign publishing.publications.release
+        }
+    }
+}

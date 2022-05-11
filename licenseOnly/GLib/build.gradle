@@ -1,0 +1,166 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.viliussutkus89.licenseOnly'
+
+android {
+    compileSdk 32
+    defaultConfig {
+        minSdk 16
+        targetSdk 32
+
+        versionCode 1
+        versionName '2.66.4'
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifactId project.name
+                version = android.defaultConfig.versionName
+
+                pom {
+                    name = project.name
+                    description = 'GLib provides the core application building blocks for libraries and applications written in C. It provides the core object system used in GNOME, the main loop implementation, and a large set of utility functions for strings and common data structures.'
+                    url = 'https://wiki.gnome.org/Projects/GLib'
+                    packaging = 'aar'
+                    inceptionYear = '1998'
+                    licenses {
+                        license {
+                            name = 'LGPL-2.1'
+                            url = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html'
+                            distribution = 'repo'
+                        }
+                    }
+                    scm {
+                        url = 'https://gitlab.gnome.org/GNOME/glib'
+                        connection = 'https://gitlab.gnome.org/GNOME/glib.git'
+                    }
+
+                    developers {
+                        // Developer list obtained from:
+                        // https://gitlab.gnome.org/GNOME/glib/-/blob/2.66.4/AUTHORS
+                        developer {
+                            name = 'Hans Breuer'
+                            email = 'hans@breuer.org'
+                        }
+                        developer {
+                            name = 'Matthias Clasen'
+                            email = 'mclasen@redhat.com'
+                        }
+                        developer {
+                            name = 'Tor Lillqvist'
+                            email = 'tml@iki.fi'
+                        }
+                        developer {
+                            name = 'Tim Janik'
+                            email = 'timj@gtk.org'
+                        }
+                        developer {
+                            name = 'Havoc Pennington'
+                            email = 'hp@redhat.com'
+                        }
+                        developer {
+                            name = 'Ron Steinke'
+                            email = 'rsteinke@w-link.net'
+                        }
+                        developer {
+                            name = 'Owen Taylor'
+                            email = 'otaylor@redhat.com'
+                        }
+                        developer {
+                            name = 'Sebastian Wilhelmi'
+                            email = 'seppi@seppi.de'
+                        }
+                        developer {
+                            name = 'Shawn T. Amundson'
+                            email = 'amundson@gimp.org'
+                        }
+                        developer {
+                            name = 'Jeff Garzik'
+                            email = 'jgarzik@pobox.com'
+                        }
+                        developer {
+                            name = 'Raja R Harinath'
+                            email = 'harinath@cs.umn.edu'
+                        }
+                        developer {
+                            name = 'Tim Janik'
+                            email = 'timj@gtk.org'
+                        }
+                        developer {
+                            name = 'Elliot Lee'
+                            email = 'sopwith@redhat.com'
+                        }
+                        developer {
+                            name = 'Tor Lillqvist'
+                            email = 'tml@iki.fi'
+                        }
+                        developer {
+                            name = 'Paolo Molaro'
+                            email = 'lupus@debian.org'
+                        }
+                        developer {
+                            name = 'Havoc Pennington'
+                            email = 'hp@pobox.com'
+                        }
+                        developer {
+                            name = 'Manish Singh'
+                            email = 'yosh@gimp.org'
+                        }
+                        developer {
+                            name = 'Owen Taylor'
+                            email = 'otaylor@gtk.org'
+                        }
+                        developer {
+                            name = 'Sebastian Wilhelmi'
+                            email = 'wilhelmi@ira.uka.de'
+                        }
+                        developer {
+                            name = 'Makoto Matsumoto'
+                            email = 'matumoto@math.keio.ac.jp'
+                        }
+                        developer {
+                            name = 'Takuji Nishimura'
+                            email = 'nisimura@math.keio.ac.jp'
+                        }
+                        developer {
+                            name = 'Peter Mattis'
+                            email = 'petm@xcf.berkeley.edu'
+                        }
+                        developer {
+                            name = 'Spencer Kimball'
+                            email = 'spencer@xcf.berkeley.edu'
+                        }
+                        developer {
+                            name = 'Josh MacDonald'
+                            email = 'jmacd@xcf.berkeley.edu'
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    if (System.getenv('SIGNING_KEY')) {
+        signing {
+            required { true }
+            useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
+            sign publishing.publications.release
+        }
+    }
+}
