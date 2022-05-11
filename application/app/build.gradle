@@ -44,7 +44,7 @@ android {
 dependencies {
     implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.17'
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.activity:activity:1.4.0'
 
     implementation 'androidx.work:work-runtime:2.7.1'
