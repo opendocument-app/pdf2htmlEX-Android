@@ -6,5 +6,6 @@ Update dependencies:
 - HarfBuzz-4.2.1
 - proxy-libintl-0.4.1
 - LCMS2-2.13.1
+- libexpat-2.4.8
 - libffi-3.4.2
 - libxml2-2.9.14

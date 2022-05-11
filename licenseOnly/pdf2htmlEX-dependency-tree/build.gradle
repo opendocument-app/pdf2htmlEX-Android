@@ -73,7 +73,7 @@ dependencies {
 
     // Dependencies of fontconfig
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:libexpat:2.2.10'
+    implementation 'com.viliussutkus89.licenseOnly:libexpat:2.4.8'
 
     // Dependencies of GLib
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
