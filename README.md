@@ -1,6 +1,6 @@
 # Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
-[![privilegedBuild](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/privilegedBuild.yml/badge.svg)](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/privilegedBuild.yml)
+[![build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml/badge.svg)](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
 
 Packaged as a library, but also available as an [Application](/application).
