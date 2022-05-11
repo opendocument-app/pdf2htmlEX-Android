@@ -1,6 +1,6 @@
 include_guard(GLOBAL)
 
 ExternalProjectAutotools(fribidi
-  URL https://github.com/fribidi/fribidi/releases/download/v1.0.7/fribidi-1.0.7.tar.bz2
-  URL_HASH SHA256=5ab5f21e9f2fc57b4b40f8ea8f14dba78a5cc46d9cf94bc5e00a58e6886a935d
+  URL https://github.com/fribidi/fribidi/releases/download/v1.0.12/fribidi-1.0.12.tar.xz
+  URL_HASH SHA256=0cd233f97fc8c67bb3ac27ce8440def5d3ffacf516765b91c2cc654498293495
 )

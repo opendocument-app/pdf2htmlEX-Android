@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '1.0.7'
+        versionName '1.0.12'
     }
     publishing {
         singleVariant("release") {
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://github.com/fribidi/fribidi/blob/v1.0.7/AUTHORS
+                        // https://github.com/fribidi/fribidi/blob/v1.0.12/AUTHORS
                         developer {
                             name = 'Behdad Esfahbod'
                             email = 'behdad@gnu.org'

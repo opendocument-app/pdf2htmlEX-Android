@@ -106,7 +106,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
     implementation 'com.viliussutkus89.licenseOnly:fontconfig:2.13.96'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
-    implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.7'
+    implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.12'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
     implementation 'com.viliussutkus89.licenseOnly:HarfBuzz:2.6.6'
 
