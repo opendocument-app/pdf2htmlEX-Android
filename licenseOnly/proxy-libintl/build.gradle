@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '0.2'
+        versionName '0.4.1'
     }
     publishing {
         singleVariant("release") {
@@ -51,7 +51,7 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://github.com/ViliusSutkus89/proxy-libintl/blob/0.2/README.md
+                        // https://github.com/ViliusSutkus89/proxy-libintl/blob/0.4.1/README.md
                         // https://github.com/ViliusSutkus89/proxy-libintl/graphs/contributors
                         developer {
                             name = 'Tor Lillqvist'
@@ -63,6 +63,14 @@ afterEvaluate {
                         developer {
                             name = 'Nirbheek Chauhan'
                             id = 'nirbheek'
+                        }
+                        developer {
+                            name = 'Amos Wenger'
+                            id = 'fasterthanlime'
+                        }
+                        developer {
+                            name = 'Aleksandr Mezin'
+                            id = 'amezin'
                         }
                         developer {
                             name = 'Ole André Vadla Ravnås'

@@ -57,7 +57,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:libuninameslist:20190701'
     implementation 'com.viliussutkus89.licenseOnly:libxml:2.9.9'
     implementation 'com.viliussutkus89.licenseOnly:pango:1.48.0'
-    implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.2'
+    implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.4.1'
 
     // Dependencies of poppler
     implementation 'com.viliussutkus89.licenseOnly:cairo:1.17.4'
@@ -78,7 +78,7 @@ dependencies {
     // Dependencies of GLib
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libffi:3.3'
-    implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.2'
+//    implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:'
 
     // Dependencies of libiconv
     // none
