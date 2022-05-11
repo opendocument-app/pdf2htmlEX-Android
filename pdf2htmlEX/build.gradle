@@ -54,12 +54,6 @@ android {
         ndk.abiFilters = project.hasProperty('abi') ? [project.property('abi')] : ['arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64']
         externalNativeBuild.cmake.arguments '-DANDROID_STL=c++_shared'
     }
-    buildTypes {
-        //#UNCOMMENT-DURING-STAGING# /*
-        debug.externalNativeBuild.cmake.arguments "-DINSTALLED_PREFIX=${gatherDebugArtifactsTask.installed.get()}"
-        release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel', "-DINSTALLED_PREFIX=${gatherReleaseArtifactsTask.installed.get()}"
-        //#UNCOMMENT-DURING-STAGING# */ cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
-    }
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -73,6 +67,10 @@ android {
         version '3.18.1'
     }
     ndkVersion '23.1.7779620'
+    buildTypes {
+        release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel', "-DINSTALLED_PREFIX=${gatherReleaseArtifactsTask.installed.get()}"
+        debug.externalNativeBuild.cmake.arguments "-DINSTALLED_PREFIX=${gatherDebugArtifactsTask.installed.get()}"
+    }
     sourceSets {
         release {
             jniLibs.srcDirs += gatherReleaseArtifactsTask.jniLibs.get()
