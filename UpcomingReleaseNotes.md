@@ -8,5 +8,6 @@ Update dependencies:
 - LCMS2-2.13.1
 - libexpat-2.4.8
 - libffi-3.4.2
+- OpenJPEG-2.4.0
 - libxml2-2.9.14
 - pango-1.49.4
