@@ -104,7 +104,7 @@ dependencies {
 
     // Dependencies of pango
 //    implementation 'com.viliussutkus89.licenseOnly:cairo:'
-    implementation 'com.viliussutkus89.licenseOnly:fontconfig:'
+//    implementation 'com.viliussutkus89.licenseOnly:fontconfig:'
 //    implementation 'com.viliussutkus89.licenseOnly:FreeType:'
     implementation 'com.viliussutkus89.licenseOnly:FriBiDi:1.0.12'
 //    implementation 'com.viliussutkus89.licenseOnly:GLib:'
