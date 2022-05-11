@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // License only dependencies. To add cpp dependencies to maven POM
-    implementation 'com.viliussutkus89.licenseOnly:pdf2htmlEX-dependency-tree:0.18.14'
+    implementation 'com.viliussutkus89.licenseOnly:pdf2htmlEX-dependency-tree:0.18.18'
 }
 
 afterEvaluate {
