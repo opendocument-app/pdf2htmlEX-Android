@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:GLib:2.72.1'
     implementation 'com.viliussutkus89.licenseOnly:libiconv:1.16'
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
-    implementation 'com.viliussutkus89.licenseOnly:libxml:2.9.9'
+    implementation 'com.viliussutkus89.licenseOnly:libxml:2.9.14'
     implementation 'com.viliussutkus89.licenseOnly:pixman:0.40.0'
 
     // Dependencies of FreeType
@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.viliussutkus89.licenseOnly:libpng:1.6.37'
     implementation 'com.viliussutkus89.licenseOnly:libtool:2.4.6'
     implementation 'com.viliussutkus89.licenseOnly:libuninameslist:20190701'
-    implementation 'com.viliussutkus89.licenseOnly:libxml:2.9.9'
+//    implementation 'com.viliussutkus89.licenseOnly:libxml:'
     implementation 'com.viliussutkus89.licenseOnly:pango:1.48.0'
     implementation 'com.viliussutkus89.licenseOnly:proxy-libintl:0.4.1'
 

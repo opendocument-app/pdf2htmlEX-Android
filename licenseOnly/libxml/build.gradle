@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.9.9'
+        versionName '2.9.14'
     }
     publishing {
         singleVariant("release") {
@@ -35,13 +35,13 @@ afterEvaluate {
                 pom {
                     name = project.name
                     description = 'The XML C parser and toolkit of Gnome'
-                    url = 'http://xmlsoft.org'
+                    url = 'https://gitlab.gnome.org/GNOME/libxml2'
                     packaging = 'aar'
                     inceptionYear = '1999'
                     licenses {
                         license {
                             name = 'MIT'
-                            url = 'https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.9/Copyright'
+                            url = 'https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.14/Copyright'
                             distribution = 'repo'
                         }
                     }
@@ -51,26 +51,24 @@ afterEvaluate {
                     }
                     developers {
                         // Developer list obtained from:
-                        // https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.9/AUTHORS
+                        // https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.14/README.md#authors
                         developer {
                             name = 'Daniel Veillard'
-                            email = 'daniel@veillard.com'
                         }
                         developer {
                             name = 'Bjorn Reese'
-                            email = 'breese@users.sourceforge.net'
                         }
                         developer {
                             name = 'William Brack'
-                            email = 'wbrack@mmm.com.hk'
                         }
                         developer {
                             name = 'Igor Zlatkovic'
-                            email = 'igor@zlatkovic.com'
                         }
                         developer {
                             name = 'Aleksey Sanin'
-                            email = 'aleksey@aleksey.com'
+                        }
+                        developer {
+                            name = 'Nick Wellnhofer'
                         }
                     }
                 }
