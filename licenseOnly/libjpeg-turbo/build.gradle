@@ -13,7 +13,7 @@ android {
         targetSdk 32
 
         versionCode 1
-        versionName '2.0.4'
+        versionName '2.1.3'
     }
     publishing {
         singleVariant("release") {
@@ -41,12 +41,12 @@ afterEvaluate {
                     licenses {
                         license {
                             name = 'BSD-modified-3-clause'
-                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.0.4/LICENSE.md'
+                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.1.3/LICENSE.md'
                             distribution = 'repo'
                         }
                         license {
                             name = 'IJG'
-                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.0.4/README.ijg'
+                            url = 'https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2.1.3/README.ijg'
                             distribution = 'repo'
                         }
                         license {
@@ -75,7 +75,7 @@ afterEvaluate {
                             id = 'mayeut'
                         }
                         developer {
-                            id = 'mattsarett'
+                            id = 'fbossen'
                         }
                         developer {
                             id = 'kornelski'
@@ -90,28 +90,25 @@ afterEvaluate {
                             id = 'ProgramMax'
                         }
                         developer {
+                            id = 'arichardson'
+                        }
+                        developer {
                             id = 'stephengroat'
                         }
                         developer {
                             id = 'jcowgill'
                         }
                         developer {
-                            id = 'fbossen'
+                            id = 'mattsarett'
                         }
                         developer {
                             id = 'mathstuf'
                         }
                         developer {
-                            id = 'Hello71'
-                        }
-                        developer {
-                            id = 'y-guyon'
-                        }
-                        developer {
                             id = 'thefloweringash'
                         }
                         developer {
-                            id = 'MartynJacques-Arm'
+                            id = 'y-guyon'
                         }
                         developer {
                             id = 'robertocr'
@@ -121,6 +118,9 @@ afterEvaluate {
                         }
                         developer {
                             id = 'AdrianBunk'
+                        }
+                        developer {
+                            id = 'modbw'
                         }
                         developer {
                             id = 'masal64'
@@ -144,10 +144,10 @@ afterEvaluate {
                             id = 'dwatteau'
                         }
                         developer {
-                            id = 'pkubaj'
+                            id = 'dimhotepus'
                         }
                         developer {
-                            id = 'arichardson'
+                            id = 'Hello71'
                         }
                         developer {
                             id = 'orivej'
@@ -163,6 +163,9 @@ afterEvaluate {
                         }
                         developer {
                             id = 'chandlerc'
+                        }
+                        developer {
+                            id = 'MartynJacques-Arm'
                         }
                     }
                 }
