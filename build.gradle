@@ -9,7 +9,7 @@ task clean(type: Delete) {
 }
 
 group = 'com.viliussutkus89'
-version = '0.18.18'
+version = '0.18.19'
 
 nexusPublishing {
     repositories {
