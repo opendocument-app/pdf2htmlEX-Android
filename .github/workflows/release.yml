@@ -3,7 +3,7 @@
 #  Copyright (c) 2021 - 2022 ViliusSutkus89.com
 #
 #  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/fullRelease.yml - v2.1.0
+#  .github/workflows/release.yml - v2.1.0
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 
-name: fullRelease
+name: release
 on:
   workflow_dispatch:
     inputs:
@@ -81,7 +81,7 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update README.md and application to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
+          commit_message: "Update README.md to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
 
       - name: Create GitHub Release
@@ -105,64 +105,3 @@ jobs:
         with:
           commit_message: "Post release truncation of UpcomingReleaseNotes.md"
           file_pattern: UpcomingReleaseNotes.md
-
-  buildApplication:
-    environment: SampleAppKeystore
-    needs: releaseGitHub
-    permissions:
-      # Permission needed to attach artifact to GitHub release.
-      contents: write
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: refs/tags/${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
-      - uses: actions/setup-java@v3
-        with:
-          distribution: zulu
-          java-version: 11
-      - uses: android-actions/setup-android@v2
-
-      - id: decodeAppKeystore
-        run: |
-          echo "${{ env.APP_SIGNING_KEYFILE_BASE64 }}" | base64 --decode - > "$HOME/com.viliussutkus89.pdf2htmlex.application.jks"
-          echo "::set-output name=APP_SIGNING_KEYFILE::$HOME/com.viliussutkus89.pdf2htmlex.application.jks"
-        env:
-          APP_SIGNING_KEYFILE_BASE64: ${{ secrets.APP_SIGNING_KEYFILE_BASE64 }}
-
-      - run: ./gradlew build lintRelease
-        working-directory: application
-        env:
-          APP_SIGNING_KEYFILE: ${{ steps.decodeAppKeystore.outputs.APP_SIGNING_KEYFILE }}
-          APP_SIGNING_PASS: ${{ secrets.APP_SIGNING_PASS }}
-          APP_SIGNING_ALIAS: ${{ secrets.APP_SIGNING_ALIAS }}
-
-      - run: mv application/app/build/reports/lint-results-release.html application-lint-report.html
-
-      - name: Attach application to GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.releaseGitHub.outputs.RELEASE_TAG }}
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
-          allowUpdates: true
-          artifacts: "application/app/build/outputs/apk/**/*.apk,application-lint-report.html"
-
-  postReleaseAppVersionIncrement:
-    needs: buildApplication
-    permissions:
-      contents: write
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.ref }}
-
-      - run: ./ci-scripts/incrementVersion --application
-        id: postReleaseVersionIncrement
-
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Post release app version increment to ${{ steps.postReleaseVersionIncrement.outputs.newAppVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldAppVersion }})"
-          file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}

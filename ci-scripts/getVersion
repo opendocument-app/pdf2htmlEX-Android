@@ -34,7 +34,7 @@ use warnings;
 use base 'Exporter';
 our $VERSION = '2.0.0';
 our @EXPORT = qw(getVersion);
-our @EXPORT_OK = qw(getVersionCode getAppVersionCode getAppVersion getAppReleaseNumber);
+our @EXPORT_OK = qw(getVersionCode);
 
 use File::Basename 'dirname';
 use Getopt::Long;
@@ -68,44 +68,12 @@ sub getVersionCode {
     return $versionCode;
 }
 
-sub getAppVersion {
-    my ($appVersion) = fileParser::grepSingleLine(
-        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
-        qr/versionName\s+["'](\d+\.\d+\.\d+(?:\.\d+)?)["']$/
-    );
-    return $appVersion;
-}
-
-sub getAppReleaseNumber {
-    my ($appReleaseNumber) = fileParser::grepSingleLine(
-        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
-        qr/versionName\s+["']\d+\.\d+\.\d+(?:\.(\d+))?["']$/
-    );
-    # App Release Number may or may not be available
-    # Default to 0 if not available (migrating from old format)
-    if (!defined $appReleaseNumber) {
-        $appReleaseNumber = 0;
-    }
-    return $appReleaseNumber;
-}
-
-sub getAppVersionCode {
-    my ($versionCode) = fileParser::grepSingleLine(
-        pathResolver::getAbsolutePath($rootDir . '/application/app/build.gradle'),
-        qr/versionCode\s+(\d+)\s*$/
-    );
-    return $versionCode;
-}
-
 if (not caller()) {
     my ($application, $ci);
     Getopt::Long::GetOptions(application => \$application, ci => \$ci);
     if (defined $ci) {
         print "::set-output name=version::", getVersion(), "\n";
         print "::set-output name=versionCode::", getVersionCode(), "\n";
-
-        print "::set-output name=appVersion::", getAppVersion(), "\n";
-        print "::set-output name=appVersionCode:", getAppVersionCode(), "\n";
     }
     elsif (defined $application) {
         print getAppVersion(), "\n";

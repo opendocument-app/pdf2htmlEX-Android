@@ -51,9 +51,6 @@ sub usage {
     print STDERR "\n";
     print STDERR "./$bn requestedVersion requestedVersionCode\n";
     print STDERR "\t to set a specific version and versionCode, for example \"./$bn 0.4.2 55\".\n";
-    print STDERR "\n";
-    print STDERR "./$bn --application";
-    print STDERR "\t to increment application's version (build number).\n";
     exit 1;
 }
 
@@ -61,12 +58,10 @@ sub usage {
 # $newVersion, $newVersionCode - post increment, to be used for upcoming dev builds
 my $oldVersion = getVersion::getVersion();
 my $oldVersionCode = getVersion::getVersionCode();
-my $oldAppVersion = getVersion::getAppVersion();
-my $oldAppVersionCode = getVersion::getAppVersionCode();
-my ($newVersion, $newVersionCode, $newAppVersion, $newAppVersionCode);
+my ($newVersion, $newVersionCode);
 
-my ($upMajor, $upMinor, $upPatch, $application, $help);
-Getopt::Long::GetOptions(major => \$upMajor, minor => \$upMinor, patch => \$upPatch, application => \$application, 'help' => \$help) or usage;
+my ($upMajor, $upMinor, $upPatch, $help);
+Getopt::Long::GetOptions(major => \$upMajor, minor => \$upMinor, patch => \$upPatch, 'help' => \$help) or usage;
 if (defined $help) {
     usage();
 }
@@ -74,80 +69,42 @@ if (defined $help) {
 my $rootDirectory = File::Basename::dirname(pathResolver::getAbsolutePath(File::Basename::dirname(__FILE__)));
 my $versionIncrementer = fileUpdater->new({ rootDirectory => $rootDirectory });
 
-if (defined $application) {
-    if (defined $upMajor || defined $upMinor || defined $upPatch) {
-        print STDERR "--application cannot be used with --major, --minor or --patch arguments!\n";
-        exit 1
-    }
-    usage if (@ARGV);
-
-    # oldAppVersion could be either new format:
-    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH.APPLICATION_RELEASE_NUMBER"
-    # or old format:
-    # "LIBRARY_MAJOR.LIBRARY_MINOR.LIBRARY_PATCH"
-    my ($major, $minor, $patch_, $appReleaseNumber) = $oldAppVersion =~ /(\d+)\.(\d+)\.(\d+)\.?(\d+)?/;
-    if (!defined $appReleaseNumber) {
-        # Converting from old to new app version format
-        $appReleaseNumber = 0;
-    }
-    $appReleaseNumber = $appReleaseNumber + 1;
-
-    $newAppVersion = "${major}.${minor}.${patch_}.${appReleaseNumber}";
-    $newAppVersionCode = $oldAppVersionCode + 1;
-
-    $versionIncrementer->update('application/app/build.gradle', sub {
-        $_ = shift;
-        s/^(\s+versionName\s+["'])${oldAppVersion}(["'])/${1}${newAppVersion}${2}/;
-        s/^(\s+versionCode\s+)${oldAppVersionCode}$/${1}${newAppVersionCode}/;
-        return $_;
-    });
-
-    print "::set-output name=oldAppVersion::$oldAppVersion\n";
-    print "::set-output name=oldAppVersionCode::$oldAppVersionCode\n";
-    print "::set-output name=newAppVersion::$newAppVersion\n";
-    print "::set-output name=newAppVersionCode::$newAppVersionCode\n";
-    print "::set-output name=files::application/app/build.gradle\n";
-} else {
-    # Both app and library versionCode need to be incremental
-    my $vCode = max($oldVersionCode, $oldAppVersionCode);
-
-    my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
-    if (defined $upMajor) {
-        $major = $major + 1;
-        $newVersion = "${major}.0.0";
-        $newVersionCode = $vCode + 10000;
-    }
-    elsif (defined $upMinor) {
-        $minor = $minor + 1;
-        $newVersion = "${major}.${minor}.0";
-        $newVersionCode = $vCode + 1000;
-    }
-    elsif (defined $upPatch) {
-        $patch_ = $patch_ + 1;
-        $newVersion = "${major}.${minor}.${patch_}";
-        $newVersionCode = $vCode + 100;
-    }
-    else {
-        $newVersion = shift or usage();
-        $newVersionCode = shift or usage();
-    }
-    usage if (@ARGV);
-
-    $versionIncrementer->update('build.gradle', sub {
-        $_ = shift;
-        s/^(version\s*=\s*['"])${oldVersion}(['"])$/${1}${newVersion}$2/;
-        return $_;
-    });
-
-    $versionIncrementer->update('pdf2htmlEX/build.gradle', sub {
-        $_ = shift;
-        s/^(\s+versionCode\s+)${oldVersionCode}$/${1}${newVersionCode}/;
-        return $_;
-    });
-
-    print "::set-output name=oldVersion::$oldVersion\n";
-    print "::set-output name=oldVersionCode::$oldVersionCode\n";
-    print "::set-output name=newVersion::$newVersion\n";
-    print "::set-output name=newVersionCode::$newVersionCode\n";
-    print "::set-output name=files::build.gradle pdf2htmlEX/build.gradle\n";
+my ($major, $minor, $patch_) = $oldVersion =~ /(\d+)\.(\d+)\.(\d+)/;
+if (defined $upMajor) {
+    $major = $major + 1;
+    $newVersion = "${major}.0.0";
+    $newVersionCode = $oldVersionCode + 10000;
 }
+elsif (defined $upMinor) {
+    $minor = $minor + 1;
+    $newVersion = "${major}.${minor}.0";
+    $newVersionCode = $oldVersionCode + 1000;
+}
+elsif (defined $upPatch) {
+    $patch_ = $patch_ + 1;
+    $newVersion = "${major}.${minor}.${patch_}";
+    $newVersionCode = $oldVersionCode + 100;
+}
+else {
+    $newVersion = shift or usage();
+    $newVersionCode = shift or usage();
+}
+usage if (@ARGV);
+
+$versionIncrementer->update('build.gradle', sub {
+    $_ = shift;
+    s/^(version\s*=\s*['"])${oldVersion}(['"])$/${1}${newVersion}$2/;
+    return $_;
+});
+
+$versionIncrementer->update('pdf2htmlEX/build.gradle', sub {
+    $_ = shift;
+    s/^(\s+versionCode\s+)${oldVersionCode}$/${1}${newVersionCode}/;
+    return $_;
+});
+
+print "::set-output name=oldVersion::$oldVersion\n";
+print "::set-output name=oldVersionCode::$oldVersionCode\n";
+print "::set-output name=newVersion::$newVersion\n";
+print "::set-output name=newVersionCode::$newVersionCode\n";
+print "::set-output name=files::build.gradle pdf2htmlEX/build.gradle\n";

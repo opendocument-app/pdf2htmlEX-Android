@@ -28,7 +28,7 @@ on:
   workflow_dispatch:
     inputs:
       ARGUMENTS:
-        description: 'arguments to ci-scripts/incrementVersion: --major | --minor | --patch | --application'
+        description: 'arguments to ci-scripts/incrementVersion: --major | --minor | --patch'
         required: true
 
 jobs:

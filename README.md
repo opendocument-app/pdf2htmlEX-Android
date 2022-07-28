@@ -1,9 +1,12 @@
-# Android port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
+# Android library port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
 
 [![build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml/badge.svg)](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
 
-Packaged as a library, but also available as an [Application](/application).
+### Used by:
+- [Documenter](https://github.com/ViliusSutkus89/Documenter) - reference application for pdf2htmlEX-Android and wvWare-Android libraries. [Available on Play Store](https://play.google.com/store/apps/details?id=com.viliussutkus89.documenter)
+- [OpenDocument.droid](https://github.com/opendocument-app/OpenDocument.droid) - It's Android's first OpenOffice Document Reader!  [Available on Play Store](https://play.google.com/store/apps/details?id=at.tomtasche.reader)
+- Defunct [pdf2htmlEX-Android application](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/tree/v0.18.18/application)
 
 ### Goals:
 * Providing easy to use interface for downstream users.  
@@ -66,4 +69,3 @@ Full list of packages and patches to build them is included in [packages](/depen
 Current implementation supports building projects which are based on [Autotools](/dependency-builder/src/main/cpp/EPAutotools.cmake), [CMake](/dependency-builder/src/main/cpp/EPCMake.cmake) and [Meson](/dependency-builder/src/main/cpp/EPMeson.cmake).
 
 [pdf2htmlEX-Android](pdf2htmlEX/src/main/cpp/CMakeLists.txt) consumes previously built libraries and provides a Java wrapper to call pdf2htmlEX.
-
