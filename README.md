@@ -4,9 +4,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
 
 ### Used by:
-- [Documenter](https://github.com/ViliusSutkus89/Documenter) - reference application for pdf2htmlEX-Android and wvWare-Android libraries. [Available on Play Store](https://play.google.com/store/apps/details?id=com.viliussutkus89.documenter)
-- [OpenDocument.droid](https://github.com/opendocument-app/OpenDocument.droid) - It's Android's first OpenOffice Document Reader!  [Available on Play Store](https://play.google.com/store/apps/details?id=at.tomtasche.reader)
-- Defunct [pdf2htmlEX-Android application](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/tree/v0.18.18/application)
+- [Documenter](https://github.com/ViliusSutkus89/Documenter) on [Google Play](https://play.google.com/store/apps/details?id=com.viliussutkus89.documenter) - reference application for pdf2htmlEX-Android and wvWare-Android libraries.
+- [OpenDocument.droid](https://github.com/opendocument-app/OpenDocument.droid) on [Google Play](https://play.google.com/store/apps/details?id=at.tomtasche.reader) - It's Android's first OpenOffice Document Reader!
+- Defunct [pdf2htmlEX-Android application](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/tree/v0.18.18/application).
 
 ### Goals:
 * Providing easy to use interface for downstream users.  
