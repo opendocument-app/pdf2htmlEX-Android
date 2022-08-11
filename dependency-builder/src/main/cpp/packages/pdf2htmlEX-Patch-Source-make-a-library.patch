@@ -1,6 +1,6 @@
 --- CMakeLists.txt
 +++ CMakeLists.txt
-@@ -78,30 +78,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual")
+@@ -68,30 +68,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual")
  #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
  #endif()
  
@@ -39,7 +39,7 @@
  configure_file (${CMAKE_SOURCE_DIR}/src/pdf2htmlEX-config.h.in ${CMAKE_SOURCE_DIR}/src/pdf2htmlEX-config.h)
  configure_file (${CMAKE_SOURCE_DIR}/pdf2htmlEX.1.in ${CMAKE_SOURCE_DIR}/pdf2htmlEX.1)
  
-@@ -113,7 +99,6 @@ configure_file (${CMAKE_SOURCE_DIR}/share/pdf2htmlEX.js.in ${CMAKE_SOURCE_DIR}/s
+@@ -103,7 +89,6 @@ configure_file (${CMAKE_SOURCE_DIR}/share/pdf2htmlEX.js.in ${CMAKE_SOURCE_DIR}/s
  
  set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
      src/Param.h
@@ -47,7 +47,7 @@
      src/pdf2htmlEX-config.h
      src/HTMLRenderer/HTMLRenderer.h
      src/HTMLRenderer/draw.cc
-@@ -172,8 +157,19 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
+@@ -162,8 +147,19 @@ set(PDF2HTMLEX_SRC ${PDF2HTMLEX_SRC}
      src/TmpFiles.cc
      )
  
@@ -69,7 +69,7 @@
 
  add_custom_target(pdf2htmlEX_resources ALL DEPENDS
      ${CMAKE_SOURCE_DIR}/share/base.min.css
-@@ -199,6 +191,14 @@ add_custom_command(OUTPUT
+@@ -189,6 +181,14 @@ add_custom_command(OUTPUT
      )
  
  install (TARGETS pdf2htmlEX DESTINATION bin)
