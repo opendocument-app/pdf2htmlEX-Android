@@ -59,12 +59,6 @@ public class InstrumentedTests {
     testAllSuppliedPDFs(new pdf2htmlEX(ctx), ctx);
   }
 
-  @Test
-  public void testAllSuppliedPDFs_exe() throws IOException {
-    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    testAllSuppliedPDFs(new pdf2htmlEX_exe(ctx), ctx);
-  }
-
   public void testAllSuppliedPDFs(pdf2htmlEX converter, Context ctx) throws IOException {
     File testPDFDir = new File(ctx.getCacheDir(), "testPDFs");
     for (File pdfFile: testPDFDir.listFiles()) {

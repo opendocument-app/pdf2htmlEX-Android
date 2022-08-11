@@ -53,26 +53,27 @@
  
 -add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
 -target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
-+set(PDF2HTMLEX_PROGRAM_SRC src/pdf2htmlEX.cc)
++#set(PDF2HTMLEX_PROGRAM_SRC src/pdf2htmlEX.cc)
 +set(libPDF2HTMLEX_SRC src/libpdf2htmlEX.cc ${PDF2HTMLEX_SRC} src/pdf2htmlEX.h)
 +add_library(libpdf2htmlEX SHARED ${libPDF2HTMLEX_SRC})
 +target_link_libraries(libpdf2htmlEX ${PDF2HTMLEX_LIBS})
-+find_package(tmpfile REQUIRED CONFIG)
-+target_link_libraries(libpdf2htmlEX tmpfile::tmpfile)
++#find_package(tmpfile REQUIRED CONFIG)
++#target_link_libraries(libpdf2htmlEX tmpfile::tmpfile)
 +set_target_properties(libpdf2htmlEX PROPERTIES PUBLIC_HEADER "src/pdf2htmlEX.h")
 +set_target_properties(libpdf2htmlEX PROPERTIES OUTPUT_NAME pdf2htmlEX)
 +
-+add_executable(pdf2htmlEX ${PDF2HTMLEX_PROGRAM_SRC})
++#add_executable(pdf2htmlEX ${PDF2HTMLEX_PROGRAM_SRC})
 +#SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='\${ORIGIN}'")
-+target_link_libraries(pdf2htmlEX libpdf2htmlEX)
-+set_target_properties(pdf2htmlEX PROPERTIES OUTPUT_NAME libpdf2htmlEX-exe_not_lib.so)
++#target_link_libraries(pdf2htmlEX libpdf2htmlEX)
++#set_target_properties(pdf2htmlEX PROPERTIES OUTPUT_NAME libpdf2htmlEX-exe_not_lib.so)
 
  add_custom_target(pdf2htmlEX_resources ALL DEPENDS
      ${CMAKE_SOURCE_DIR}/share/base.min.css
-@@ -189,6 +181,14 @@ add_custom_command(OUTPUT
+@@ -188,7 +181,14 @@ add_custom_command(OUTPUT
+         ${CMAKE_SOURCE_DIR}/share/fancy.css
      )
  
- install (TARGETS pdf2htmlEX DESTINATION bin)
+-install (TARGETS pdf2htmlEX DESTINATION bin)
 +install (TARGETS libpdf2htmlEX
 +  LIBRARY DESTINATION lib
 +  ARCHIVE DESTINATION lib

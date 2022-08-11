@@ -46,10 +46,6 @@ task touchGlibPackage(type: Exec) {
 }
 preBuild.dependsOn touchGlibPackage
 
-dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
-}
-
 abstract class GatherArtifacts extends DefaultTask {
     @Input
     abstract Property<String> getCMakeBuildType()
@@ -75,7 +71,6 @@ abstract class GatherArtifacts extends DefaultTask {
             project.copy {
                 into("${jniLibs.get()}/$abi")
                 from("${installed.get()}/$abi/lib/libpdf2htmlEX.so")
-                from("${installed.get()}/$abi/bin/libpdf2htmlEX-exe_not_lib.so")
             }
         }
 
