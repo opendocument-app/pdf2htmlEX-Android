@@ -85,12 +85,6 @@ public class InstrumentedTests {
     encryptedPdfTest(new pdf2htmlEX(ctx), ctx);
   }
 
-  @Test
-  public void encryptedPdfTest_exe() throws IOException {
-    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    encryptedPdfTest(new pdf2htmlEX_exe(ctx), ctx);
-  }
-
   public void encryptedPdfTest(pdf2htmlEX converter, Context ctx) throws IOException {
     // encrypted_fontfile3_opentype.pdf was generated using:
     // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
