@@ -64,7 +64,7 @@ android {
     buildFeatures.prefab true
     externalNativeBuild.cmake {
         path 'src/main/cpp/CMakeLists.txt'
-        version '3.18.1'
+        version '3.22.1'
     }
     ndkVersion '25.0.8775105'
     buildTypes {
