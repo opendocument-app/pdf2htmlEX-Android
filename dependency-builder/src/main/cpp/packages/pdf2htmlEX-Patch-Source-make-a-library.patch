@@ -57,8 +57,8 @@
 +set(libPDF2HTMLEX_SRC src/libpdf2htmlEX.cc ${PDF2HTMLEX_SRC} src/pdf2htmlEX.h)
 +add_library(libpdf2htmlEX SHARED ${libPDF2HTMLEX_SRC})
 +target_link_libraries(libpdf2htmlEX ${PDF2HTMLEX_LIBS})
-+#find_package(tmpfile REQUIRED CONFIG)
-+#target_link_libraries(libpdf2htmlEX tmpfile::tmpfile)
++find_package(tmpfile REQUIRED CONFIG)
++target_link_libraries(libpdf2htmlEX tmpfile::tmpfile)
 +set_target_properties(libpdf2htmlEX PROPERTIES PUBLIC_HEADER "src/pdf2htmlEX.h")
 +set_target_properties(libpdf2htmlEX PROPERTIES OUTPUT_NAME pdf2htmlEX)
 +
