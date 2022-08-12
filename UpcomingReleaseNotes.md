@@ -1,1 +1,2 @@
 - remove deprecated pdf2htmlEX_exe interface
+- Update NDK to 25.0.8775105 (latest LTS)

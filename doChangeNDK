@@ -4,12 +4,9 @@ set -eu
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-NDK="23.1.7779620"
+NDK="25.0.8775105"
 
 version_format='([0-9\.]+)'
-
-expression="s/ANDROID_NDK\:([ ]+)\"$version_format\"/ANDROID_NDK\:\1\"$NDK\"/"
-sed -E "--expression=$expression" -i $BASEDIR/.github/workflows/privilegedBuild.yml $BASEDIR/.github/workflows/unprivilegedBuild.yml
 
 expression="s/ndk-$version_format/ndk-$NDK/"
 sed -E "--expression=$expression" -i $BASEDIR/README.md
