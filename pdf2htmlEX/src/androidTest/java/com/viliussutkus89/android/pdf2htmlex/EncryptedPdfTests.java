@@ -78,52 +78,55 @@ public class EncryptedPdfTests {
   }
 
   @Test(expected = pdf2htmlEX.PasswordRequiredException.class)
-  public void PasswordRequiredExceptionTest() {
+  public void PasswordRequiredExceptionTest() throws Exception {
     converter.convert();
   }
 
   @Test(expected = pdf2htmlEX.WrongPasswordException.class)
-  public void WrongUserPasswordExceptionTest() throws IOException {
-    converter = converter.setUserPassword("wrong-user-password");
-    converter.convert();
+  public void WrongUserPasswordExceptionTest() throws Exception {
+    converter.setUserPassword("wrong-user-password")
+      .convert();
   }
 
   @Test(expected = pdf2htmlEX.WrongPasswordException.class)
-  public void WrongOwnerPasswordExceptionTest() throws IOException {
-    converter = converter.setOwnerPassword("wrong-owner-password");
-    converter.convert();
+  public void WrongOwnerPasswordExceptionTest() throws Exception {
+    converter.setOwnerPassword("wrong-owner-password")
+      .convert();
   }
 
   @Test
-  public void CorrectUserPasswordTest() throws IOException {
-    converter = converter.setUserPassword("sample-user-password");
-    convertedHtml = converter.convert();
+  public void CorrectUserPasswordTest() throws Exception {
+    convertedHtml = converter.setUserPassword("sample-user-password")
+      .convert();
   }
 
   @Test
-  public void CorrectOwnerPasswordTest() throws IOException {
-    converter = converter.setOwnerPassword("sample-owner-password");
-    convertedHtml = converter.convert();
+  public void CorrectOwnerPasswordTest() throws Exception {
+    convertedHtml = converter.setOwnerPassword("sample-owner-password")
+      .convert();
   }
 
   @Test
-  public void CorrectUserPasswordWrongOwnerPasswordTest() throws IOException {
-    converter = converter.setUserPassword("sample-user-password");
-    converter = converter.setOwnerPassword("wrong-owner-password");
-    convertedHtml = converter.convert();
+  public void CorrectUserPasswordWrongOwnerPasswordTest() throws Exception {
+    convertedHtml = converter
+      .setUserPassword("sample-user-password")
+      .setOwnerPassword("wrong-owner-password")
+      .convert();
   }
 
   @Test
-  public void WrongUserPasswordCorrectOwnerPasswordTest() throws IOException {
-    converter = converter.setUserPassword("wrong-user-password");
-    converter = converter.setOwnerPassword("sample-owner-password");
-    convertedHtml = converter.convert();
+  public void WrongUserPasswordCorrectOwnerPasswordTest() throws Exception {
+    convertedHtml = converter
+      .setUserPassword("wrong-user-password")
+      .setOwnerPassword("sample-owner-password")
+      .convert();
   }
 
   @Test
-  public void CorrectUserAndOwnerPasswordsTest() throws IOException {
-    converter = converter.setUserPassword("sample-user-password");
-    converter = converter.setOwnerPassword("sample-owner-password");
-    convertedHtml = converter.convert();
+  public void CorrectUserAndOwnerPasswordsTest() throws Exception {
+    convertedHtml = converter
+      .setUserPassword("sample-user-password")
+      .setOwnerPassword("sample-owner-password")
+      .convert();
   }
 }
