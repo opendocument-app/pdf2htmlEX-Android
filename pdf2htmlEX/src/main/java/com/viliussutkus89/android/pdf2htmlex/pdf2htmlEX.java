@@ -91,6 +91,7 @@ public class pdf2htmlEX {
     // https://github.com/KeepSafe/ReLinker/issues/77
     // Manually load dependencies, because ReLinker.recursively() doesn't actually load recursively
     reLinker.loadLibrary(ctx, "c++_shared");
+    reLinker.loadLibrary(ctx, "tmpfile");
     reLinker.loadLibrary(ctx, "pdf2htmlEX-android");
 
     for (Map.Entry<String, String> e : m_environment.entrySet()) {
