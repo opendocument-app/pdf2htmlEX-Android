@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 public class pdf2htmlEX {
   static private final Object s_initSynchronizer = new Object();
 
@@ -191,13 +192,6 @@ public class pdf2htmlEX {
   public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
     this.p_backgroundFormat = backgroundFormat;
     return this;
-  }
-
-  /*
-   * @deprecated pdf2htmlEX-Android doesn't fork anymore
-   */
-  @Deprecated
-  public void setNoForking(boolean thisArgumentIsIgnored) {
   }
 
   public File convert() throws IOException, ConversionFailedException {
