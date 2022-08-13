@@ -54,7 +54,7 @@ public:
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jobject,
+Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jclass,
                                                                           jstring key_,
                                                                           jstring value_) {
     CCharGC key(env, key_);
