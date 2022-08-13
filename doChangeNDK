@@ -4,7 +4,9 @@ set -eu
 THIS_FILE=$(readlink -f "$0")
 BASEDIR=$(dirname "$THIS_FILE")
 
-NDK="25.0.8775105"
+# NDK-23 is the last to support api-16
+NDK="23.2.8568313"
+#NDK="25.0.8775105"
 
 version_format='([0-9\.]+)'
 
