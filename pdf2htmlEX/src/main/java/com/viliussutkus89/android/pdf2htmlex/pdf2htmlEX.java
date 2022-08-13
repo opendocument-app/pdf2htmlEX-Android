@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX.java
  *
- * Copyright (C) 2019, 2020 Vilius Sutkus'89
+ * Copyright (C) 2019, 2020, 2022 ViliusSutkus89.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,6 @@ public class pdf2htmlEX {
     // https://github.com/KeepSafe/ReLinker/issues/77
     // Manually load dependencies, because ReLinker.recursively() doesn't actually load recursively
     reLinker.loadLibrary(ctx, "c++_shared");
-    reLinker.loadLibrary(ctx, "pdf2htmlEX");
     reLinker.loadLibrary(ctx, "pdf2htmlEX-android");
 
     for (Map.Entry<String, String> e : m_environment.entrySet()) {

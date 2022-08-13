@@ -39,10 +39,6 @@ android {
     buildFeatures.prefab true
 }
 
-dependencies {
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
-}
-
 // Issue #1
 task touchGlibPackage(type: Exec) {
     commandLine 'touch', 'src/main/cpp/packages/glib-2.0.cmake'
@@ -71,13 +67,6 @@ abstract class GatherArtifacts extends DefaultTask {
 
     @TaskAction
     void gather() {
-        ABIs.get().each { abi ->
-            project.copy {
-                into("${jniLibs.get()}/$abi")
-                from("${installed.get()}/$abi/lib/libpdf2htmlEX.so")
-            }
-        }
-
         project.copy {
             into("${assets.get()}/pdf2htmlEX")
             from("${installed.get()}/${ABIs.get()[0]}")

@@ -36,11 +36,11 @@ find_library(log-lib log)
 find_package(tmpfile REQUIRED CONFIG)
 
 target_link_libraries(pdf2htmlEX-android
-  ${pdf2htmlEX_LIBRARIES}
+  ${pdf2htmlEX_STATIC_LIBRARIES}
   tmpfile::tmpfile
   ${log-lib}
 )
 
-STRING(REPLACE ";" " " pdf2htmlEX_CFLAGS_STR "${pdf2htmlEX_CFLAGS}")
-set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_CFLAGS_STR})
-target_include_directories(pdf2htmlEX-android PRIVATE ${pdf2htmlEX_INCLUDE_DIRS})
+STRING(REPLACE ";" " " pdf2htmlEX_STATIC_CFLAGS_STR "${pdf2htmlEX_STATIC_CFLAGS}")
+set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_STATIC_CFLAGS_STR})
+target_include_directories(pdf2htmlEX-android PRIVATE ${pdf2htmlEX_STATIC_INCLUDE_DIRS})
