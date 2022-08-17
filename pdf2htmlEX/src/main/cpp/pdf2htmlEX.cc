@@ -4,9 +4,9 @@
  * pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
  * Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
  *
- * Copyright (c) 2019 Vilius Sutkus <ViliusSutkus89@gmail.com>
+ * Copyright (c) 2019, 2022 ViliusSutkus89.com
  *
- * This program is free software: you can redistribute it and/or modify
+ * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
  * published by the Free Software Foundation.
  *
@@ -19,10 +19,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <string>
 #include <jni.h>
 #include <android/log.h>
+#include "CCharGC.h"
 #include "pdf2htmlEX.h"
 
 #define retValOK 0
@@ -30,96 +29,121 @@
 #define retValEncryptionError 2
 #define retValCopyProtected 3
 
-class CCharGC {
-private:
-    JNIEnv *env;
-    jstring input;
-    const char * cstr;
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_createNewConverterObject(JNIEnv *env, jclass,
+                                                                                    jstring tmp_dir,
+                                                                                    jstring data_dir,
+                                                                                    jstring poppler_dir) {
+    auto * pdf2htmlEX = new pdf2htmlEX::pdf2htmlEX();
 
-public:
-    CCharGC(JNIEnv *env, jstring input) : env(env), input(input) {
-      this->cstr = env->GetStringUTFChars(input, nullptr);
-    }
+    pdf2htmlEX->setTMPDir(CCharGC(env, tmp_dir).c_str());
+    pdf2htmlEX->setDataDir(CCharGC(env, data_dir).c_str());
+    pdf2htmlEX->setPopplerDataDir(CCharGC(env, poppler_dir).c_str());
 
-    const char * c_str() const {
-      return this->cstr;
-    }
-
-    bool isEmpty() const { return this->cstr[0] == '\0'; }
-
-    ~CCharGC() {
-      env->ReleaseStringUTFChars(this->input, this->cstr);
-    }
-};
+    return (jlong) pdf2htmlEX;
+}
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_set_1environment_1value(JNIEnv *env, jclass,
-                                                                          jstring key_,
-                                                                          jstring value_) {
-    CCharGC key(env, key_);
-    CCharGC value(env, value_);
-    setenv(key.c_str(), value.c_str(), 1);
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_dealloc(JNIEnv *, jclass, jlong converter) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    delete pdf2htmlEX;
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_pdf2htmlEX_call_1pdf2htmlEX(JNIEnv *env, jobject,
-                                                               jstring dataDir_,
-                                                               jstring popplerDir_, jstring tmpDir_,
-                                                               jstring inputFile_,
-                                                               jstring outputFile_,
-                                                               jstring ownerPassword_,
-                                                               jstring userPassword_,
-                                                               jboolean enableOutline,
-                                                               jboolean enableDrm,
-                                                               jstring backgroundFormat_,
-                                                               jboolean enableEmbedFont,
-                                                               jboolean enableEmbedExternalFont,
-                                                               jboolean processAnnotation
-							       ) {
-  CCharGC dataDir(env, dataDir_);
-  CCharGC popplerDir(env, popplerDir_);
-  CCharGC tmpDir(env, tmpDir_);
-  CCharGC inputFile(env, inputFile_);
-  CCharGC outputFile(env, outputFile_);
-  CCharGC ownerPassword(env, ownerPassword_);
-  CCharGC userPassword(env, userPassword_);
-  CCharGC backgroundFormat(env, backgroundFormat_);
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_convert(JNIEnv *, jclass, jlong converter) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    try {
+        pdf2htmlEX->convert();
+    } catch (const pdf2htmlEX::EncryptionPasswordException & e) {
+        return retValEncryptionError;
+    } catch (const pdf2htmlEX::DocumentCopyProtectedException & e) {
+        return retValCopyProtected;
+    } catch (const pdf2htmlEX::ConversionFailedException & e) {
+        __android_log_print(ANDROID_LOG_ERROR, "pdf2htmlEX-Android" , "%s", e.what());
+        return retValError;
+    }
+    return retValOK;
+}
 
-  pdf2htmlEX::pdf2htmlEX converter;
-  converter.setProcessOutline(enableOutline == JNI_TRUE);
-  converter.setDRM(enableDrm == JNI_TRUE);
-  converter.setDataDir(dataDir.c_str());
-  converter.setPopplerDataDir(popplerDir.c_str());
-  converter.setTMPDir(tmpDir.c_str());
-  converter.setInputFilename(inputFile.c_str());
-  converter.setOutputFilename(outputFile.c_str());
-  converter.setEmbedFont(enableEmbedFont == JNI_TRUE);
-  converter.setEmbedExternalFont(enableEmbedExternalFont == JNI_TRUE);
-  converter.setProcessAnnotation(processAnnotation == JNI_TRUE);
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setInputFile(JNIEnv *env, jclass, jlong converter,
+                                                                        jstring input_file) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setInputFilename(CCharGC(env, input_file).c_str());
+}
 
-  if (!backgroundFormat.isEmpty()) {
-    converter.setBackgroundImageFormat(backgroundFormat.c_str());
-  }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutputFile(JNIEnv *env, jclass, jlong converter,
+                                                                         jstring output_file) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setOutputFilename(CCharGC(env, output_file).c_str());
+}
 
-  if (!ownerPassword.isEmpty()) {
-    converter.setOwnerPassword(ownerPassword.c_str());
-  }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOwnerPassword(JNIEnv *env, jclass, jlong converter,
+                                                                            jstring owner_password) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setOwnerPassword(CCharGC(env, owner_password).c_str());
+}
 
-  if (!userPassword.isEmpty()) {
-    converter.setUserPassword(userPassword.c_str());
-  }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setUserPassword(JNIEnv *env, jclass, jlong converter,
+                                                                           jstring user_password) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setUserPassword(CCharGC(env, user_password).c_str());
+}
 
-  try {
-    converter.convert();
-  } catch (const pdf2htmlEX::EncryptionPasswordException & e) {
-    return retValEncryptionError;
-  } catch (const pdf2htmlEX::DocumentCopyProtectedException & e) {
-    return retValCopyProtected;
-  } catch (const pdf2htmlEX::ConversionFailedException & e) {
-    __android_log_print(ANDROID_LOG_ERROR, "pdf2htmlEX-Android" , "%s", e.what());
-    return retValError;
-  }
-  return retValOK;
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutline(JNIEnv *env, jclass, jlong converter,
+                                                                      jobject enable) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setProcessOutline(enable);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDrm(JNIEnv *env, jclass, jlong converter,
+                                                                  jobject enable) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setDRM(enable);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedFont(JNIEnv *, jclass, jlong converter,
+                                                                        jobject embed) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setEmbedFont(embed);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedExternalFont(JNIEnv *, jclass, jlong converter,
+                                                                                jobject embed) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setEmbedExternalFont(embed);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessAnnotation(JNIEnv *, jclass, jlong converter,
+                                                                                jobject process) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setProcessAnnotation(process);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setBackgroundFormat(JNIEnv *env, jclass, jlong converter,
+                                                                               jstring background_format) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setBackgroundImageFormat(CCharGC(env, background_format).c_str());
 }

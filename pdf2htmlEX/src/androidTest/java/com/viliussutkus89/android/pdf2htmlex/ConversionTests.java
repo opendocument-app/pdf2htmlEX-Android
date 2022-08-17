@@ -86,5 +86,7 @@ public class ConversionTests {
     assertTrue("Converted HTML file empty! " + pdfFile.getName(), htmlFile.length() > 0);
 
     htmlFile.delete();
+
+    converter.close();
   }
 }

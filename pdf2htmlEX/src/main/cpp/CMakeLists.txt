@@ -29,7 +29,8 @@ pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
 
 link_directories(${pdf2htmlEX_LIBRARY_DIRS})
 
-add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc)
+add_library(envvar SHARED EnvVar.c)
+add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc CCharGC.h)
 
 find_library(log-lib log)
 
@@ -37,6 +38,7 @@ find_package(tmpfile REQUIRED CONFIG)
 
 target_link_libraries(pdf2htmlEX-android
   ${pdf2htmlEX_STATIC_LIBRARIES}
+  envvar
   tmpfile::tmpfile
   ${log-lib}
 )

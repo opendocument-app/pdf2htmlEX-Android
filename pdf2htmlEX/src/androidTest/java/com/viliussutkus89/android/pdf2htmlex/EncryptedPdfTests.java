@@ -74,6 +74,7 @@ public class EncryptedPdfTests {
       assertTrue("Converted HTML file empty!", convertedHtml.length() > 0);
       convertedHtml.delete();
     }
+    converter.close();
   }
 
   @Test(expected = pdf2htmlEX.PasswordRequiredException.class)

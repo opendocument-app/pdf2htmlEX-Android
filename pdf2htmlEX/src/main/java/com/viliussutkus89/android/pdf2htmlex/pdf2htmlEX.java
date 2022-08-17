@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2019, 2020, 2022 ViliusSutkus89.com
  *
- * This program is free software: you can redistribute it and/or modify
+ * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -29,34 +29,13 @@ import com.getkeepsafe.relinker.ReLinkerInstance;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 import com.viliussutkus89.android.tmpfile.Tmpfile;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 
-public class pdf2htmlEX {
-  static private final Object s_initSynchronizer = new Object();
-
-  final Map<String, String> m_environment = new LinkedHashMap<>();
-
-  final File m_pdf2htmlEX_dataDir;
-  final File m_poppler_dataDir;
-  final File m_pdf2htmlEX_tmpDir;
-  final File m_outputHtmlsDir;
-  File p_inputPDF;
-
-  private String p_ownerPassword = "";
-  private String p_userPassword = "";
-  private boolean p_outline = true;
-  private boolean p_drm = true;
-  private boolean p_embedFont = true;
-  private boolean p_embedExternalFont = true;
-  private boolean p_processAnnotation = false;
-  private String p_backgroundFormat = "";
-
-  boolean p_wasPasswordEntered = false;
-
+public class pdf2htmlEX implements Closeable {
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
       super(errorMessage);
@@ -81,40 +60,38 @@ public class pdf2htmlEX {
     }
   }
 
+  private final NativeConverter nc;
+
+  static private final Object s_initSynchronizer = new Object();
+
+  private final File m_outputHtmlsDir;
+
+  private File mInputPdf;
+  private File mOutputHtml;
+  private boolean mUserPasswordEntered;
+  private boolean mOwnerPasswordEntered;
+
   public pdf2htmlEX(@NonNull Context ctx) {
-    this(ctx, null);
-
-    Tmpfile.init(ctx.getCacheDir());
-
     ReLinkerInstance reLinker = ReLinker.recursively();
 
     // https://github.com/KeepSafe/ReLinker/issues/77
     // Manually load dependencies, because ReLinker.recursively() doesn't actually load recursively
     reLinker.loadLibrary(ctx, "c++_shared");
+    reLinker.loadLibrary(ctx, "envvar");
+    reLinker.loadLibrary(ctx, "tmpfile");
     reLinker.loadLibrary(ctx, "pdf2htmlEX-android");
 
-    for (Map.Entry<String, String> e : m_environment.entrySet()) {
-      set_environment_value(e.getKey(), e.getValue());
-    }
-  }
-
-  pdf2htmlEX(@NonNull Context ctx, @Nullable Object nullObjectToHaveDifferentCtor) {
     AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
 
     File filesDir = new File(ctx.getFilesDir(), "pdf2htmlEX");
     File cacheDir = new File(ctx.getCacheDir(), "pdf2htmlEX");
 
     // tmpDir is where pdf2htmlEX (not pdf2htmlEX-Android wrapper) does it's work
-    m_pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
+    File pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
     m_outputHtmlsDir = new File(cacheDir, "output-htmls");
 
     File fontforgeHome = new File(cacheDir, "FontforgeHome");
-    m_environment.put("HOME", fontforgeHome.getAbsolutePath());
-
     File envTMPDIR = new File(cacheDir, "envTMPDIR");
-    m_environment.put("TMPDIR", envTMPDIR.getAbsolutePath());
-
-    m_environment.put("USER", android.os.Build.MODEL);
 
     synchronized (s_initSynchronizer) {
       LegacyCleanup.cleanup(ctx);
@@ -123,98 +100,72 @@ public class pdf2htmlEX {
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
       // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
-      m_pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/pdf2htmlEX");
+      File pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/pdf2htmlEX");
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
       // Poppler requires encoding data
-      m_poppler_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/poppler");
+      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/poppler");
 
-      m_pdf2htmlEX_tmpDir.mkdir();
+      pdf2htmlEX_tmpDir.mkdir();
       m_outputHtmlsDir.mkdir();
 
       fontforgeHome.mkdir();
+      EnvVar.set("HOME", fontforgeHome.getAbsolutePath());
+
       envTMPDIR.mkdir();
+      EnvVar.set("TMPDIR", envTMPDIR.getAbsolutePath());
 
-      FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir, m_environment);
-    }
-  }
+      FontconfigAndroid.init(ctx.getAssets(), cacheDir, filesDir);
 
-  public pdf2htmlEX setInputPDF(@NonNull File inputPDF) {
-    this.p_inputPDF = inputPDF;
-    return this;
-  }
+      EnvVar.set("USER", android.os.Build.MODEL);
 
-  public File convert(@NonNull File inputPDF) throws IOException, ConversionFailedException {
-    setInputPDF(inputPDF);
-    return convert();
-  }
-
-  public pdf2htmlEX setOwnerPassword(@NonNull String ownerPassword) {
-    this.p_ownerPassword = ownerPassword;
-    this.p_wasPasswordEntered = !ownerPassword.isEmpty() | !this.p_userPassword.isEmpty();
-    return this;
-  }
-
-  public pdf2htmlEX setUserPassword(@NonNull String userPassword) {
-    this.p_userPassword = userPassword;
-    this.p_wasPasswordEntered = !this.p_ownerPassword.isEmpty() | !userPassword.isEmpty();
-    return this;
-  }
-
-  public pdf2htmlEX setOutline(boolean enableOutline) {
-    this.p_outline = enableOutline;
-    return this;
-  }
-
-  public pdf2htmlEX setDRM(boolean enableDRM) {
-    this.p_drm = enableDRM;
-    return this;
-  }
-
-  public pdf2htmlEX setEmbedFont(boolean embedFont) {
-    this.p_embedFont = embedFont;
-    return this;
-  }
-
-  public pdf2htmlEX setEmbedExternalFont(boolean embedExternalFont) {
-    this.p_embedExternalFont = embedExternalFont;
-    return this;
-  }
-
-  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
-    this.p_processAnnotation = processAnnotation;
-    return this;
-  }
-
-  /**
-   * @param backgroundFormat: png (default), jpg or svg
-   */
-  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
-    this.p_backgroundFormat = backgroundFormat;
-    return this;
-  }
-
-  public File convert() throws IOException, ConversionFailedException {
-    if (null == this.p_inputPDF) {
-      throw new ConversionFailedException("No Input PDF given!");
+      nc = new NativeConverter(pdf2htmlEX_tmpDir, pdf2htmlEX_dataDir, poppler_dataDir);
     }
 
-    if (!this.p_inputPDF.exists()) {
-      throw new ConversionFailedException("Input PDF does not exist!");
-    }
+    Tmpfile.init(ctx.getCacheDir());
+  }
 
-    String inputFilenameNoPDFExt = this.p_inputPDF.getName();
+  @Override
+  public void close() {
+    nc.close();
+  }
+
+  public static String generateOutputFilename(String inputFilename) {
+    String inputFilenameNoPDFExt = inputFilename;
     if (inputFilenameNoPDFExt.endsWith(".pdf")) {
       inputFilenameNoPDFExt = inputFilenameNoPDFExt.substring(0, inputFilenameNoPDFExt.length() - 4);
     }
+    return inputFilenameNoPDFExt + ".html";
+  }
 
-    File outputHtml = new File(m_outputHtmlsDir, inputFilenameNoPDFExt + ".html");
-    for (Integer i = 0; !outputHtml.createNewFile(); i++) {
-      outputHtml = new File(m_outputHtmlsDir, inputFilenameNoPDFExt + "-" + i.toString() + ".html");
+  private static File generateOutputFile(File outputDir, String inputFilename) throws IOException {
+    String outputFilenameNoExt = generateOutputFilename(inputFilename);
+    outputFilenameNoExt = outputFilenameNoExt.substring(0, outputFilenameNoExt.length() - 5);
+
+    File outputFile = new File(outputDir, outputFilenameNoExt + ".html");
+    for (int i = 0; !outputFile.createNewFile(); i++) {
+      outputFile = new File(outputDir, outputFilenameNoExt + "-" + i + ".html");
     }
 
-    int retVal = convert_MakeTheActualCall(outputHtml);
+    return outputFile;
+  }
 
+  public File convert() throws IOException, ConversionFailedException {
+    File inputPdf = mInputPdf;
+    if (null == inputPdf) {
+      throw new ConversionFailedException("No Input PDF given!");
+    } else if (!inputPdf.exists()) {
+      throw new FileNotFoundException();
+    }
+    NativeConverter.setInputFile(nc.mConverter, inputPdf.getAbsolutePath());
+
+    File outputHtml = mOutputHtml;
+    if (null == outputHtml) {
+      outputHtml = generateOutputFile(m_outputHtmlsDir, inputPdf.getName());
+    }
+    NativeConverter.setOutputFile(nc.mConverter, outputHtml.getAbsolutePath());
+
+    int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
       return outputHtml;
     }
@@ -224,7 +175,7 @@ public class pdf2htmlEX {
     // retVal values defined in pdf2htmlEX.cc
     switch (retVal) {
       case 2:
-        if (!this.p_wasPasswordEntered) {
+        if (!mUserPasswordEntered && !mOwnerPasswordEntered) {
           throw new PasswordRequiredException("Password is required to decrypt this encrypted document!");
         } else {
           throw new WrongPasswordException("Wrong password is supplied to decrypt this encrypted document!");
@@ -238,18 +189,63 @@ public class pdf2htmlEX {
     }
   }
 
-  int convert_MakeTheActualCall(File outputHtml) throws IOException {
-    return call_pdf2htmlEX(m_pdf2htmlEX_dataDir.getAbsolutePath(),
-        m_poppler_dataDir.getAbsolutePath(), m_pdf2htmlEX_tmpDir.getAbsolutePath(),
-        this.p_inputPDF.getAbsolutePath(), outputHtml.getAbsolutePath(),
-        this.p_ownerPassword, this.p_userPassword, this.p_outline, this.p_drm,
-        this.p_backgroundFormat, this.p_embedFont, this.p_embedExternalFont,
-        this.p_processAnnotation
-    );
+  public File convert(@NonNull File inputPDF) throws IOException, ConversionFailedException {
+    setInputPDF(inputPDF);
+    return convert();
   }
 
-  private native int call_pdf2htmlEX(String dataDir, String popplerDir, String tmpDir, String inputFile, String outputFile, String ownerPassword, String userPassword, boolean outline, boolean drm, String backgroundFormat, boolean embedFont, boolean embedExternalFont, boolean processAnnotation);
+  public pdf2htmlEX setInputPDF(@Nullable File inputPDF) {
+    mInputPdf = inputPDF;
+    return this;
+  }
 
-  // Because Java cannot setenv for the current process
-  private static native void set_environment_value(String key, String value);
+  public pdf2htmlEX setOutputHtml(@Nullable File outputHtml) {
+    mOutputHtml = outputHtml;
+    return this;
+  }
+
+  public pdf2htmlEX setOwnerPassword(@Nullable String ownerPassword) {
+    NativeConverter.setOwnerPassword(nc.mConverter, ownerPassword);
+    mOwnerPasswordEntered = ownerPassword != null && !ownerPassword.isEmpty();
+    return this;
+  }
+
+  public pdf2htmlEX setUserPassword(@Nullable String userPassword) {
+    NativeConverter.setUserPassword(nc.mConverter, userPassword);
+    mUserPasswordEntered = userPassword != null && !userPassword.isEmpty();
+    return this;
+  }
+
+  public pdf2htmlEX setOutline(boolean enableOutline) {
+    NativeConverter.setOutline(nc.mConverter, enableOutline);
+    return this;
+  }
+
+  public pdf2htmlEX setDRM(boolean enableDrm) {
+    NativeConverter.setDrm(nc.mConverter, enableDrm);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedFont(boolean embedFont) {
+    NativeConverter.setEmbedFont(nc.mConverter, embedFont);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedExternalFont(boolean embedExternalFont) {
+    NativeConverter.setEmbedExternalFont(nc.mConverter, embedExternalFont);
+    return this;
+  }
+
+  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
+    NativeConverter.setProcessAnnotation(nc.mConverter, processAnnotation);
+    return this;
+  }
+
+  /**
+   * @param backgroundFormat: png (default), jpg or svg
+   */
+  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
+    NativeConverter.setBackgroundFormat(nc.mConverter, backgroundFormat);
+    return this;
+  }
 }

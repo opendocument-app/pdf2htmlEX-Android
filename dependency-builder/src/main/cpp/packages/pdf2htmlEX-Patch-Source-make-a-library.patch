@@ -761,7 +761,7 @@ new file mode 100644
 new file mode 100644
 --- /dev/null
 +++ src/pdf2htmlEX.h
-@@ -0,0 +1,197 @@
+@@ -0,0 +1,198 @@
 +/*
 + * pdf2htmlEX.h
 + *
@@ -784,6 +784,7 @@ new file mode 100644
 +
 +#pragma once
 +
++#include <string>
 +#include <exception>
 +#include <memory>
 +
