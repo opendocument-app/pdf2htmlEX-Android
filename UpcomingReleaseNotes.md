@@ -6,3 +6,4 @@ pdf2htmlEX (not -Android) built as a static library can be included in pdf2htmlE
 Shared library version was ~14 megs, static library version is ~7 megs.
 
 - Remove deprecated NoForking mode
+- Add BuildConfig.VERSION_NAME
