@@ -63,8 +63,8 @@ jobs:
           lfs: true
       - uses: actions/setup-java@v3
         with:
-          distribution: zulu
-          java-version: 11
+          distribution: temurin
+          java-version: 17
       - uses: android-actions/setup-android@v2
       # gperf is required by fontconfig, gettext is required by libfontforge
       - run: sudo apt-get install --yes gperf gettext
@@ -127,8 +127,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          distribution: zulu
-          java-version: 11
+          distribution: temurin
+          java-version: 17
       - uses: android-actions/setup-android@v2
 
       - uses: actions/download-artifact@v3
