@@ -204,6 +204,266 @@ public class pdf2htmlEX implements Closeable {
     return this;
   }
 
+  public pdf2htmlEX setFirstPage(int firstPage) {
+    NativeConverter.setFirstPage(nc.mConverter, firstPage);
+    return this;
+  }
+
+  public pdf2htmlEX setLastPage(int lastPage) {
+    NativeConverter.setLastPage(nc.mConverter, lastPage);
+    return this;
+  }
+
+  public pdf2htmlEX setZoomRatio(double zoomRatio) {
+    NativeConverter.setZoomRatio(nc.mConverter, zoomRatio);
+    return this;
+  }
+
+  public pdf2htmlEX setFitWidth(double fitWidth) {
+    NativeConverter.setFitWidth(nc.mConverter, fitWidth);
+    return this;
+  }
+
+  public pdf2htmlEX setFitHeight(double fitHeight) {
+    NativeConverter.setFitHeight(nc.mConverter, fitHeight);
+    return this;
+  }
+
+  public pdf2htmlEX setUseCropBox(boolean useCropBox) {
+    NativeConverter.setUseCropBox(nc.mConverter, useCropBox);
+    return this;
+  }
+
+  public pdf2htmlEX setDPI(double desiredDPI) {
+    NativeConverter.setDPI(nc.mConverter, desiredDPI);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedCSS(boolean embedCSS) {
+    NativeConverter.setEmbedCSS(nc.mConverter, embedCSS);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedFont(boolean embedFont) {
+    NativeConverter.setEmbedFont(nc.mConverter, embedFont);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedImage(boolean embedImage) {
+    NativeConverter.setEmbedImage(nc.mConverter, embedImage);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedJavascript(boolean embedJavascript) {
+    NativeConverter.setEmbedJavascript(nc.mConverter, embedJavascript);
+    return this;
+  }
+
+  public pdf2htmlEX setEmbedOutline(boolean embedOutline) {
+    NativeConverter.setEmbedOutline(nc.mConverter, embedOutline);
+    return this;
+  }
+
+  public pdf2htmlEX setSplitPages(boolean splitPages) {
+    NativeConverter.setSplitPages(nc.mConverter, splitPages);
+    return this;
+  }
+
+//  skipped:
+//  setDestinationDir(const std::string &destinationDir);
+//  setCSSFilename(const std::string &cssFilename);
+//  setPageFilename(const std::string &pageFilename);
+//  setOutlineFilename(const std::string &outlineFilename);
+
+  public pdf2htmlEX setProcessNonText(boolean processNonText) {
+    NativeConverter.setProcessNonText(nc.mConverter, processNonText);
+    return this;
+  }
+
+  public pdf2htmlEX setProcessOutline(boolean processOutline) {
+    NativeConverter.setProcessOutline(nc.mConverter, processOutline);
+    return this;
+  }
+  @Deprecated // setOutline is already exposed in a released version.
+  public pdf2htmlEX setOutline(boolean processOutline) {
+    return setProcessOutline(processOutline);
+  }
+
+  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
+    NativeConverter.setProcessAnnotation(nc.mConverter, processAnnotation);
+    return this;
+  }
+
+  public pdf2htmlEX setProcessForm(boolean processForm) {
+    NativeConverter.setProcessForm(nc.mConverter, processForm);
+    return this;
+  }
+
+  public pdf2htmlEX setPrinting(boolean printing) {
+    NativeConverter.setPrinting(nc.mConverter, printing);
+    return this;
+  }
+
+  public pdf2htmlEX setFallback(boolean fallback) {
+    NativeConverter.setFallback(nc.mConverter, fallback);
+    return this;
+  }
+
+//  skipped:
+//  setTmpFileSizeLimit(int tmpFileSizeLimit);
+
+  public pdf2htmlEX setEmbedExternalFont(boolean embedExternalFont) {
+    NativeConverter.setEmbedExternalFont(nc.mConverter, embedExternalFont);
+    return this;
+  }
+
+  public pdf2htmlEX setFontFormat(String fontFormat) {
+    NativeConverter.setFontFormat(nc.mConverter, fontFormat);
+    return this;
+  }
+
+  public pdf2htmlEX setDecomposeLigature(boolean decomposeLigature) {
+    NativeConverter.setDecomposeLigature(nc.mConverter, decomposeLigature);
+    return this;
+  }
+
+  public pdf2htmlEX setAutoHint(boolean autoHint) {
+    NativeConverter.setAutoHint(nc.mConverter, autoHint);
+    return this;
+  }
+
+//  skipped:
+//  setExternalHintTool(const std::string &externalHintTool);
+
+  public pdf2htmlEX setStretchNarrowGlyph(boolean stretchNarrowGlyph) {
+    NativeConverter.setStretchNarrowGlyph(nc.mConverter, stretchNarrowGlyph);
+    return this;
+  }
+
+  public pdf2htmlEX setSqueezeWideGlyph(boolean squeezeWideGlyph) {
+    NativeConverter.setSqueezeWideGlyph(nc.mConverter, squeezeWideGlyph);
+    return this;
+  }
+
+  //clear the fstype bits in TTF/OTF fonts
+  public pdf2htmlEX setOverrideFstype(boolean overrideFSType) {
+    NativeConverter.setOverrideFstype(nc.mConverter, overrideFSType);
+    return this;
+  }
+
+  //convert Type 3 fonts for web (experimental)
+  public pdf2htmlEX setProcessType3(boolean processType3) {
+    NativeConverter.setProcessType3(nc.mConverter, processType3);
+    return this;
+  }
+
+  public pdf2htmlEX setHorizontalEpsilon(double horizontalEpsilon) {
+    NativeConverter.setHorizontalEpsilon(nc.mConverter, horizontalEpsilon);
+    return this;
+  }
+
+  public pdf2htmlEX setVerticalEpsilon(double verticalEpsilon) {
+    NativeConverter.setVerticalEpsilon(nc.mConverter, verticalEpsilon);
+    return this;
+  }
+
+  public pdf2htmlEX setSpaceThreshold(double spaceThreshold) {
+    NativeConverter.setSpaceThreshold(nc.mConverter, spaceThreshold);
+    return this;
+  }
+
+  public pdf2htmlEX setFontSizeMultiplier(double fontSizeMultiplier) {
+    NativeConverter.setFontSizeMultiplier(nc.mConverter, fontSizeMultiplier);
+    return this;
+  }
+
+  public pdf2htmlEX setSpaceAsOffset(boolean spaceAsOffset) {
+    NativeConverter.setSpaceAsOffset(nc.mConverter, spaceAsOffset);
+    return this;
+  }
+
+  public enum ToUnicodeCMapsHandler {
+    AUTO(0),
+    FORCE(1),
+    IGNORE(-1);
+
+    private final int value;
+    ToUnicodeCMapsHandler(int value) {
+      this.value = value;
+    }
+    int getInt() {
+      return value;
+    }
+  }
+  // how to handle ToUnicode CMaps
+  public pdf2htmlEX setToUnicode(ToUnicodeCMapsHandler toUnicode) {
+    NativeConverter.setToUnicode(nc.mConverter, toUnicode.getInt());
+    return this;
+  }
+
+  // try to reduce the number of HTML elements used for text
+  public pdf2htmlEX setOptimizeText(boolean optimizeText) {
+    NativeConverter.setOptimizeText(nc.mConverter, optimizeText);
+    return this;
+  }
+
+  public enum TextVisibilityCorrection {
+    NO(0),
+    FULL(1),
+    PARTIAL(2);
+
+    private final int value;
+    TextVisibilityCorrection(int value) { this.value = value; }
+    int getInt() { return value; }
+  }
+  public pdf2htmlEX setCorrectTextVisibility(TextVisibilityCorrection textVisibilityCorrection) {
+    NativeConverter.setCorrectTextVisibility(nc.mConverter, textVisibilityCorrection.getInt());
+    return this;
+  }
+
+  public pdf2htmlEX setCoveredTextDPI(double coveredTextDPI) {
+    NativeConverter.setCoveredTextDPI(nc.mConverter, coveredTextDPI);
+    return this;
+  }
+
+  /**
+   * @param backgroundFormat: png (default), jpg or svg
+   */
+  @Deprecated
+  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
+    NativeConverter.setBackgroundImageFormat(nc.mConverter, backgroundFormat);
+    return this;
+  }
+
+  public enum BackgroundImageFormat {
+    PNG("png"),
+    JPG("jpg"),
+    SVG("svg");
+
+    private final String value;
+    BackgroundImageFormat(String value) {
+      this.value = value;
+    }
+    @NonNull @Override
+    public String toString() {
+      return value;
+    }
+  }
+  public pdf2htmlEX setBackgroundImageFormat(BackgroundImageFormat backgroundImageFormat) {
+    NativeConverter.setBackgroundImageFormat(nc.mConverter, backgroundImageFormat.toString());
+    return this;
+  }
+
+  // if node count in a svg background image exceeds this limit,
+  // fall back this page to bitmap background; negative value means no limit
+  public pdf2htmlEX setSVGNodeCountLimit(int SVGNodeCountLimit) {
+    NativeConverter.setSVGNodeCountLimit(nc.mConverter, SVGNodeCountLimit);
+    return this;
+  }
+
+//  skipped
+//  setSVGEmbedBitmap(int SVGEmbedBitmap);
+
   public pdf2htmlEX setOwnerPassword(@Nullable String ownerPassword) {
     NativeConverter.setOwnerPassword(nc.mConverter, ownerPassword);
     mOwnerPasswordEntered = ownerPassword != null && !ownerPassword.isEmpty();
@@ -216,36 +476,23 @@ public class pdf2htmlEX implements Closeable {
     return this;
   }
 
-  public pdf2htmlEX setOutline(boolean enableOutline) {
-    NativeConverter.setOutline(nc.mConverter, enableOutline);
-    return this;
-  }
-
   public pdf2htmlEX setDRM(boolean enableDrm) {
     NativeConverter.setDrm(nc.mConverter, enableDrm);
     return this;
   }
 
-  public pdf2htmlEX setEmbedFont(boolean embedFont) {
-    NativeConverter.setEmbedFont(nc.mConverter, embedFont);
+  public pdf2htmlEX setDebug(boolean debug) {
+    NativeConverter.setDebug(nc.mConverter, debug);
     return this;
   }
 
-  public pdf2htmlEX setEmbedExternalFont(boolean embedExternalFont) {
-    NativeConverter.setEmbedExternalFont(nc.mConverter, embedExternalFont);
+  public pdf2htmlEX setProof(boolean proof) {
+    NativeConverter.setProof(nc.mConverter, proof);
     return this;
   }
 
-  public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
-    NativeConverter.setProcessAnnotation(nc.mConverter, processAnnotation);
-    return this;
-  }
-
-  /**
-   * @param backgroundFormat: png (default), jpg or svg
-   */
-  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
-    NativeConverter.setBackgroundFormat(nc.mConverter, backgroundFormat);
+  public pdf2htmlEX setQuiet(boolean quiet) {
+    NativeConverter.setQuiet(nc.mConverter, quiet);
     return this;
   }
 }
