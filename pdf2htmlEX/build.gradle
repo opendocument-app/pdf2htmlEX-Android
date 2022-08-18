@@ -90,7 +90,7 @@ dependencies {
     compileOnly project(":dependency-builder")
 
     implementation 'androidx.annotation:annotation:1.4.0'
-    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
     implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
     implementation 'com.viliussutkus89:ExecutableRunner:1.0.3'
