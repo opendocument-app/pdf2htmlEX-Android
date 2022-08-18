@@ -7,3 +7,53 @@ Shared library version was ~14 megs, static library version is ~7 megs.
 
 - Remove deprecated NoForking mode
 - Add BuildConfig.VERSION_NAME
+
+- Implement public static String generateOutputFilename(String inputFilename), which removes .pdf suffix and adds .html suffix.
+
+Rename following parameters:
+- setOutline to setProcessOutline
+- setBackgroundFormat to setBackgroundImageFormat
+
+Expose following upstream pdf2htmlEX parameters to downstream users:
+- setOutputHtml
+- setFirstPage
+- setLastPage
+- setZoomRatio
+- setFitWidth
+- setFitHeight
+- setUseCropBox
+- setDPI
+- setEmbedCSS
+- setEmbedFont
+- setEmbedImage
+- setEmbedJavascript
+- setEmbedOutline
+- setSplitPages
+- setProcessNonText
+- setProcessOutline
+- setProcessAnnotation
+- setProcessForm
+- setPrinting
+- setFallback
+- setEmbedExternalFont
+- setFontFormat
+- setDecomposeLigature
+- setAutoHint
+- setStretchNarrowGlyph
+- setSqueezeWideGlyph
+- setOverrideFstype
+- setProcessType3
+- setHorizontalEpsilon
+- setVerticalEpsilon
+- setSpaceThreshold
+- setFontSizeMultiplier
+- setSpaceAsOffset
+- setToUnicode
+- setOptimizeText
+- setCorrectTextVisibility
+- setCoveredTextDPI
+- setBackgroundImageFormat
+- setSVGNodeCountLimit
+- setDebug
+- setProof
+- setQuiet
