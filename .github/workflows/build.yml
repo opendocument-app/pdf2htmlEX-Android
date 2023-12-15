@@ -75,19 +75,17 @@ jobs:
   runInstrumentedTests:
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
     runs-on: macos-13
+    name: ${{ matrix.api-level }} ${{ matrix.arch }}
     strategy:
       fail-fast: false
       matrix:
         api-level: [21, 29]
         arch: [x86, x86_64]
-        target: [default]
+        api-type-target: [default]
         include:
-          - api-level: 15
-            arch: x86
-            target: default
           - api-level: 34
             arch: x86_64
-            target: google_apis
+            api-type-target: google_apis
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
