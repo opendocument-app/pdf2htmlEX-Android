@@ -1,8 +1,0 @@
-#!/bin/sh
-STATIC=
-if test "$#" -ne 1 || test "$1" != "--version"
-then
-	STATIC="--static"
-fi
-PKG_CONFIG_PATH=@THIRDPARTY_PKG_CONFIG_PATH@ PKG_CONFIG_LIBDIR=@THIRDPARTY_PKG_CONFIG_LIBDIR@ pkg-config $STATIC "$@"
-

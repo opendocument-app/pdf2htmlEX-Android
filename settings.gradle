@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-include ":pdf2htmlEX", ":dependency-builder"
+include ":pdf2htmlEX"
 rootProject.name = "pdf2htmlex-android"

@@ -64,12 +64,12 @@ public class ConversionTests {
             .extract(instrumentation.getTargetContext().getCacheDir(), "testPDFs");
   }
 
-  @Parameterized.Parameters
+  @Parameterized.Parameters(name = "{0}")
   public static List<File> listPDFs() throws IOException {
     Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     File extractedToDir = new File(instrumentation.getTargetContext().getCacheDir(), "testPDFs");
     List<File> testFiles = new ArrayList<>();
-    for(String testFilename: instrumentation.getContext().getAssets().list("testFiles")) {
+    for (String testFilename : instrumentation.getContext().getAssets().list("testPDFs")) {
         testFiles.add(new File(extractedToDir, testFilename));
     }
     return testFiles;

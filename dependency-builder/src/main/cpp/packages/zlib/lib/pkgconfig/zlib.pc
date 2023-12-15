@@ -1,6 +1,0 @@
-Name: zlib
-Description: zlib compression library
-Version: 1.2.7
-
-Requires:
-Libs: -lz

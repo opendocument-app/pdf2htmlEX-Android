@@ -44,10 +44,8 @@ use getVersion;
 die(File::Basename::basename(__FILE__) . " takes no arguments!\n") if (@ARGV);
 
 my $version = getVersion::getVersion();
-my $versionCode = getVersion::getVersionCode();
 
 print "::set-output name=version::$version\n";
-print "::set-output name=versionCode::$versionCode\n";
 
 my $rootDirectory = File::Basename::dirname(pathResolver::getAbsolutePath(File::Basename::dirname(__FILE__)));
 my $versionUpdater = fileUpdater->new({ rootDirectory => $rootDirectory });

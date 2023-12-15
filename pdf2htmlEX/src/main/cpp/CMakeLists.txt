@@ -24,25 +24,16 @@ project(pdf2htmlEX-android)
 
 SET(PKG_CONFIG_EXECUTABLE ${INSTALLED_PREFIX}/${ANDROID_ABI}/bin/pkg-config-dynamic)
 
-include(FindPkgConfig)
-pkg_search_module(pdf2htmlEX REQUIRED pdf2htmlEX)
-
-link_directories(${pdf2htmlEX_LIBRARY_DIRS})
-
 add_library(envvar SHARED EnvVar.c)
 add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc CCharGC.h)
 
 find_library(log-lib log)
-
 find_package(tmpfile REQUIRED CONFIG)
+find_package(pdf2htmlEX REQUIRED CONFIG)
 
 target_link_libraries(pdf2htmlEX-android
-  ${pdf2htmlEX_STATIC_LIBRARIES}
+  pdf2htmlEX::pdf2htmlEX
   envvar
   tmpfile::tmpfile
   ${log-lib}
 )
-
-STRING(REPLACE ";" " " pdf2htmlEX_STATIC_CFLAGS_STR "${pdf2htmlEX_STATIC_CFLAGS}")
-set_target_properties(pdf2htmlEX-android PROPERTIES COMPILE_FLAGS ${pdf2htmlEX_STATIC_CFLAGS_STR})
-target_include_directories(pdf2htmlEX-android PRIVATE ${pdf2htmlEX_STATIC_INCLUDE_DIRS})

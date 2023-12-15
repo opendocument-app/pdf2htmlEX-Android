@@ -1,9 +1,6 @@
 #  MIT License
 #
-#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
-#
-#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/release.yml - v2.1.0
+#  Copyright (c) 2021 - 2023 ViliusSutkus89.com
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +23,11 @@
 name: release
 on:
   workflow_dispatch:
-    inputs:
-      STAGING_REPO_URL:
-        description: 'Provided by privilegedBuild.yml (example: https://oss.sonatype.org/service/local/repositories/comviliussutkus89-????/content/)'
-        required: true
 
 permissions:
   actions: none
   checks: none
-  contents: none
+  contents: write
   deployments: none
   issues: none
   packages: none
@@ -45,43 +38,32 @@ permissions:
 
 jobs:
   releaseSonatype:
-    environment: SonatypeAccess
-    runs-on: ubuntu-20.04
-    outputs:
-      ARTIFACTS: ${{ steps.promote.outputs.artifacts }}
+    environment: LibraryKeyAndSonatypeAccess
+    runs-on: ubuntu-22.04
     steps:
-      - uses: ViliusSutkus89/promote-Nexus-repository-to-MavenCentral@v1
-        id: promote
-        with:
-          repositoryURL: ${{ github.event.inputs.STAGING_REPO_URL }}
-          sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
-          sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-
-  releaseGitHub:
-    environment: TenMinuteWait
-    needs: releaseSonatype
-    permissions:
-      # Permission needed to create GitHub release and version increment commit.
-      contents: write
-    outputs:
-      RELEASE_TAG: "v${{ steps.updateDownstreamVersion.outputs.version }}"
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # A branch is required for post release version increment commit
           ref: ${{ github.event.ref }}
-
-      - uses: ViliusSutkus89/WaitForURLsToBeAvailable@v1
+      - uses: actions/setup-java@v4
         with:
-          URLs: ${{ needs.releaseSonatype.outputs.ARTIFACTS }}
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+
+      - run: ./gradlew lintRelease publishToMavenLocal closeAndReleaseSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
 
       - run: ./ci-scripts/updateDownstreamVersion
         id: updateDownstreamVersion
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update README.md to match versions with to be released library version (${{ steps.updateDownstreamVersion.outputs.version }})"
+          commit_message: "Update version in README.md (${{ steps.updateDownstreamVersion.outputs.version }})"
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
 
       - name: Create GitHub Release

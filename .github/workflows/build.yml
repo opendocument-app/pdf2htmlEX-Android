@@ -1,10 +1,6 @@
 #  MIT License
 #
-#  Copyright (c) 2021 - 2022 ViliusSutkus89.com
-#
-#  https://github.com/ViliusSutkus89/Sample_Android_Library-MavenCentral-Instrumented_Tests
-#  .github/workflows/build.yml - v2.2.0
-#  Renamed from .github/workflows/privilegedBuild.yml
+#  Copyright (c) 2021 - 2023 ViliusSutkus89.com
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +24,15 @@ name: build
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
     paths-ignore:
       - '**.md'
       - '.github/**'
       - '!.github/workflows/build.yml'
-      - 'licenseOnly/**'
-
-env:
-  TARBALL_CACHE_KEY:  "tarballs-key-3"
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/build.yml'
 
 permissions:
   actions: none
@@ -53,104 +49,52 @@ permissions:
 jobs:
   buildLibrary:
     if: "!contains(github.event.head_commit.message, '[SkipCI]')"
-    environment: LibraryKeyAndSonatypeAccess
-    outputs:
-      STAGING_REPO_URL: ${{ steps.sonatype.outputs.stagingRepoUrl }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v2
-      # gperf is required by fontconfig, gettext is required by libfontforge
-      - run: sudo apt-get install --yes gperf gettext
-      # apt-get offers meson-0.53.2, pdf2htmlEX-Android requires meson-0.54.2 or newer
-      # ninja is required to build projects, using meson build system
-      - run: pip3 install --user meson ninja
+      - uses: android-actions/setup-android@v3
 
-      - name: Cache tarballs
-        uses: actions/cache@v3
-        with:
-          key: ${{ env.TARBALL_CACHE_KEY }}
-          path: dependency-builder/src/main/cpp/tarballs
-      - run: ./dodownloadtarballs --serial
+      - run: ./gradlew lintRelease publishToMavenLocal
 
-      - run: ./gradlew lintRelease publishToMavenLocal publishToSonatype closeSonatypeStagingRepository | tee publishToSonatype.log
-        # bash has pipefail on by default, which is needed for tee to fail, if gradle fails
-        shell: bash
-        env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
-
-      - name: Parse Sonatype repository
-        id: sonatype
-        # publishToSonatype.log contains a line looking like this:
-        # Created staging repository 'comviliussutkus89-1055' at https://oss.sonatype.org/service/local/repositories/comviliussutkus89-1055/content/
-        run: perl -ne 'print "::set-output name=stagingRepoUrl::$2\n::warning ::$1\n" if /^(Created staging repository .+ at (.+))$/' < publishToSonatype.log
-
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: dependencyBuildLogs
-          path: |
-            dependency-builder/.cxx/**/*-download-*.log
-            dependency-builder/.cxx/**/*-configure-*.log
-            dependency-builder/.cxx/**/*-build-*.log
-            dependency-builder/.cxx/**/*-install-*.log
-          if-no-files-found: error
-
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: library-lint-report
           path: pdf2htmlEX/build/reports/lint-results-release.html
           if-no-files-found: error
 
-      - run: tar -cvf maven-local.tar ~/.m2
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: maven-local.tar
-          path: maven-local.tar
+          name: maven-local
+          path: ~/.m2
           if-no-files-found: error
 
   runInstrumentedTests:
-    needs: buildLibrary
     # Only macos VMs are available with exposed CPU extensions to run hardware accelerated emulator
-    runs-on: macos-11
+    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
+        api-level: [21, 29]
+        arch: [x86, x86_64]
+        target: [default]
         include:
-          # Oldest API supported by NDK
-          - arch: x86
-            api-level: 16
-            api-type-target: default
-          # Oldest x86_64 image
-          - arch: x86_64
-            api-level: 21
-            api-type-target: default
-          # Latest x86 image
-          - arch: x86
-            api-level: 30
-            api-type-target: google_apis
-          # Latest image
-          - arch: x86_64
-            api-level: 32
-            api-type-target: google_apis
+          - api-level: 15
+            arch: x86
+            target: default
+          - api-level: 34
+            arch: x86_64
+            target: google_apis
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v2
-
-      - run: ./ci-scripts/prepareLibraryTestsForStagingRepository pdf2htmlEX --output=build/lib-staging --repository=${{ needs.buildLibrary.outputs.STAGING_REPO_URL }}
+      - uses: android-actions/setup-android@v3
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -180,9 +124,9 @@ jobs:
 
             test ! -f sorry_but_tests_are_failing
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: testResults-${{ matrix.api-level }}-${{ matrix.arch }}-${{ matrix.api-type-target }}
-          path: build/lib-staging/testResults
+          path: testResults
           if-no-files-found: error

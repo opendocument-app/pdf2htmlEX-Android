@@ -104,7 +104,7 @@ public class pdf2htmlEX implements Closeable {
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
       // Poppler requires encoding data
-      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/poppler");
+      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler");
 
       pdf2htmlEX_tmpDir.mkdir();
       m_outputHtmlsDir.mkdir();
