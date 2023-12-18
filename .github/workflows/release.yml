@@ -77,13 +77,13 @@ jobs:
       - run: ./ci-scripts/incrementVersion --patch
         id: postReleaseVersionIncrement
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
           file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
 
       - run: echo -n > UpcomingReleaseNotes.md
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Post release truncation of UpcomingReleaseNotes.md"
           file_pattern: UpcomingReleaseNotes.md
