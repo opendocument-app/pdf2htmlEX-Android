@@ -46,7 +46,7 @@ jobs:
       - run: ./ci-scripts/incrementVersion ${{ github.event.inputs.ARGUMENTS }}
         id: version
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Increment version"
           file_pattern: ${{ steps.version.outputs.files }}
