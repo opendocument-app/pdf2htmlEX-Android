@@ -61,7 +61,7 @@ jobs:
       - run: ./ci-scripts/updateDownstreamVersion
         id: updateDownstreamVersion
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update version in README.md (${{ steps.updateDownstreamVersion.outputs.version }})"
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
