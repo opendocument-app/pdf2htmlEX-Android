@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 31, 32, 33, 34]
+        api-level: [34, 33,  32,  31, 30]
         arch: [x86_64]
         api-type-target: [aosp_atd]
         include:
@@ -137,8 +137,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [21, 22, 23, 24, 25, 26, 27, 28, 29]
-        arch: [x86, x86_64]
+        api-level: [29,  28,  27,  26,  25,  24,  23,  22,  21]
+        arch: [x86_64, x86]
         api-type-target: [default]
     steps:
       - uses: actions/checkout@v4
