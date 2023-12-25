@@ -57,7 +57,7 @@ android {
         version '3.22.1'
     }
     ndkVersion '26.1.10909125'
-    buildTypes.release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
+    buildTypes.release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
 }
 
 dependencies {
