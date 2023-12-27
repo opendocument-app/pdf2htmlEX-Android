@@ -1,4 +1,4 @@
-# Android library port of [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX)
+# [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX) library port for Android
 
 Made possible by [ndkports](https://github.com/ViliusSutkus89/ndkports) (a collection of Open Source Linux libraries for Android).
 
