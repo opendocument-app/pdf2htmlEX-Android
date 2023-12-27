@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX.java
  *
- * Copyright (C) 2019, 2020, 2022 ViliusSutkus89.com
+ * Copyright (C) 2019, 2020, 2022, 2023 ViliusSutkus89.com
  *
  * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
+@SuppressWarnings("unused")
 public class pdf2htmlEX implements Closeable {
   public static class ConversionFailedException extends Exception {
     public ConversionFailedException(String errorMessage) {
@@ -64,10 +65,16 @@ public class pdf2htmlEX implements Closeable {
 
   static private final Object s_initSynchronizer = new Object();
 
-  private final File m_outputHtmlsDir;
+  // subdir of cache dir
+  private final File mOutputDir;
+
+  // subdir of mOutputDir by default, unless requested otherwise by setDestinationDir() / setOutputHtml()
+  private File mDestinationDir;
+
+  private String mOutputFilename;
 
   private File mInputPdf;
-  private File mOutputHtml;
+
   private boolean mUserPasswordEntered;
   private boolean mOwnerPasswordEntered;
 
@@ -88,7 +95,7 @@ public class pdf2htmlEX implements Closeable {
 
     // tmpDir is where pdf2htmlEX (not pdf2htmlEX-Android wrapper) does it's work
     File pdf2htmlEX_tmpDir = new File(cacheDir, "pdf2htmlEX-tmp");
-    m_outputHtmlsDir = new File(cacheDir, "output-htmls");
+    mOutputDir = new File(cacheDir, "output-htmls");
 
     File fontforgeHome = new File(cacheDir, "FontforgeHome");
     File envTMPDIR = new File(cacheDir, "envTMPDIR");
@@ -106,8 +113,10 @@ public class pdf2htmlEX implements Closeable {
       // Poppler requires encoding data
       File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler");
 
+      // @TODO: fontforge data
+
       pdf2htmlEX_tmpDir.mkdir();
-      m_outputHtmlsDir.mkdir();
+      mOutputDir.mkdir();
 
       fontforgeHome.mkdir();
       EnvVar.set("HOME", fontforgeHome.getAbsolutePath());
@@ -130,24 +139,26 @@ public class pdf2htmlEX implements Closeable {
     nc.close();
   }
 
-  public static String generateOutputFilename(String inputFilename) {
-    String inputFilenameNoPDFExt = inputFilename;
-    if (inputFilenameNoPDFExt.endsWith(".pdf")) {
-      inputFilenameNoPDFExt = inputFilenameNoPDFExt.substring(0, inputFilenameNoPDFExt.length() - 4);
-    }
-    return inputFilenameNoPDFExt + ".html";
+  private static String generateOutputFilenameWithoutExt(String inputFilename) {
+    if (inputFilename.endsWith(".pdf"))
+      return inputFilename.substring(0, inputFilename.length() - 4);
+    else
+      return inputFilename;
   }
 
-  private static File generateOutputFile(File outputDir, String inputFilename) throws IOException {
-    String outputFilenameNoExt = generateOutputFilename(inputFilename);
-    outputFilenameNoExt = outputFilenameNoExt.substring(0, outputFilenameNoExt.length() - 5);
+  private static String generateOutputFilename(String inputFilename) {
+    return generateOutputFilenameWithoutExt(inputFilename) + ".html";
+  }
 
-    File outputFile = new File(outputDir, outputFilenameNoExt + ".html");
-    for (int i = 0; !outputFile.createNewFile(); i++) {
-      outputFile = new File(outputDir, outputFilenameNoExt + "-" + i + ".html");
+  private static File generateOutputSubDirectory(File outputDir, String inputFilename) {
+    String outputFilenameNoExt = generateOutputFilenameWithoutExt(inputFilename);
+
+    File outputSubDir = new File(outputDir, outputFilenameNoExt);
+    for (int i = 2; !outputSubDir.mkdir(); i++) {
+      outputSubDir = new File(outputDir, outputFilenameNoExt + "-" + i);
     }
 
-    return outputFile;
+    return outputSubDir;
   }
 
   public File convert() throws IOException, ConversionFailedException {
@@ -159,18 +170,37 @@ public class pdf2htmlEX implements Closeable {
     }
     NativeConverter.setInputFile(nc.mConverter, inputPdf.getAbsolutePath());
 
-    File outputHtml = mOutputHtml;
-    if (null == outputHtml) {
-      outputHtml = generateOutputFile(m_outputHtmlsDir, inputPdf.getName());
-    }
-    NativeConverter.setOutputFile(nc.mConverter, outputHtml.getAbsolutePath());
+    String outputFilename = mOutputFilename;
+    File destinationDir = mDestinationDir;
+
+    if (null == outputFilename)
+      outputFilename = generateOutputFilename(inputPdf.getName());
+
+    if (null == destinationDir)
+      destinationDir = generateOutputSubDirectory(mOutputDir, inputPdf.getName());
+
+    File outputFile = new File(destinationDir, outputFilename);
+
+    NativeConverter.setOutputFilename(nc.mConverter, outputFilename);
+    NativeConverter.setDestinationDir(nc.mConverter, destinationDir.getAbsolutePath());
 
     int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
-      return outputHtml;
+        return outputFile;
     }
 
-    outputHtml.delete();
+    outputFile.delete();
+    if (null == mDestinationDir) {
+      if (destinationDir.exists() && destinationDir.isDirectory()) {
+        File[] outputFiles = destinationDir.listFiles();
+        if (outputFiles != null) {
+          for (File i : outputFiles) {
+            i.delete();
+          }
+        }
+        destinationDir.delete();
+      }
+    }
 
     // retVal values defined in pdf2htmlEX.cc
     switch (retVal) {
@@ -190,8 +220,8 @@ public class pdf2htmlEX implements Closeable {
   }
 
   public File convert(@NonNull File inputPDF) throws IOException, ConversionFailedException {
-    setInputPDF(inputPDF);
-    return convert();
+    this.setInputPDF(inputPDF);
+    return this.convert();
   }
 
   public pdf2htmlEX setInputPDF(@Nullable File inputPDF) {
@@ -200,7 +230,17 @@ public class pdf2htmlEX implements Closeable {
   }
 
   public pdf2htmlEX setOutputHtml(@Nullable File outputHtml) {
-    mOutputHtml = outputHtml;
+    File destinationDir = null;
+    String filename = null;
+    if (null != outputHtml) {
+      destinationDir = outputHtml.getAbsoluteFile().getParentFile();
+      filename = outputHtml.getName();
+    }
+    return this.setDestinationDir(destinationDir).setOutputFilename(filename);
+  }
+
+  public pdf2htmlEX setOutputFilename(@Nullable String outputFilename) {
+    mOutputFilename = outputFilename;
     return this;
   }
 
@@ -269,11 +309,25 @@ public class pdf2htmlEX implements Closeable {
     return this;
   }
 
-//  skipped:
-//  setDestinationDir(const std::string &destinationDir);
-//  setCSSFilename(const std::string &cssFilename);
-//  setPageFilename(const std::string &pageFilename);
-//  setOutlineFilename(const std::string &outlineFilename);
+  public pdf2htmlEX setDestinationDir(@Nullable File destinationDir) {
+    mDestinationDir = destinationDir;
+    return this;
+  }
+
+  public pdf2htmlEX setCSSFilename(@Nullable String cssFilename) {
+    NativeConverter.setCSSFilename(nc.mConverter, cssFilename);
+    return this;
+  }
+
+  public pdf2htmlEX setPageFilename(@Nullable String pageFilename) {
+    NativeConverter.setPageFilename(nc.mConverter, pageFilename);
+    return this;
+  }
+
+  public pdf2htmlEX setOutlineFilename(@Nullable String outlineFilename) {
+    NativeConverter.setOutlineFilename(nc.mConverter, outlineFilename);
+    return this;
+  }
 
   public pdf2htmlEX setProcessNonText(boolean processNonText) {
     NativeConverter.setProcessNonText(nc.mConverter, processNonText);
@@ -283,10 +337,6 @@ public class pdf2htmlEX implements Closeable {
   public pdf2htmlEX setProcessOutline(boolean processOutline) {
     NativeConverter.setProcessOutline(nc.mConverter, processOutline);
     return this;
-  }
-  @Deprecated // setOutline is already exposed in a released version.
-  public pdf2htmlEX setOutline(boolean processOutline) {
-    return setProcessOutline(processOutline);
   }
 
   public pdf2htmlEX setProcessAnnotation(boolean processAnnotation) {
@@ -423,15 +473,6 @@ public class pdf2htmlEX implements Closeable {
 
   public pdf2htmlEX setCoveredTextDPI(double coveredTextDPI) {
     NativeConverter.setCoveredTextDPI(nc.mConverter, coveredTextDPI);
-    return this;
-  }
-
-  /**
-   * @param backgroundFormat: png (default), jpg or svg
-   */
-  @Deprecated
-  public pdf2htmlEX setBackgroundFormat(@NonNull String backgroundFormat) {
-    NativeConverter.setBackgroundImageFormat(nc.mConverter, backgroundFormat);
     return this;
   }
 

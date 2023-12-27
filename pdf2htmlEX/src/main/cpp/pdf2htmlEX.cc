@@ -42,6 +42,8 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_createNewConverterObj
     pdf2htmlEX->setDataDir(CCharGC(env, data_dir).c_str());
     pdf2htmlEX->setPopplerDataDir(CCharGC(env, poppler_dir).c_str());
 
+    pdf2htmlEX->setDebug(true);
+
     return (jlong) pdf2htmlEX;
 }
 
@@ -79,10 +81,10 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setInputFile(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutputFile(JNIEnv *env, jclass, jlong converter,
-                                                                         jstring output_file) {
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutputFilename(JNIEnv *env, jclass, jlong converter,
+                                                                         jstring output_filename) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
-    pdf2htmlEX->setOutputFilename(CCharGC(env, output_file).c_str());
+    pdf2htmlEX->setOutputFilename(CCharGC(env, output_filename).c_str());
 }
 
 extern "C"
@@ -471,4 +473,41 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setQuiet(JNIEnv *, jc
                                                                     jboolean quiet) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setQuiet(JNI_TRUE == quiet);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDestinationDir(JNIEnv *env, jclass,
+                                                                             jlong converter,
+                                                                             jstring destination_dir) {
+
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setDestinationDir(CCharGC(env, destination_dir).c_str());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCSSFilename(JNIEnv *env, jclass,
+                                                                          jlong converter,
+                                                                          jstring css_filename) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setCSSFilename(CCharGC(env, css_filename).c_str());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setPageFilename(JNIEnv *env, jclass,
+                                                                           jlong converter,
+                                                                           jstring page_filename) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setPageFilename(CCharGC(env, page_filename).c_str());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutlineFilename(JNIEnv *env, jclass,
+                                                                              jlong converter,
+                                                                              jstring outline_filename) {
+    auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
+    pdf2htmlEX->setOutlineFilename(CCharGC(env, outline_filename).c_str());
 }

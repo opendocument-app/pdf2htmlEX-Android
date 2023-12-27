@@ -24,7 +24,7 @@ class NativeConverter implements Closeable {
 
     static native int convert(long converter);
     static native void setInputFile(long converter, String inputFile);
-    static native void setOutputFile(long converter, String outputFile);
+    static native void setOutputFilename(long converter, String outputFilename);
     static native void setFirstPage(long converter, int firstPage);
     static native void setLastPage(long converter, int lastPage);
     static native void setZoomRatio(long converter, double zoomRatio);
@@ -38,6 +38,10 @@ class NativeConverter implements Closeable {
     static native void setEmbedJavascript(long converter, boolean embedJavascript);
     static native void setEmbedOutline(long converter, boolean embedOutline);
     static native void setSplitPages(long converter, boolean splitPages);
+    static native void setDestinationDir(long converter, String destinationDir);
+    static native void setCSSFilename(long converter, String cssFilename);
+    static native void setPageFilename(long converter, String pageFilename);
+    static native void setOutlineFilename(long converter, String outlineFilename);
     static native void setProcessNonText(long converter, boolean processNonText);
     static native void setProcessOutline(long converter, boolean process);
     static native void setProcessAnnotation(long converter, boolean process);
