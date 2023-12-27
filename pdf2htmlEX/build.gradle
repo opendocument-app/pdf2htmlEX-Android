@@ -70,7 +70,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation("com.viliussutkus89.ndk.thirdparty:pdf2htmlEX-ndk26-static:0.18.7-poppler-0.81.0-beta-8")
+    implementation("com.viliussutkus89.ndk.thirdparty:pdf2htmlEX-ndk26-static:0.18.8.rc2-beta-7")
 }
 
 publishing {
