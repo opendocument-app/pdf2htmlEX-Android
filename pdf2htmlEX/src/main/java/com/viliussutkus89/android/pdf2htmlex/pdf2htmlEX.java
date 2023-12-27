@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.getkeepsafe.relinker.ReLinker;
-import com.getkeepsafe.relinker.ReLinkerInstance;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 import com.viliussutkus89.android.tmpfile.Tmpfile;
 
@@ -79,14 +78,7 @@ public class pdf2htmlEX implements Closeable {
   private boolean mOwnerPasswordEntered;
 
   public pdf2htmlEX(@NonNull Context ctx) {
-    ReLinkerInstance reLinker = ReLinker.recursively();
-
-    // https://github.com/KeepSafe/ReLinker/issues/77
-    // Manually load dependencies, because ReLinker.recursively() doesn't actually load recursively
-    reLinker.loadLibrary(ctx, "c++_shared");
-    reLinker.loadLibrary(ctx, "envvar");
-    reLinker.loadLibrary(ctx, "tmpfile");
-    reLinker.loadLibrary(ctx, "pdf2htmlEX-android");
+    ReLinker.recursively().loadLibrary(ctx, "pdf2htmlEX-android");
 
     AssetExtractor ae = new AssetExtractor(ctx.getAssets()).setNoOverwrite();
 
