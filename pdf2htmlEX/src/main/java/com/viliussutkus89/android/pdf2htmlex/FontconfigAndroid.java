@@ -1,6 +1,7 @@
 package com.viliussutkus89.android.pdf2htmlex;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -23,7 +24,11 @@ final class FontconfigAndroid {
 
         ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/fonts");
 
-        File fontconfigGeneratedXml = new File(fontsConfigDir, "system-etc-fonts-xml-translated.conf");
-        FontconfigTranslator.translate(fontconfigGeneratedXml);
+        try {
+            File fontconfigGeneratedXml = new File(fontsConfigDir, "system-etc-fonts-xml-translated.conf");
+            FontconfigTranslator.translate(fontconfigGeneratedXml);
+        } catch (Exception e) {
+            Log.e("Fontconfig", "Fontconfig translator failed: ", e);
+        }
     }
 }
