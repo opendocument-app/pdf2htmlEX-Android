@@ -22,8 +22,6 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, 
 
 project(pdf2htmlEX-android)
 
-SET(PKG_CONFIG_EXECUTABLE ${INSTALLED_PREFIX}/${ANDROID_ABI}/bin/pkg-config-dynamic)
-
 add_library(envvar SHARED EnvVar.c)
 add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc CCharGC.h)
 
