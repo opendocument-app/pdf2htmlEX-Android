@@ -4,9 +4,6 @@ plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
 
 group = 'com.viliussutkus89'
 version = '0.18.24'

@@ -110,10 +110,17 @@ publishing {
         }
     }
 }
+
 if (System.getenv('SIGNING_KEY')) {
     signing {
         required { true }
         useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASS'))
         sign publishing.publications.release
+    }
+}
+
+tasks.named("clean") {
+    doFirst {
+        delete(new File(projectDir, ".cxx"))
     }
 }
