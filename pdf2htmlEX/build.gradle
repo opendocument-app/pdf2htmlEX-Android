@@ -1,16 +1,16 @@
 /*
  * pdf2htmlEX/build.gradle
  *
- * pdf2htmlEX-Android (https://github.com/ViliusSutkus89/pdf2htmlEX-Android)
- * Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format.
+ * pdf2htmlEX-Android (https://github.com/opendocument-app/pdf2htmlEX-Android)
+ * pdf2htmlEX library port for Android - Convert PDF to HTML without losing text or format.
  *
  * Copyright (c) 2019 - 2023 ViliusSutkus89.com
  *
- * This program is free software: you can redistribute it and/or modify
+ * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
  * published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
+ * pdf2htmlEX-Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -25,10 +25,10 @@ plugins {
     id 'signing'
 }
 
-group = 'com.viliussutkus89'
+group = 'app.opendocument'
 
 android {
-    namespace "com.viliussutkus89.android.pdf2htmlex"
+    namespace "app.opendocument.android.pdf2htmlex"
     compileSdk 34
 
     defaultConfig {
@@ -84,20 +84,20 @@ publishing {
 
             pom {
                 name = rootProject.name
-                description = 'Android port of pdf2htmlEX - Convert PDF to HTML without losing text or format'
-                url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
+                description = 'pdf2htmlEX library port for Android - Convert PDF to HTML without losing text or format'
+                url = 'https://github.com/opendocument-app/pdf2htmlEX-Android'
                 packaging = 'aar'
                 inceptionYear = '2019'
                 developers {
                     developer {
                         id = "ViliusSutkus89"
                         name = "Vilius Sutkus"
-                        email = "ViliusSutkus89@gmail.com"
+                        email = "Vilius@ViliusSutkus89.com"
                     }
                 }
                 scm {
-                    url = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android'
-                    connection = 'https://github.com/ViliusSutkus89/pdf2htmlEX-Android.git'
+                    url = 'https://github.com/opendocument-app/pdf2htmlEX-Android'
+                    connection = 'https://github.com/opendocument-app/pdf2htmlEX-Android.git'
                 }
                 licenses {
                     license {

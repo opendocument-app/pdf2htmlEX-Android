@@ -52,7 +52,7 @@ my $versionUpdater = fileUpdater->new({ rootDirectory => $rootDirectory });
 
 $versionUpdater->update('README.md', sub {
     $_ = shift;
-    s/^(\s+implementation\s+['"]com\.viliussutkus89\:pdf2htmlex-android\:)[\d\.]+(['"])$/${1}${version}${2}/;
+    s/^(\s+implementation\(['"]app\.opendocument\:pdf2htmlex-android\:)[\d\.]+(['"]\))$/${1}${version}${2}/;
     return $_;
 });
 

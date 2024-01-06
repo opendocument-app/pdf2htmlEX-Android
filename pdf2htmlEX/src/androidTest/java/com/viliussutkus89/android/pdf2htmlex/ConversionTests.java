@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import app.opendocument.android.pdf2htmlex.pdf2htmlEX;
+
 
 @LargeTest
 @RunWith(Parameterized.class)

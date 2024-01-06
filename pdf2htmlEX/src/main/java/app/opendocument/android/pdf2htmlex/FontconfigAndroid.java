@@ -1,4 +1,4 @@
-package com.viliussutkus89.android.pdf2htmlex;
+package app.opendocument.android.pdf2htmlex;
 
 import android.content.res.AssetManager;
 import android.util.Log;

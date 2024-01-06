@@ -39,6 +39,8 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import app.opendocument.android.pdf2htmlex.pdf2htmlEX;
+
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)

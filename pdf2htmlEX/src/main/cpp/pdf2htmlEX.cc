@@ -32,7 +32,7 @@
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_createNewConverterObject(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_createNewConverterObject(JNIEnv *env, jclass,
                                                                                     jstring tmp_dir,
                                                                                     jstring data_dir,
                                                                                     jstring poppler_dir) {
@@ -49,14 +49,14 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_createNewConverterObj
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_dealloc(JNIEnv *, jclass, jlong converter) {
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_dealloc(JNIEnv *, jclass, jlong converter) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     delete pdf2htmlEX;
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_convert(JNIEnv *, jclass, jlong converter) {
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_convert(JNIEnv *, jclass, jlong converter) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     try {
         pdf2htmlEX->convert();
@@ -73,7 +73,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_convert(JNIEnv *, jcl
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setInputFile(JNIEnv *env, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setInputFile(JNIEnv *env, jclass, jlong converter,
                                                                         jstring input_file) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setInputFilename(CCharGC(env, input_file).c_str());
@@ -81,7 +81,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setInputFile(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutputFilename(JNIEnv *env, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setOutputFilename(JNIEnv *env, jclass, jlong converter,
                                                                          jstring output_filename) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setOutputFilename(CCharGC(env, output_filename).c_str());
@@ -89,7 +89,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutputFilename(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOwnerPassword(JNIEnv *env, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setOwnerPassword(JNIEnv *env, jclass, jlong converter,
                                                                             jstring owner_password) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setOwnerPassword(CCharGC(env, owner_password).c_str());
@@ -97,7 +97,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOwnerPassword(JNIE
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setUserPassword(JNIEnv *env, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setUserPassword(JNIEnv *env, jclass, jlong converter,
                                                                            jstring user_password) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setUserPassword(CCharGC(env, user_password).c_str());
@@ -105,7 +105,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setUserPassword(JNIEn
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessOutline(JNIEnv *, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProcessOutline(JNIEnv *, jclass, jlong converter,
                                                                              jboolean process) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setProcessOutline(JNI_TRUE == process);
@@ -113,7 +113,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessOutline(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDrm(JNIEnv *, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setDrm(JNIEnv *, jclass, jlong converter,
                                                                   jboolean enable) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setDRM(JNI_TRUE == enable);
@@ -121,7 +121,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDrm(JNIEnv *, jcla
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedFont(JNIEnv *, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedFont(JNIEnv *, jclass, jlong converter,
                                                                         jboolean embed) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setEmbedFont(JNI_TRUE == embed);
@@ -129,7 +129,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedFont(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedExternalFont(JNIEnv *, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedExternalFont(JNIEnv *, jclass, jlong converter,
                                                                                 jboolean embed) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setEmbedExternalFont(JNI_TRUE == embed);
@@ -137,7 +137,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedExternalFont(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessAnnotation(JNIEnv *, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProcessAnnotation(JNIEnv *, jclass, jlong converter,
                                                                                 jboolean process) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setProcessAnnotation(JNI_TRUE == process);
@@ -145,7 +145,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessAnnotation(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setBackgroundImageFormat(JNIEnv *env, jclass, jlong converter,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setBackgroundImageFormat(JNIEnv *env, jclass, jlong converter,
                                                                                jstring background_format) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
     pdf2htmlEX->setBackgroundImageFormat(CCharGC(env, background_format).c_str());
@@ -153,7 +153,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setBackgroundImageFor
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFirstPage(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFirstPage(JNIEnv *, jclass,
                                                                         jlong converter,
                                                                         jint first_page) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -162,7 +162,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFirstPage(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setLastPage(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setLastPage(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jint last_page) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -171,7 +171,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setLastPage(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setZoomRatio(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setZoomRatio(JNIEnv *, jclass,
                                                                         jlong converter,
                                                                         jdouble zoom_ratio) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -180,7 +180,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setZoomRatio(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFitWidth(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFitWidth(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jdouble fit_width) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -189,7 +189,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFitWidth(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFitHeight(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFitHeight(JNIEnv *, jclass,
                                                                         jlong converter,
                                                                         jdouble fit_height) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -198,7 +198,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFitHeight(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setUseCropBox(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setUseCropBox(JNIEnv *, jclass,
                                                                          jlong converter,
                                                                          jboolean use_crop_box) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -207,7 +207,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setUseCropBox(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDPI(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setDPI(JNIEnv *, jclass,
                                                                   jlong converter,
                                                                   jdouble desired_dpi) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -216,7 +216,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDPI(JNIEnv *, jcla
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedCSS(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedCSS(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jboolean embed_css) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -225,7 +225,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedCSS(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedImage(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedImage(JNIEnv *, jclass,
                                                                          jlong converter,
                                                                          jboolean embed_image) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -234,7 +234,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedImage(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedJavascript(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedJavascript(JNIEnv *, jclass,
                                                                               jlong converter,
                                                                               jboolean embed_javascript) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -243,7 +243,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedJavascript(JN
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedOutline(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setEmbedOutline(JNIEnv *, jclass,
                                                                            jlong converter,
                                                                            jboolean embed_outline) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -252,7 +252,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setEmbedOutline(JNIEn
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSplitPages(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setSplitPages(JNIEnv *, jclass,
                                                                          jlong converter,
                                                                          jboolean split_pages) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -261,7 +261,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSplitPages(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessNonText(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProcessNonText(JNIEnv *, jclass,
                                                                              jlong converter,
                                                                              jboolean process_non_text) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -270,7 +270,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessNonText(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessForm(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProcessForm(JNIEnv *, jclass,
                                                                           jlong converter,
                                                                           jboolean process_form) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -279,7 +279,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessForm(JNIEnv
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setPrinting(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setPrinting(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jboolean printing) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -288,7 +288,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setPrinting(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFallback(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFallback(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jboolean fallback) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -297,7 +297,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFallback(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFontFormat(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFontFormat(JNIEnv *env, jclass,
                                                                          jlong converter,
                                                                          jstring font_format) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -306,7 +306,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFontFormat(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDecomposeLigature(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setDecomposeLigature(JNIEnv *, jclass,
                                                                                 jlong converter,
                                                                                 jboolean decompose_ligature) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -315,7 +315,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDecomposeLigature(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setAutoHint(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setAutoHint(JNIEnv *, jclass,
                                                                        jlong converter,
                                                                        jboolean auto_hint) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -324,7 +324,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setAutoHint(JNIEnv *,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setStretchNarrowGlyph(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setStretchNarrowGlyph(JNIEnv *, jclass,
                                                                                  jlong converter,
                                                                                  jboolean stretch_narrow_glyph) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -333,7 +333,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setStretchNarrowGlyph
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSqueezeWideGlyph(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setSqueezeWideGlyph(JNIEnv *, jclass,
                                                                                jlong converter,
                                                                                jboolean squeeze_wide_glyph) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -342,7 +342,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSqueezeWideGlyph(J
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOverrideFstype(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setOverrideFstype(JNIEnv *, jclass,
                                                                              jlong converter,
                                                                              jboolean override_fstype) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -351,7 +351,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOverrideFstype(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessType3(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProcessType3(JNIEnv *, jclass,
                                                                            jlong converter,
                                                                            jboolean process_type3) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -360,7 +360,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProcessType3(JNIEn
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setHorizontalEpsilon(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setHorizontalEpsilon(JNIEnv *, jclass,
                                                                                 jlong converter,
                                                                                 jdouble horizontal_epsilon) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -369,7 +369,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setHorizontalEpsilon(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setVerticalEpsilon(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setVerticalEpsilon(JNIEnv *, jclass,
                                                                               jlong converter,
                                                                               jdouble vertical_epsilon) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -378,7 +378,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setVerticalEpsilon(JN
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSpaceThreshold(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setSpaceThreshold(JNIEnv *, jclass,
                                                                              jlong converter,
                                                                              jdouble space_threshold) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -387,7 +387,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSpaceThreshold(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFontSizeMultiplier(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setFontSizeMultiplier(JNIEnv *, jclass,
                                                                                  jlong converter,
                                                                                  jdouble font_size_multiplier) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -396,7 +396,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setFontSizeMultiplier
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSpaceAsOffset(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setSpaceAsOffset(JNIEnv *, jclass,
                                                                             jlong converter,
                                                                             jboolean space_as_offset) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -405,7 +405,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSpaceAsOffset(JNIE
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setToUnicode(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setToUnicode(JNIEnv *, jclass,
                                                                         jlong converter,
                                                                         jint toUnicode) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -414,7 +414,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setToUnicode(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOptimizeText(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setOptimizeText(JNIEnv *, jclass,
                                                                            jlong converter,
                                                                            jboolean optimize_text) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -423,7 +423,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOptimizeText(JNIEn
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCorrectTextVisibility(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setCorrectTextVisibility(JNIEnv *, jclass,
                                                                                     jlong converter,
                                                                                     jint textVisibilityCorrection) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -432,7 +432,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCorrectTextVisibil
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCoveredTextDPI(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setCoveredTextDPI(JNIEnv *, jclass,
                                                                              jlong converter,
                                                                              jdouble covered_text_dpi) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -441,7 +441,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCoveredTextDPI(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSVGNodeCountLimit(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setSVGNodeCountLimit(JNIEnv *, jclass,
                                                                                 jlong converter,
                                                                                 jint svg_node_count_limit) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -450,7 +450,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setSVGNodeCountLimit(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDebug(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setDebug(JNIEnv *, jclass,
                                                                     jlong converter,
                                                                     jboolean debug) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -459,7 +459,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDebug(JNIEnv *, jc
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProof(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setProof(JNIEnv *, jclass,
                                                                     jlong converter,
                                                                     jboolean proof) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -468,7 +468,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setProof(JNIEnv *, jc
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setQuiet(JNIEnv *, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setQuiet(JNIEnv *, jclass,
                                                                     jlong converter,
                                                                     jboolean quiet) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -477,7 +477,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setQuiet(JNIEnv *, jc
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDestinationDir(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setDestinationDir(JNIEnv *env, jclass,
                                                                              jlong converter,
                                                                              jstring destination_dir) {
 
@@ -487,7 +487,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setDestinationDir(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCSSFilename(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setCSSFilename(JNIEnv *env, jclass,
                                                                           jlong converter,
                                                                           jstring css_filename) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -496,7 +496,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setCSSFilename(JNIEnv
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setPageFilename(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setPageFilename(JNIEnv *env, jclass,
                                                                            jlong converter,
                                                                            jstring page_filename) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;
@@ -505,7 +505,7 @@ Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setPageFilename(JNIEn
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_viliussutkus89_android_pdf2htmlex_NativeConverter_setOutlineFilename(JNIEnv *env, jclass,
+Java_app_opendocument_android_pdf2htmlex_NativeConverter_setOutlineFilename(JNIEnv *env, jclass,
                                                                               jlong converter,
                                                                               jstring outline_filename) {
     auto * pdf2htmlEX = (pdf2htmlEX::pdf2htmlEX *) converter;

@@ -19,14 +19,14 @@ Made possible by [ndkports](https://github.com/ViliusSutkus89/ndkports) (a colle
 pdf2htmlEX-Android is distributed through MavenCentral. Add a dependency in `build.gradle`:
 ```groovy
 dependencies {
-    implementation 'com.viliussutkus89:pdf2htmlex-android:0.18.23'
+    implementation("app.opendocument:pdf2htmlex-android:0.18.23")
 }
 ```
 
 ### Usage:
 Library is interfaced through Java.
 ```Java
-import com.viliussutkus89.android.pdf2htmlex.pdf2htmlEX;
+import app.opendocument.android.pdf2htmlex.pdf2htmlEX;
 ...
 java.io.File inputPdf = new java.io.File(getFilesDir(), "my.pdf");
 java.io.File outputHTML = new pdf2htmlEX(getApplicationContext()).setInputPDF(inputPdf).convert();

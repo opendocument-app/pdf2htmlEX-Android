@@ -1,9 +1,9 @@
-package com.viliussutkus89.android.pdf2htmlex;
+package app.opendocument.android.pdf2htmlex;
 
 import java.io.Closeable;
 import java.io.File;
 
-class NativeConverter implements Closeable {
+final class NativeConverter implements Closeable {
     long mConverter;
 
     static native long createNewConverterObject(String tmpDir, String dataDir, String popplerDir);

@@ -5,7 +5,7 @@
 #
 # Copyright (c) 2019, 2020 Vilius Sutkus <ViliusSutkus89@gmail.com>
 #
-# This program is free software: you can redistribute it and/or modify
+# pdf2htmlEX-Android is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
 # published by the Free Software Foundation.
 #
