@@ -2,8 +2,8 @@
 
 Made possible by [ndkports](https://github.com/ViliusSutkus89/ndkports) (a collection of Open Source Linux libraries for Android).
 
-[![build](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml/badge.svg)](https://github.com/ViliusSutkus89/pdf2htmlEX-Android/actions/workflows/build.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/com.viliussutkus89/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.viliussutkus89%20AND%20a:pdf2htmlex-android)
+[![build](https://github.com/opendocument-app/pdf2htmlEX-Android/actions/workflows/build.yml/badge.svg)](https://github.com/opendocument-app/pdf2htmlEX-Android/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/app.opendocument/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:app.opendocument%20AND%20a:pdf2htmlex-android)
 
 ### Used by:
 - [Documenter](https://github.com/ViliusSutkus89/Documenter) on [Google Play](https://play.google.com/store/apps/details?id=com.viliussutkus89.documenter) - reference application for pdf2htmlEX-Android and wvWare-Android libraries.
