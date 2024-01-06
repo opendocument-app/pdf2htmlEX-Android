@@ -34,6 +34,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
+/**
+ * @deprecated  This library is now part of OpenDocument App group.
+ * Edit your build.gradle to depend on
+ * implementation("app.opendocument:pdf2htmlex-android:+")
+ * instead of
+ * implementation("com.viliussutkus89:pdf2htmlex-android:+")
+ */
+@Deprecated
 @SuppressWarnings("unused")
 public class pdf2htmlEX implements Closeable {
   public static class ConversionFailedException extends Exception {

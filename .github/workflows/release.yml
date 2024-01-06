@@ -42,9 +42,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-        with:
+#        with:
           # A branch is required for post release version increment commit
-          ref: ${{ github.event.ref }}
+#          ref: ${{ github.event.ref }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -60,32 +60,32 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
 
-      - run: ./ci-scripts/updateDownstreamVersion
-        id: updateDownstreamVersion
-
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update version in README.md (${{ steps.updateDownstreamVersion.outputs.version }})"
-          file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
-
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "v${{ steps.updateDownstreamVersion.outputs.version }}"
-          name: "${{ github.event.repository.name }} v${{ steps.updateDownstreamVersion.outputs.version }}"
-          bodyFile: "UpcomingReleaseNotes.md"
-
-      - run: ./ci-scripts/incrementVersion --patch
-        id: postReleaseVersionIncrement
-
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
-          file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
-
-      - run: echo -n > UpcomingReleaseNotes.md
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Post release truncation of UpcomingReleaseNotes.md"
-          file_pattern: UpcomingReleaseNotes.md
+#      - run: ./ci-scripts/updateDownstreamVersion
+#        id: updateDownstreamVersion
+#
+#      - uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "Update version in README.md (${{ steps.updateDownstreamVersion.outputs.version }})"
+#          file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
+#
+#      - name: Create GitHub Release
+#        uses: ncipollo/release-action@v1
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          tag: "v${{ steps.updateDownstreamVersion.outputs.version }}"
+#          name: "${{ github.event.repository.name }} v${{ steps.updateDownstreamVersion.outputs.version }}"
+#          bodyFile: "UpcomingReleaseNotes.md"
+#
+#      - run: ./ci-scripts/incrementVersion --patch
+#        id: postReleaseVersionIncrement
+#
+#      - uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
+#          file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
+#
+#      - run: echo -n > UpcomingReleaseNotes.md
+#      - uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "Post release truncation of UpcomingReleaseNotes.md"
+#          file_pattern: UpcomingReleaseNotes.md
