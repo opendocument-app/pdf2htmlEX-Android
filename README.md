@@ -19,7 +19,7 @@ Made possible by [ndkports](https://github.com/ViliusSutkus89/ndkports) (a colle
 pdf2htmlEX-Android is distributed through MavenCentral. Add a dependency in `build.gradle`:
 ```groovy
 dependencies {
-    implementation("app.opendocument:pdf2htmlex-android:0.18.23")
+    implementation("app.opendocument:pdf2htmlex-android:0.18.24")
 }
 ```
 
