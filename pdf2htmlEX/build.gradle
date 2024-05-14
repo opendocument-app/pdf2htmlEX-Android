@@ -61,7 +61,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
     implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
