@@ -30,7 +30,7 @@ find_package(tmpfile REQUIRED CONFIG)
 find_package(pdf2htmlEX REQUIRED CONFIG)
 
 target_link_libraries(pdf2htmlEX-android
-  pdf2htmlEX::pdf2htmlEX
+  pdf2htmlex::pdf2htmlex
   envvar
   tmpfile::tmpfile
   ${log-lib}

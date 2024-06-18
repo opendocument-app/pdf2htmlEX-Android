@@ -1,6 +1,6 @@
 #  MIT License
 #
-#  Copyright (c) 2021 - 2023 ViliusSutkus89.com
+#  Copyright (c) 2021 - 2024 ViliusSutkus89.com
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,18 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: android-actions/setup-android@v3
+
+      - name: install python dependencies
+        run: pip install --upgrade pip conan setuptools
+
+      - run: conan config install .github/conan/profiles
+      - uses: actions/checkout@v4
+        with:
+          repository: ViliusSutkus89/conan-odr-index
+          ref: pdf2htmlEX_and_deps
+          path: conan-odr-index
+
+      - run: python conan-odr-index/scripts/conan_export_all_packages.py
 
       - run: ./gradlew lintRelease publishToMavenLocal
 

@@ -1,0 +1,9 @@
+[requires]
+pdf2htmlex/0.18.8.rc1-20240614-git
+
+[generators]
+CMakeToolchain
+CMakeDeps
+
+[layout]
+cmake_layout

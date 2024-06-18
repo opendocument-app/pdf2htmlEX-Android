@@ -4,7 +4,7 @@
  * pdf2htmlEX-Android (https://github.com/opendocument-app/pdf2htmlEX-Android)
  * pdf2htmlEX library port for Android - Convert PDF to HTML without losing text or format.
  *
- * Copyright (c) 2019 - 2023 ViliusSutkus89.com
+ * Copyright (c) 2019 - 2024 ViliusSutkus89.com
  *
  * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -27,6 +27,21 @@ plugins {
 
 group = rootProject.group
 
+task conanInstall {
+    ["armv7", "armv8", "x86", "x86_64"].each { String arch ->
+        exec {
+            commandLine(
+                    "conan", "install", ".",
+                    "--output-folder=build/conan/" + arch,
+                    "--build=missing",
+                    "--profile:host=android-" + arch,
+                    "-s", "arch=" + arch,
+                    "-s", "build_type=Release"
+            )
+        }
+    }
+}
+
 android {
     namespace "app.opendocument.android.pdf2htmlex"
     compileSdk 34
@@ -39,7 +54,11 @@ android {
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
-        externalNativeBuild.cmake.arguments '-DANDROID_STL=c++_shared'
+        externalNativeBuild.cmake.arguments(
+                '-DANDROID_STL=c++_static',
+                "-DCMAKE_TOOLCHAIN_FILE=conan_android_toolchain.cmake",
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        )
         buildConfigField("String", "VERSION_NAME", "\"${rootProject.version}\"")
     }
     publishing {
@@ -70,7 +89,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation("com.viliussutkus89.ndk.thirdparty:pdf2htmlEX-ndk26-static:0.18.8.rc2-beta-10")
 }
 
 publishing {
