@@ -64,8 +64,7 @@ jobs:
           path: conan-odr-index
 
       - run: python scripts/conan_export_all_packages.py
-        with:
-          working-directory: conan-odr-index
+        working-directory: conan-odr-index
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
