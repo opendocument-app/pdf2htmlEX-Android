@@ -53,6 +53,10 @@ jobs:
           java-version: 17
       - uses: android-actions/setup-android@v3
 
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
       - name: install python dependencies
         run: pip install --upgrade pip conan setuptools
 
