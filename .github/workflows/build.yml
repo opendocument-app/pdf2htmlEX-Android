@@ -63,7 +63,9 @@ jobs:
           ref: pdf2htmlEX_and_deps
           path: conan-odr-index
 
-      - run: python conan-odr-index/scripts/conan_export_all_packages.py
+      - run: python scripts/conan_export_all_packages.py
+        with:
+          working-directory: conan-odr-index
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
