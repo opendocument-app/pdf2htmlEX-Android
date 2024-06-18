@@ -61,6 +61,9 @@ jobs:
         run: pip install --upgrade pip conan setuptools
 
       - run: conan config install .github/conan/profiles
+      - run: |
+          conan profile list
+          conan profile show
       - uses: actions/checkout@v4
         with:
           repository: ViliusSutkus89/conan-odr-index
