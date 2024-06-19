@@ -1,5 +1,5 @@
 [requires]
-pdf2htmlex/0.18.8.rc1-20240614-git
+pdf2htmlex/0.18.8.rc1-20240619-git
 
 [generators]
 CMakeToolchain
