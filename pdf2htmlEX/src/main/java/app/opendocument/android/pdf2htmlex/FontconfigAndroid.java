@@ -18,7 +18,7 @@ final class FontconfigAndroid {
         EnvVar.set("XDG_CACHE_HOME", xdgCache.getAbsolutePath());
 
         AssetExtractor ae = new AssetExtractor(assetManager).setNoOverwrite();
-        File fontsConfigDir = ae.extract(new File(filesDir, "etc"), "fontconfig/etc/fonts");
+        File fontsConfigDir = ae.extract(new File(filesDir, "etc"), "fontconfig/fontconfig/conf.avail");
         ae.extract(fontsConfigDir, "pdf2htmlEX/etc/fonts/local.conf");
         EnvVar.set("FONTCONFIG_PATH", fontsConfigDir.getAbsolutePath());
 

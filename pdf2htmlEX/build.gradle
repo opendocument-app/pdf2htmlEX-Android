@@ -76,6 +76,8 @@ android {
     }
     ndkVersion '26.3.11579264'
     buildTypes.release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+
+    sourceSets.main.assets.srcDirs += "build/assets"
 }
 
 dependencies {
