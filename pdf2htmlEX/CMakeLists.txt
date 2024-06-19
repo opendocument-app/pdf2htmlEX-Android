@@ -17,16 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_library(envvar SHARED EnvVar.c)
-add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc CCharGC.h)
-
-find_library(log-lib log)
-find_package(tmpfile REQUIRED CONFIG)
-find_package(pdf2htmlEX REQUIRED CONFIG)
-
-target_link_libraries(pdf2htmlEX-android
-  pdf2htmlex::pdf2htmlex
-  envvar
-  tmpfile::tmpfile
-  ${log-lib}
-)
+cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build configuration (Debug, Release, RelWithDebInfo, MinSizeRel)")
+project(pdf2htmlEX-android)
+add_subdirectory(src/main/cpp)

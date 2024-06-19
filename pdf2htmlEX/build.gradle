@@ -71,7 +71,7 @@ android {
         buildConfig true
     }
     externalNativeBuild.cmake {
-        path 'src/main/cpp/CMakeLists.txt'
+        path 'CMakeLists.txt'
         version '3.22.1'
     }
     ndkVersion '26.3.11579264'
