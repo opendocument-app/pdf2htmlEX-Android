@@ -35,8 +35,6 @@ task conanInstall {
                     "--output-folder=build/conan/" + arch,
                     "--build=missing",
                     "--profile:host=android-" + arch,
-                    "-s", "arch=" + arch,
-                    "-s", "build_type=Release"
             )
         }
     }
