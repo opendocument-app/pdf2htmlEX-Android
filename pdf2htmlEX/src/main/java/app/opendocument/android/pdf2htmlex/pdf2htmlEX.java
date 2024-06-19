@@ -103,7 +103,7 @@ public class pdf2htmlEX implements Closeable {
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
       // Poppler requires encoding data
-      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler");
+      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler-data");
 
       // @TODO: fontforge data
 
