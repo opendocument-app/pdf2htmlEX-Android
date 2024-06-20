@@ -90,6 +90,7 @@ jobs:
           target: ${{ inputs.api-type-target }}
           sdcard-path-or-size: 1G
           disk-size: 8G
+          emulator-boot-timeout: 1800
           script: |
             mkdir -p testResults/screenshots
             adb logcat > testResults/logcat.txt &
