@@ -110,7 +110,7 @@ jobs:
           - api-level: 30
             arch: x86
             api-type-target: aosp_atd
-    uses: ./.github/workflows/buildInner.yml
+    uses: ./.github/workflows/testInner.yml
     with:
       api-level: ${{ matrix.api-level }}
       arch: ${{ matrix.arch }}
@@ -136,7 +136,7 @@ jobs:
 #          - x86_64
           - x86
         api-type-target: [default]
-    uses: ./.github/workflows/buildInner.yml
+    uses: ./.github/workflows/testInner.yml
     with:
       api-level: ${{ matrix.api-level }}
       arch: ${{ matrix.arch }}
