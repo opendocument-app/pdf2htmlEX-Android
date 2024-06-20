@@ -34,9 +34,6 @@ on:
       api-type-target:
         required: true
         type: string
-      applicationId:
-        required: true
-        type: string
 
 jobs:
   instrumentedTests:
