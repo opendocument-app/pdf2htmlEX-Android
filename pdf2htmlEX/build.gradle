@@ -34,7 +34,7 @@ task conanInstall {
                     "conan", "install", ".",
                     "--output-folder=build/conan/" + arch,
                     "--build=missing",
-                    "--profile:host=android-" + arch,
+                    "--profile:host=android-21-" + arch,
             )
         }
     }
@@ -45,8 +45,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-//        @TODO: revert to 21
-        minSdk 23
+        minSdk 21
         targetSdk 34
 
         archivesBaseName = rootProject.name
