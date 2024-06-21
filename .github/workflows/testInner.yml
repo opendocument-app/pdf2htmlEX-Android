@@ -53,8 +53,8 @@ jobs:
       - name: install python dependencies
         run: pip install --upgrade pip conan setuptools
 
-      - run: conan config install .github/conan
       - run: |
+          conan config install .github/conan
           conan profile list
           conan profile show
 
