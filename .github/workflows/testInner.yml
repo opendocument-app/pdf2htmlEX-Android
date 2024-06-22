@@ -58,10 +58,10 @@ jobs:
           conan profile list
           conan profile show
 
-      - uses: actions/cache/restore@v4
-        with:
-          path: ~/.conan2
-          restore-keys: conan-cache
+#      - uses: actions/cache/restore@v4
+#        with:
+#          path: ~/.conan2
+#          restore-keys: conan-cache
 
       - uses: actions/checkout@v4
         with:
