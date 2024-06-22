@@ -72,7 +72,14 @@ jobs:
       - run: python scripts/conan_export_all_packages.py
         working-directory: conan-odr-index
 
-      - run: ./gradlew assemble
+      - run: conan install . --output-folder=build/conan/armv7 --profile:host=android-21-armv7 --build=missing
+        working-directory: pdf2htmlEX
+      - run: conan install . --output-folder=build/conan/armv8 --profile:host=android-21-armv8 --build=missing
+        working-directory: pdf2htmlEX
+      - run: conan install . --output-folder=build/conan/x86 --profile:host=android-21-x86 --build=missing
+        working-directory: pdf2htmlEX
+      - run: conan install . --output-folder=build/conan/x86_64 --profile:host=android-21-x86_64 --build=missing
+        working-directory: pdf2htmlEX
 
       - name: Enable KVM group perms
         run: |
