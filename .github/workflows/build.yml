@@ -104,6 +104,10 @@ jobs:
           path: ~/.m2
           if-no-files-found: error
 
+      - run: du -hs ~/.conan2/
+      - run: du -hs ~/.conan2/p
+      - run: du -hs ~/.conan2/p/b
+
   instrumentedTests-aosp_atd-target:
     name: android-${{ matrix.api-level }} on ${{ matrix.arch }} (${{ matrix.api-type-target }})
     needs: build
