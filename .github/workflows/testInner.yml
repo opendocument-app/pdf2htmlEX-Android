@@ -61,7 +61,7 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: ~/.conan2
-          key: conan-cache
+          restore-keys: conan-cache
 
       - uses: actions/checkout@v4
         with:
@@ -87,9 +87,9 @@ jobs:
           api-level: ${{ inputs.api-level }}
           arch: ${{ inputs.arch }}
           target: ${{ inputs.api-type-target }}
-          sdcard-path-or-size: 1G
-          disk-size: 8G
-          emulator-boot-timeout: 1800
+#          sdcard-path-or-size: 1G
+#          disk-size: 8G
+#          emulator-boot-timeout: 1800
           script: |
             mkdir -p testResults/screenshots
             adb logcat > testResults/logcat.txt &

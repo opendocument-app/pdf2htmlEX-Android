@@ -75,7 +75,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.conan2
-          key: conan-cache
+          key: ${{ hashFiles('**') }}
+          restore-keys: conan-cache
 
       - run: python scripts/conan_export_all_packages.py
         working-directory: conan-odr-index
