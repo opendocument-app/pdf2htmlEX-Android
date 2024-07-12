@@ -28,14 +28,13 @@ import com.getkeepsafe.relinker.ReLinker;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 import com.viliussutkus89.android.tmpfile.Tmpfile;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 @SuppressWarnings("unused")
@@ -183,20 +182,23 @@ public class pdf2htmlEX implements Closeable {
     int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
         // Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
-        File defaultFontVisibleFile = new File(outputFile + ".default-font-visible");
-        BufferedReader br = new BufferedReader(new FileReader(outputFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(defaultFontVisibleFile));
-        String line;
-        while ((line = br.readLine()) != null) {
-          String fontFixedLine = line.replace(
+        String convertedDocumentText;
+        try (FileInputStream fis = new FileInputStream(outputFile)) {
+          byte[] data = new byte[(int) outputFile.length()];
+          fis.read(data);
+          convertedDocumentText = new String(data, StandardCharsets.UTF_8);
+        }
+        if (!convertedDocumentText.isEmpty()) {
+          convertedDocumentText = convertedDocumentText.replace(
                   "{font-family:sans-serif;visibility:hidden;}",
                   "{font-family:sans-serif;visibility:visible;}"
           );
-          bw.write(fontFixedLine);
-          bw.write("\n");
+          File defaultFontVisibleFile = new File(outputFile + ".default-font-visible.html");
+          try (FileOutputStream fos = new FileOutputStream(defaultFontVisibleFile)) {
+            fos.write(convertedDocumentText.getBytes(StandardCharsets.UTF_8));
+            defaultFontVisibleFile.renameTo(outputFile);
+          }
         }
-        defaultFontVisibleFile.renameTo(outputFile);
-
         return outputFile;
     }
 
