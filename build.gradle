@@ -15,3 +15,10 @@ nexusPublishing {
         }
     }
 }
+
+// Android Studio's sync task expects CMake to work properly
+// Proper CMake, due to our supplied conan_toolchain.cmake, requires conan to be
+// done as a dependency of Android Studio sync
+tasks.named('prepareKotlinBuildScriptModel').configure { prepareKotlinBuildScriptModelTask ->
+    prepareKotlinBuildScriptModelTask.dependsOn(project("pdf2htmlEX").tasks.named("conanInstall"))
+}
