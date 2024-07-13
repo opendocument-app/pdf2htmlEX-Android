@@ -29,11 +29,11 @@ group = rootProject.group
 
 android {
     namespace "app.opendocument.android.pdf2htmlex"
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
+        targetSdk 35
 
         archivesBaseName = rootProject.name
 
