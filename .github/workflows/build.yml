@@ -120,7 +120,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
           sdcard-path-or-size: 1G
           disk-size: 8G
-          api-level: ${{ matrix.emulator.emulator_api_level }}
+          api-level: ${{ matrix.emulator.api_level }}
           arch: ${{ matrix.emulator.arch }}
           target: ${{ matrix.emulator.api_type_target }}
           script: |
