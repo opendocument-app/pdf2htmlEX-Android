@@ -2,7 +2,6 @@
 
 import json
 import os
-from pprint import pprint
 
 
 def main():
@@ -15,32 +14,29 @@ def main():
     #
     # emulator_api_level cannot be lower than build_api_level
     emulator_api_levels = (34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21)
-    build_api_levels = (23, 21)
     arches = ("x86_64", "x86")
     api_type_targets = ("aosp_atd", "default")
 
     matrix = []
     for emulator_api_level in emulator_api_levels:
         for api_type_target in api_type_targets:
-            for build_api_level in build_api_levels:
-                for arch in arches:
-                    if emulator_api_level < 30 and api_type_target == "aosp_atd":
-                        continue
-                    if emulator_api_level >= 30 and api_type_target == "default":
-                        continue
-                    if emulator_api_level > 30 and arch == "x86":
-                        continue
-                    if emulator_api_level < build_api_level:
-                        continue
+            for arch in arches:
+                if emulator_api_level < 30 and api_type_target == "aosp_atd":
+                    continue
+                if emulator_api_level >= 30 and api_type_target == "default":
+                    continue
+                if emulator_api_level > 30 and arch == "x86":
+                    continue
 
-                    matrix.append({
-                        "emulator_api_level": emulator_api_level,
-                        "build_api_level": build_api_level,
-                        "arch": arch,
-                        "api_type_target": api_type_target
-                    })
+                matrix.append({
+                    "api_level": emulator_api_level,
+                    "api_type_target": api_type_target,
+                    "arch": arch,
+                })
 
-    pprint(matrix)
+    for i in matrix:
+        print('-', i)
+
 
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
