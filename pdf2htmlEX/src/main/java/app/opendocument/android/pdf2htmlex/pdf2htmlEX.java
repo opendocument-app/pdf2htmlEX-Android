@@ -1,7 +1,7 @@
 /*
  * pdf2htmlEX.java
  *
- * Copyright (C) 2019, 2020, 2022, 2023 ViliusSutkus89.com
+ * Copyright (C) 2019, 2020, 2022, 2023, 2024 ViliusSutkus89.com
  *
  * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,16 @@ import com.getkeepsafe.relinker.ReLinker;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
 import com.viliussutkus89.android.tmpfile.Tmpfile;
 
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @SuppressWarnings("unused")
@@ -181,24 +184,37 @@ public class pdf2htmlEX implements Closeable {
 
     int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
-        // Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
-        String convertedDocumentText;
-        try (FileInputStream fis = new FileInputStream(outputFile)) {
-          byte[] data = new byte[(int) outputFile.length()];
-          fis.read(data);
-          convertedDocumentText = new String(data, StandardCharsets.UTF_8);
-        }
-        if (!convertedDocumentText.isEmpty()) {
-          convertedDocumentText = convertedDocumentText.replace(
-                  "{font-family:sans-serif;visibility:hidden;}",
-                  "{font-family:sans-serif;visibility:visible;}"
-          );
-          File defaultFontVisibleFile = new File(outputFile + ".default-font-visible.html");
-          try (FileOutputStream fos = new FileOutputStream(defaultFontVisibleFile)) {
-            fos.write(convertedDocumentText.getBytes(StandardCharsets.UTF_8));
-            defaultFontVisibleFile.renameTo(outputFile);
+      // Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
+
+      byte[] needle = "{font-family:sans-serif;visibility:hidden;}".getBytes(StandardCharsets.UTF_8);
+      byte[] replacement = "{font-family:sans-serif;visibility:visible}".getBytes(StandardCharsets.UTF_8);
+      List<Long> needlePositions = new LinkedList<>();
+      try (FileInputStream fis = new FileInputStream(outputFile)) {
+        try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+          long totalRead = 0;
+          int matchedNeedle = 0;
+          byte[] buffer = new byte[1];
+          while (1 == bis.read(buffer)) {
+            if (buffer[0] == needle[matchedNeedle]) {
+              if (++matchedNeedle == needle.length) {
+                needlePositions.add(totalRead - needle.length + 1);
+                matchedNeedle = 0;
+              }
+            } else {
+              matchedNeedle = 0;
+            }
+            totalRead++;
           }
         }
+      }
+      if (!needlePositions.isEmpty()) {
+        try (RandomAccessFile raf = new RandomAccessFile(outputFile, "rw")) {
+          for (long i : needlePositions) {
+            raf.seek(i);
+            raf.write(replacement, 0, replacement.length);
+          }
+        }
+      }
         return outputFile;
     }
 
