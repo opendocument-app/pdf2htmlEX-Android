@@ -69,9 +69,13 @@ jobs:
           path: ~/.m2
           if-no-files-found: error
 
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
       - name: Generate matrix of emulator images
         id: generate-emulator-matrix
-        run: python scripts/emulator_matrix_generator.py
+        run: python ci-scripts/emulator_matrix_generator.py
 
   emulator:
     runs-on: ubuntu-22.04
