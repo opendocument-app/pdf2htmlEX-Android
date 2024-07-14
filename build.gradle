@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'app.opendocument'
-version = '0.18.25'
+version = '0.18.26'
 
 nexusPublishing {
     repositories {
