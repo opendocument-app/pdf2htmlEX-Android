@@ -185,7 +185,7 @@ public class pdf2htmlEX implements Closeable {
     int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
       // Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
-
+      // Workaround for https://github.com/opendocument-app/OpenDocument.droid/issues/348
       byte[] needle = "{font-family:sans-serif;visibility:hidden;}".getBytes(StandardCharsets.UTF_8);
       byte[] replacement = "{font-family:sans-serif;visibility:visible}".getBytes(StandardCharsets.UTF_8);
       List<Long> needlePositions = new LinkedList<>();
