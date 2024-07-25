@@ -65,7 +65,7 @@ jobs:
           conan profile list
           conan profile show
 
-      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan remote add odr --index 0 https://artifactory.opendocument.app/artifactory/api/conan/conan
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
@@ -138,7 +138,7 @@ jobs:
           conan profile list
           conan profile show
 
-      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan remote add odr --index 0 https://artifactory.opendocument.app/artifactory/api/conan/conan
 
       - name: Enable KVM group perms
         run: |
