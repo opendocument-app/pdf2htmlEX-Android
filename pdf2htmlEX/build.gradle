@@ -74,11 +74,11 @@ tasks.named("preBuild").configure { preBuildTask ->
 
 android {
     namespace "app.opendocument.android.pdf2htmlex"
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
+        targetSdk 35
 
         archivesBaseName = rootProject.name
 
@@ -112,14 +112,14 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
     implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
     implementation 'com.viliussutkus89:assetextractor-android:1.3.3'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
 }
 
