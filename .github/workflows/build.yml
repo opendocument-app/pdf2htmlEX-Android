@@ -71,12 +71,6 @@ jobs:
           ref: pdf2htmlEX-with-dependency-tracking
           path: conan-odr-index
 
-#      - uses: actions/cache@v4
-#        with:
-#          path: ~/.conan2
-#          key: ${{ hashFiles('**') }}
-#          restore-keys: conan-cache
-
       - run: python scripts/conan_export_all_packages.py
         working-directory: conan-odr-index
 
