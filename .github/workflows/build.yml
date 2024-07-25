@@ -65,14 +65,7 @@ jobs:
           conan profile list
           conan profile show
 
-      - uses: actions/checkout@v4
-        with:
-          repository: ViliusSutkus89/conan-odr-index
-          ref: pdf2htmlEX-with-dependency-tracking
-          path: conan-odr-index
-
-      - run: python scripts/conan_export_all_packages.py
-        working-directory: conan-odr-index
+      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
