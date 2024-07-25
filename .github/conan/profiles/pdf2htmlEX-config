@@ -1,20 +1,6 @@
 [options]
-# gobject introspection not yet available for conan 2
-poppler/*:with_gobject_introspection=False
-
-# We are not using xorg functionality in cairo
-cairo/*:with_xlib=False
-cairo/*:with_xlib_xrender=False
-cairo/*:with_xcb=False
-cairo/*:with_symbol_lookup=False
-
-# Unused functionality in GLib
-glib/*:with_elf=False
+# @TODO: Fix linker errors caused by the absense of these options
+# Fontforge build failure if GLib built with mount
 glib/*:with_mount=False
-glib/*:with_selinux=False
-
-# @TODO: These dependencies are currently problematic
-freetype/*:with_bzip2=False
+# Fontforge build failure if FreeType built with Brotli
 freetype/*:with_brotli=False
-poppler/*:with_tiff=False
-fontforge/*:with_tiff=False
