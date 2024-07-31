@@ -2,6 +2,7 @@
 plugins {
     id 'com.android.library' version '8.5.1' apply false
     id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
+    id 'app.opendocument.conanandroidgradleplugin' version '0.9.0' apply false
 }
 
 group = 'app.opendocument'
@@ -14,11 +15,4 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
-}
-
-// Android Studio's sync task expects CMake to work properly
-// Proper CMake, due to our supplied conan_toolchain.cmake, requires conan to be
-// done as a dependency of Android Studio sync
-tasks.named('prepareKotlinBuildScriptModel').configure { prepareKotlinBuildScriptModelTask ->
-    prepareKotlinBuildScriptModelTask.dependsOn(project("pdf2htmlEX").tasks.named("conanInstall"))
 }
