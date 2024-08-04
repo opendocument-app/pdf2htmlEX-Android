@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 
 import com.getkeepsafe.relinker.ReLinker;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
-import com.viliussutkus89.android.tmpfile.Tmpfile;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
@@ -128,8 +127,6 @@ public class pdf2htmlEX implements Closeable {
 
       nc = new NativeConverter(pdf2htmlEX_tmpDir, pdf2htmlEX_dataDir, poppler_dataDir);
     }
-
-    Tmpfile.init(ctx.getCacheDir());
   }
 
   @Override
