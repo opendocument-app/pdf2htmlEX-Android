@@ -73,6 +73,16 @@ android {
     sourceSets.main.assets.srcDirs += "build/assets"
 }
 
+// Assets delivered by conan are gathered by CMake
+afterEvaluate {
+    tasks.named("generateDebugAssets").configure {
+        dependsOn(tasks.named("mergeDebugNativeLibs"))
+    }
+    tasks.named("generateReleaseAssets").configure {
+        dependsOn(tasks.named("mergeReleaseNativeLibs"))
+    }
+}
+
 dependencies {
     implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
