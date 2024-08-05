@@ -12,10 +12,11 @@ def main():
     #
     # x86 arch available on emulator_api_level 30 and lower.
     #
-    # emulator_api_level cannot be lower than build_api_level
-    emulator_api_levels = (34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21)
+    # emulator_api_level 35 is available only on api_type_target google_apis.
+    # Don't use google_apis on previous emulator_api_levels
+    emulator_api_levels = (35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21)
     arches = ("x86_64", "x86")
-    api_type_targets = ("aosp_atd", "default")
+    api_type_targets = ("aosp_atd", "default", "google_apis")
 
     matrix = []
     for emulator_api_level in emulator_api_levels:
@@ -26,6 +27,10 @@ def main():
                 if emulator_api_level >= 30 and api_type_target == "default":
                     continue
                 if emulator_api_level > 30 and arch == "x86":
+                    continue
+                if emulator_api_level >= 35 and api_type_target != "google_apis":
+                    continue
+                if emulator_api_level < 35 and api_type_target == "google_apis":
                     continue
 
                 matrix.append({
