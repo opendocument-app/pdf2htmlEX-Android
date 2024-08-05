@@ -51,6 +51,8 @@ jobs:
           java-version: 17
       - uses: android-actions/setup-android@v3
 
+      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+
       - run: ./gradlew lintRelease publishToMavenLocal
 
       - run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository

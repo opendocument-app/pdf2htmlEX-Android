@@ -4,7 +4,7 @@
  * pdf2htmlEX-Android (https://github.com/opendocument-app/pdf2htmlEX-Android)
  * pdf2htmlEX library port for Android - Convert PDF to HTML without losing text or format.
  *
- * Copyright (c) 2019 - 2023 ViliusSutkus89.com
+ * Copyright (c) 2019 - 2024 ViliusSutkus89.com
  *
  * pdf2htmlEX-Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -23,9 +23,16 @@ plugins {
     id 'com.android.library'
     id 'maven-publish'
     id 'signing'
+    id 'app.opendocument.conanandroidgradleplugin'
 }
 
 group = rootProject.group
+
+["armv7", "armv8", "x86", "x86_64"].each { arch ->
+    tasks.named("conanInstall-" + arch) {
+        profile.set("android-21-" + arch)
+    }
+}
 
 android {
     namespace "app.opendocument.android.pdf2htmlex"
@@ -39,7 +46,11 @@ android {
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
-        externalNativeBuild.cmake.arguments '-DANDROID_STL=c++_shared'
+        externalNativeBuild.cmake.arguments(
+                '-DANDROID_STL=c++_static',
+                "-DCMAKE_TOOLCHAIN_FILE=build/conan/android_toolchain.cmake",
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        )
         buildConfigField("String", "VERSION_NAME", "\"${rootProject.version}\"")
     }
     publishing {
@@ -53,24 +64,32 @@ android {
         buildConfig true
     }
     externalNativeBuild.cmake {
-        path 'src/main/cpp/CMakeLists.txt'
+        path 'CMakeLists.txt'
         version '3.22.1'
     }
-    ndkVersion '26.1.10909125'
-    buildTypes.release.externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+    ndkVersion '26.3.11579264'
+    sourceSets.main.assets.srcDirs += "build/assets"
+}
+
+// Assets delivered by conan are gathered by CMake
+afterEvaluate {
+    tasks.named("generateDebugAssets").configure {
+        dependsOn(tasks.named("mergeDebugNativeLibs"))
+    }
+    tasks.named("generateReleaseAssets").configure {
+        dependsOn(tasks.named("mergeReleaseNativeLibs"))
+    }
 }
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
-    implementation 'com.viliussutkus89:tmpfile-android:3.0.5'
     implementation 'com.viliussutkus89:fontconfig-android-translator:1.0.2'
     implementation 'com.viliussutkus89:assetextractor-android:1.3.3'
 
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
-    implementation("com.viliussutkus89.ndk.thirdparty:pdf2htmlEX-ndk26-static:0.18.8.rc2-beta-10")
 }
 
 publishing {
@@ -119,8 +138,11 @@ if (System.getenv('SIGNING_KEY')) {
     }
 }
 
+// Without removing .cxx dir on cleanup, double gradle clean is erroring out.
+// Before removing this workaround, check if "./gradlew assembleDebug; ./gradlew clean; ./gradlew clean" works
 tasks.named("clean") {
+    def dotCxxDir = getLayout().getProjectDirectory().dir(".cxx")
     doFirst {
-        delete(new File(projectDir, ".cxx"))
+        delete dotCxxDir
     }
 }

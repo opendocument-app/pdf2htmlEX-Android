@@ -26,18 +26,11 @@ import androidx.annotation.Nullable;
 
 import com.getkeepsafe.relinker.ReLinker;
 import com.viliussutkus89.android.assetextractor.AssetExtractor;
-import com.viliussutkus89.android.tmpfile.Tmpfile;
 
-import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-import java.util.List;
 
 
 @SuppressWarnings("unused")
@@ -105,11 +98,11 @@ public class pdf2htmlEX implements Closeable {
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/9
       // pdf2htmlEX_dataDir is where pdf2htmlEX's share folder contents are
-      File pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX/share/pdf2htmlEX");
+      File pdf2htmlEX_dataDir = ae.extract(new File(filesDir, "share"), "pdf2htmlEX");
 
       // @TODO: https://github.com/ViliusSutkus89/pdf2htmlEX-Android/issues/10
       // Poppler requires encoding data
-      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler");
+      File poppler_dataDir = ae.extract(new File(filesDir, "share"), "poppler-data");
 
       // @TODO: fontforge data
 
@@ -128,8 +121,6 @@ public class pdf2htmlEX implements Closeable {
 
       nc = new NativeConverter(pdf2htmlEX_tmpDir, pdf2htmlEX_dataDir, poppler_dataDir);
     }
-
-    Tmpfile.init(ctx.getCacheDir());
   }
 
   @Override
@@ -184,37 +175,6 @@ public class pdf2htmlEX implements Closeable {
 
     int retVal = NativeConverter.convert(nc.mConverter);
     if (0 == retVal) {
-      // Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
-
-      byte[] needle = "{font-family:sans-serif;visibility:hidden;}".getBytes(StandardCharsets.UTF_8);
-      byte[] replacement = "{font-family:sans-serif;visibility:visible}".getBytes(StandardCharsets.UTF_8);
-      List<Long> needlePositions = new LinkedList<>();
-      try (FileInputStream fis = new FileInputStream(outputFile)) {
-        try (BufferedInputStream bis = new BufferedInputStream(fis)) {
-          long totalRead = 0;
-          int matchedNeedle = 0;
-          byte[] buffer = new byte[1];
-          while (1 == bis.read(buffer)) {
-            if (buffer[0] == needle[matchedNeedle]) {
-              if (++matchedNeedle == needle.length) {
-                needlePositions.add(totalRead - needle.length + 1);
-                matchedNeedle = 0;
-              }
-            } else {
-              matchedNeedle = 0;
-            }
-            totalRead++;
-          }
-        }
-      }
-      if (!needlePositions.isEmpty()) {
-        try (RandomAccessFile raf = new RandomAccessFile(outputFile, "rw")) {
-          for (long i : needlePositions) {
-            raf.seek(i);
-            raf.write(replacement, 0, replacement.length);
-          }
-        }
-      }
         return outputFile;
     }
 
