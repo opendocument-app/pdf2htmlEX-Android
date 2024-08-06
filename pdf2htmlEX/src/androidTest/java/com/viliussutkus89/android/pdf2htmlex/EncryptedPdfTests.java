@@ -1,7 +1,7 @@
 /*
  * EncryptedPdfTests.java
  *
- * Copyright (C) 2019, 2020, 2022 ViliusSutkus89.com
+ * Copyright (C) 2019, 2020, 2022, 2024 ViliusSutkus89.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,14 +57,14 @@ public class EncryptedPdfTests {
     Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     new AssetExtractor(instrumentation.getContext().getAssets())
             .setNoOverwrite()
-            .extract(instrumentation.getTargetContext().getCacheDir(), "encrypted_fontfile3_opentype.pdf");
+            .extract(instrumentation.getTargetContext().getCacheDir(), "testPDFs/encrypted_fontfile3_opentype.pdf");
   }
 
   private final Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
   // encrypted_fontfile3_opentype.pdf was generated using:
   // qpdf --encrypt sample-user-password sample-owner-password 256 -- fontfile3_opentype.pdf encrypted_fontfile3_opentype.pdf
-  private final File pdfFile = new File(ctx.getCacheDir(), "encrypted_fontfile3_opentype.pdf");
+  private final File pdfFile = new File(ctx.getCacheDir(), "testPDFs/encrypted_fontfile3_opentype.pdf");
 
   private final pdf2htmlEX converter = new pdf2htmlEX(ctx).setInputPDF(pdfFile);
 

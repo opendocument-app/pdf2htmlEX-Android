@@ -1,7 +1,7 @@
 /*
  * ConversionTests.java
  *
- * Copyright (C) 2019, 2020, 2022 ViliusSutkus89.com
+ * Copyright (C) 2019, 2020, 2022, 2024 ViliusSutkus89.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,8 +71,12 @@ public class ConversionTests {
     Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     File extractedToDir = new File(instrumentation.getTargetContext().getCacheDir(), "testPDFs");
     List<File> testFiles = new ArrayList<>();
-    for (String testFilename : instrumentation.getContext().getAssets().list("testPDFs")) {
-        testFiles.add(new File(extractedToDir, testFilename));
+    String[] assetFiles = instrumentation.getContext().getAssets().list("testPDFs");
+    if (assetFiles != null) {
+      for (String assetFile : assetFiles) {
+        if (!assetFile.equals("encrypted_fontfile3_opentype.pdf"))
+          testFiles.add(new File(extractedToDir, assetFile));
+      }
     }
     return testFiles;
   }

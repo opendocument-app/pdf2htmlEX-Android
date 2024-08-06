@@ -69,6 +69,7 @@ android {
     }
     ndkVersion '26.3.11579264'
     sourceSets.main.assets.srcDirs += "build/assets"
+    sourceSets.androidTest.assets.srcDirs = [ getProject().parent.getLayout().getProjectDirectory().dir("test/androidTestAssets") ]
 }
 
 // Assets delivered by conan are gathered by CMake
