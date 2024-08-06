@@ -81,9 +81,9 @@ jobs:
           path: ~/.m2
           if-no-files-found: error
   emulator:
+    if: "!contains(github.event.head_commit.message, '[SkipCI]')"
     runs-on: ubuntu-22.04
     name: android-${{ matrix.emulator.api_level }} on ${{ matrix.emulator.arch }} (${{ matrix.emulator.api_type_target }})
-    needs: build
     strategy:
       fail-fast: false
       matrix:
