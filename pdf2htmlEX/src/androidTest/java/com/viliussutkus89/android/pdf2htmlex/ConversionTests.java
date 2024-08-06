@@ -84,15 +84,21 @@ public class ConversionTests {
   @Test
   public void convertPDF() throws pdf2htmlEX.ConversionFailedException, IOException {
     Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    pdf2htmlEX converter = new pdf2htmlEX(ctx);
+    pdf2htmlEX converter = new pdf2htmlEX(ctx).setProcessOutline(false);
+
+    switch(pdfFile.getName()) {
+      case "with_form.pdf":
+        converter.setProcessForm(true);
+        break;
+      case "svg_background_with_page_rotation_issue402.pdf":
+        converter.setBackgroundImageFormat(pdf2htmlEX.BackgroundImageFormat.SVG);
+        break;
+    }
 
     File htmlFile = converter.convert(pdfFile);
+    converter.close();
 
     assertTrue("Converted HTML file not found! " + pdfFile.getName(), htmlFile.exists());
     assertTrue("Converted HTML file empty! " + pdfFile.getName(), htmlFile.length() > 0);
-
-    htmlFile.delete();
-
-    converter.close();
   }
 }

@@ -126,8 +126,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: install python dependencies
-        run: pip install --upgrade pip conan
+      - run: pip install --upgrade pip conan adbPullAs selenium
 
       - run: |
           conan config install .github/conan
@@ -159,6 +158,8 @@ jobs:
             adb pull /data/local/tmp/beforeTests.png testResults/screenshots/
 
             ./gradlew connectedCheck || touch sorry_but_tests_are_failing
+            adbPullAs app.opendocument.android.pdf2htmlex.test /data/data/app.opendocument.android.pdf2htmlex.test/cache/pdf2htmlEX/output-htmls testResults || true
+
             adb pull /sdcard/Pictures/screenshots testResults/ || true
 
             adb shell screencap /data/local/tmp/afterTests.png
@@ -168,6 +169,8 @@ jobs:
             mv pdf2htmlEX/build/outputs/androidTest-results testResults/
 
             test ! -f sorry_but_tests_are_failing
+
+      - run: python ci-scripts/browser_tests.py --html-dir testResults/output-htmls --png-destination-dir testResults/pngs --reference-png-dir test/reference_pngs
 
       - uses: actions/upload-artifact@v4
         if: always()
