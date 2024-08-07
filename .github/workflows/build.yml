@@ -88,9 +88,6 @@ jobs:
           path: conangraph.html
           if-no-files-found: error
 
-      - run: |
-          du -hs ~/.conan2
-          du -hs ~/.conan2/p
       - uses: actions/upload-artifact@v4
         with:
           name: dotconan2
@@ -149,8 +146,6 @@ jobs:
         with:
           name: dotconan2
           path: ~/.conan2
-
-      - run: ls -lh ~/.conan2
 
       - run: ./gradlew assembleDebug
       - name: Enable KVM group perms
