@@ -66,6 +66,7 @@ jobs:
           conan profile show
 
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan graph info pdf2htmlEX/conanfile.txt --profile=android-21-armv8 --build=missing --format=html > conangraph.html
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
@@ -80,6 +81,13 @@ jobs:
           name: maven-local
           path: ~/.m2
           if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conangraph.html
+          path: conangraph.html
+          if-no-files-found: error
+
   emulator:
     if: "!contains(github.event.head_commit.message, '[SkipCI]')"
     runs-on: ubuntu-22.04

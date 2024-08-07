@@ -62,7 +62,9 @@ jobs:
           conan config install .github/conan
           conan profile list
           conan profile show
+
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan graph info pdf2htmlEX/conanfile.txt --profile=android-21-armv8 --build=missing --format=html > conangraph.html
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
@@ -88,6 +90,7 @@ jobs:
           tag: "v${{ steps.updateDownstreamVersion.outputs.version }}"
           name: "${{ github.event.repository.name }} v${{ steps.updateDownstreamVersion.outputs.version }}"
           bodyFile: "UpcomingReleaseNotes.md"
+          artifact: "conangraph.html"
 
       - run: ./ci-scripts/incrementVersion --patch
         id: postReleaseVersionIncrement
