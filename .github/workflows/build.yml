@@ -147,7 +147,6 @@ jobs:
           name: dotconan2
           path: ~/.conan2
 
-      - run: ./gradlew assembleDebug
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
