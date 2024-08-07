@@ -134,7 +134,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - run: pip install --upgrade pip conan adbPullAs selenium
+      - run: pip install --upgrade pip conan adbPullAs selenium Pillow
 
       - run: |
           conan config install .github/conan
