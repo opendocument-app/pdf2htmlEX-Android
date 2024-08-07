@@ -88,8 +88,17 @@ jobs:
           path: conangraph.html
           if-no-files-found: error
 
+      - run: |
+          du -hs ~/.conan2
+          du -hs ~/.conan2/p
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dotconan2
+          path: ~/.conan2
+          if-no-files-found: error
+
   emulator:
-    if: "!contains(github.event.head_commit.message, '[SkipCI]')"
+    needs: build
     runs-on: ubuntu-22.04
     name: android-${{ matrix.emulator.api_level }} on ${{ matrix.emulator.arch }} (${{ matrix.emulator.api_type_target }})
     strategy:
@@ -136,12 +145,12 @@ jobs:
           python-version: 3.12
       - run: pip install --upgrade pip conan adbPullAs selenium Pillow
 
-      - run: |
-          conan config install .github/conan
-          conan profile list
-          conan profile show
+      - uses: actions/download-artifact@v4
+        with:
+          name: dotconan2
+          path: ~/.conan2
 
-      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: ls -lh ~/.conan2
 
       - run: ./gradlew assembleDebug
       - name: Enable KVM group perms
