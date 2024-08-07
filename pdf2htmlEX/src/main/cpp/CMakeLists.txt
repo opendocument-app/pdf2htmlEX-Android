@@ -21,11 +21,9 @@ add_library(envvar SHARED EnvVar.c)
 add_library(pdf2htmlEX-android SHARED pdf2htmlEX.cc CCharGC.h)
 
 find_library(log-lib log)
-find_package(tmpfile REQUIRED CONFIG)
 
 target_link_libraries(pdf2htmlEX-android
   pdf2htmlex::pdf2htmlex
   envvar
-  tmpfile::tmpfile
   ${log-lib}
 )
