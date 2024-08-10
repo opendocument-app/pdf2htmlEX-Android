@@ -47,7 +47,7 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         externalNativeBuild.cmake.arguments(
-                '-DANDROID_STL=c++_static',
+                '-DANDROID_STL=c++_shared',
                 "-DCMAKE_TOOLCHAIN_FILE=build/conan/android_toolchain.cmake",
                 "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
         )
