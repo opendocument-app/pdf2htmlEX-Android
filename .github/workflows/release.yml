@@ -25,7 +25,7 @@ on:
   workflow_dispatch:
     inputs:
       gradle_publish:
-        description: Publish to gradle
+        description: Publish to Sonatype
         type: boolean
         default: true
       github_release:
