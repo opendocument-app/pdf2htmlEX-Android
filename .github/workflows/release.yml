@@ -23,6 +23,19 @@
 name: release
 on:
   workflow_dispatch:
+    inputs:
+      gradle_publish:
+        description: Publish to gradle
+        type: boolean
+        default: true
+      github_release:
+        description: Create a GitHub release
+        type: boolean
+        default: true
+      version_increment:
+        description: Increment version
+        type: boolean
+        default: true
 
 permissions:
   actions: none
@@ -69,6 +82,7 @@ jobs:
       - run: ./gradlew lintRelease publishToMavenLocal
 
       - run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository --no-configuration-cache
+        if: ${{ github.event.inputs.gradle_publish == 'true' }}
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
@@ -84,6 +98,7 @@ jobs:
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
 
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.github_release == 'true' }}
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -96,12 +111,14 @@ jobs:
         id: postReleaseVersionIncrement
 
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ github.event.inputs.version_increment == 'true' }}
         with:
           commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
           file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
 
       - run: echo -n > UpcomingReleaseNotes.md
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ github.event.inputs.github_release == 'true' }}
         with:
           commit_message: "Post release truncation of UpcomingReleaseNotes.md"
           file_pattern: UpcomingReleaseNotes.md
