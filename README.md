@@ -17,7 +17,7 @@
 pdf2htmlEX-Android is distributed through MavenCentral. Add a dependency in `build.gradle`:
 ```groovy
 dependencies {
-    implementation("app.opendocument:pdf2htmlex-android:0.18.25")
+    implementation("app.opendocument:pdf2htmlex-android:0.18.26")
 }
 ```
 
