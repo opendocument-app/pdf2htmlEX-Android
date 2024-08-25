@@ -1,7 +1,5 @@
 # [pdf2htmlEX](https://github.com/pdf2htmlEX/pdf2htmlEX) library port for Android
 
-Made possible by [ndkports](https://github.com/ViliusSutkus89/ndkports) (a collection of Open Source Linux libraries for Android).
-
 [![build](https://github.com/opendocument-app/pdf2htmlEX-Android/actions/workflows/build.yml/badge.svg)](https://github.com/opendocument-app/pdf2htmlEX-Android/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/app.opendocument/pdf2htmlex-android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:app.opendocument%20AND%20a:pdf2htmlex-android)
 
