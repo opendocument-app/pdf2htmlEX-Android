@@ -68,17 +68,17 @@ android {
         version '3.22.1'
     }
     ndkVersion '26.3.11579264'
-    sourceSets.main.assets.srcDirs += "build/assets"
+    sourceSets.main.assets.srcDirs += "build/conan/armv8/assets"
     sourceSets.androidTest.assets.srcDirs = [ getProject().parent.getLayout().getProjectDirectory().dir("test/androidTestAssets") ]
 }
 
-// Assets delivered by conan are gathered by CMake
+// Make sure the assets are installed and ready when needed
 afterEvaluate {
     tasks.named("generateDebugAssets").configure {
-        dependsOn(tasks.named("mergeDebugNativeLibs"))
+        dependsOn(tasks.named("conanInstall-armv8"))
     }
     tasks.named("generateReleaseAssets").configure {
-        dependsOn(tasks.named("mergeReleaseNativeLibs"))
+        dependsOn(tasks.named("conanInstall-armv8"))
     }
 }
 
