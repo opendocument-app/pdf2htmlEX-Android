@@ -178,7 +178,7 @@ jobs:
             adb pull /data/local/tmp/beforeTests.png testResults/screenshots/
 
             ./gradlew connectedCheck || touch sorry_but_tests_are_failing
-            adbPullAs app.opendocument.android.pdf2htmlex.test /data/data/app.opendocument.android.pdf2htmlex.test/cache/pdf2htmlEX/output-htmls testResults || true
+            adbPullAs app.opendocument.android.pdf2htmlex.test /data/data/app.opendocument.android.pdf2htmlex.test/cache/pdf2htmlEX/output-htmls testResults
 
             adb pull /sdcard/Pictures/screenshots testResults/ || true
 
