@@ -161,6 +161,9 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Keep APK installed after test run
+        run: echo "android.injected.androidTest.leaveApksInstalledAfterRun=true" >> gradle.properties
+
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           force-avd-creation: false
