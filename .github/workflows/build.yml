@@ -70,29 +70,37 @@ jobs:
 
       - run: ./gradlew lintRelease publishToMavenLocal
 
-      - uses: actions/upload-artifact@v4
+      - name: Artifact library-lint-report
+        uses: actions/upload-artifact@v4
         with:
           name: library-lint-report
           path: pdf2htmlEX/build/reports/lint-results-release.html
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
+      - name: Artifact maven-local
+        uses: actions/upload-artifact@v4
         with:
           name: maven-local
           path: ~/.m2
           if-no-files-found: error
+          compression-level: 0
+          include-hidden-files: true
 
-      - uses: actions/upload-artifact@v4
+      - name: Artifact conangraph.html
+        uses: actions/upload-artifact@v4
         with:
           name: conangraph.html
           path: conangraph.html
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
+      - name: Artifact dotconan2
+        uses: actions/upload-artifact@v4
         with:
           name: dotconan2
           path: ~/.conan2
           if-no-files-found: error
+          compression-level: 0
+          include-hidden-files: true
 
   emulator:
     needs: build
