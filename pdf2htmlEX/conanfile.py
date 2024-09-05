@@ -8,7 +8,7 @@ required_conan_version = ">=2.0.6"
 
 class pdf2htmlEXConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = "pdf2htmlex/0.18.8.rc1-20240814-git"
+    requires = "pdf2htmlex/0.18.8.rc1-20240905-git"
 
     def generate(self):
         deps = CMakeDeps(self)
