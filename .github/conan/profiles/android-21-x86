@@ -1,5 +1,5 @@
 {% set android_home = os.getenv("ANDROID_HOME") %}
-{% set ndk_version = "26.3.11579264" %}
+{% set ndk_version = "28.1.13356709" %}
 {% set api_level = "21" %}
 {% set arch = "x86" %}
 {% set cc = {
