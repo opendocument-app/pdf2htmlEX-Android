@@ -49,7 +49,7 @@ android {
         externalNativeBuild.cmake.arguments(
                 '-DANDROID_STL=c++_shared',
                 "-DCMAKE_TOOLCHAIN_FILE=build/conan/android_toolchain.cmake",
-                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+                "-DCMAKE_BUILD_TYPE=Release",
         )
         buildConfigField("String", "VERSION_NAME", "\"${rootProject.version}\"")
     }

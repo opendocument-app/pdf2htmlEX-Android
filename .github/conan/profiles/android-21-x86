@@ -13,7 +13,7 @@
 os=Android
 os.api_level={{api_level}}
 arch={{arch}}
-build_type=RelWithDebInfo
+build_type=Release
 compiler=clang
 compiler.version=17
 compiler.cppstd=20
