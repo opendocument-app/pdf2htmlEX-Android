@@ -58,7 +58,7 @@ jobs:
         with:
           # A branch is required for post release version increment commit
           ref: ${{ github.event.ref }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
