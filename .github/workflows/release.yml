@@ -92,7 +92,7 @@ jobs:
       - run: ./ci-scripts/updateDownstreamVersion
         id: updateDownstreamVersion
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Update version in README.md (${{ steps.updateDownstreamVersion.outputs.version }})"
           file_pattern: ${{ steps.updateDownstreamVersion.outputs.files }}
@@ -110,14 +110,14 @@ jobs:
       - run: ./ci-scripts/incrementVersion --patch
         id: postReleaseVersionIncrement
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v7
         if: ${{ github.event.inputs.version_increment == 'true' }}
         with:
           commit_message: "Post release library version increment to ${{ steps.postReleaseVersionIncrement.outputs.newVersion }} (from ${{ steps.postReleaseVersionIncrement.outputs.oldVersion }})"
           file_pattern: ${{ steps.postReleaseVersionIncrement.outputs.files }}
 
       - run: echo -n > UpcomingReleaseNotes.md
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v7
         if: ${{ github.event.inputs.github_release == 'true' }}
         with:
           commit_message: "Post release truncation of UpcomingReleaseNotes.md"
