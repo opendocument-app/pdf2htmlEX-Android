@@ -51,7 +51,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
@@ -144,7 +144,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
