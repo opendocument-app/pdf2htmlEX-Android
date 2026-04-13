@@ -1,0 +1,9 @@
+sources:
+  "0.18.8.rc1-git-eb5d291-library":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-eb5d291.tar.gz"
+    sha256: "530de80cebd3427c9d075c2c5567ba3c7ef1f25ca6a926dcb0d63ce562ce230c"
+patches:
+  "0.18.8.rc1-git-eb5d291-library":
+    - patch_file: "patches/0.18.8.rc1-git-eb5d291-library/0001-library.patch"
+    - patch_file: "patches/0.18.8.rc1-git-eb5d291-library/0002-use-find_package.patch"
+

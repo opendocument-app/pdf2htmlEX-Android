@@ -77,6 +77,7 @@ jobs:
           conan profile show
 
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan export .github/conan/recipes/pdf2htmlex/0.18.8.rc1 --version=0.18.8.rc1-git-eb5d291-library
       - run: conan graph info pdf2htmlEX --profile=android-21-armv8 --build=missing --format=html > conangraph.html
 
       - run: ./gradlew lintRelease publishToMavenLocal
